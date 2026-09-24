@@ -1,0 +1,1048 @@
+# Copyright (C) 2026 The Read Scope
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Foliora 1.7.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/foliora\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-24T04:54:10+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: foliora\n"
+
+#. Plugin Name of the plugin
+#: foliora.php
+#: includes/builders/class-foliora-beaver-library.php:19
+#: includes/builders/class-foliora-beaver-viewer.php:19
+#: includes/class-foliora-admin.php:47
+#: includes/class-foliora-admin.php:48
+#: includes/class-foliora-admin.php:441
+#: includes/class-foliora-builders.php:36
+msgid "Foliora"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: foliora.php
+msgid "https://thereadscope.com/foliora"
+msgstr ""
+
+#. Description of the plugin
+#: foliora.php
+msgid "A fast, accessible PDF &amp; eBook viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, and reading-progress features."
+msgstr ""
+
+#. Author of the plugin
+#: foliora.php
+msgid "The Read Scope"
+msgstr ""
+
+#. Author URI of the plugin
+#: foliora.php
+msgid "https://thereadscope.com"
+msgstr ""
+
+#: includes/builders/class-foliora-beaver-library.php:17
+#: includes/builders/class-foliora-divi-library.php:24
+#: includes/builders/class-foliora-elementor-library.php:19
+msgid "Foliora Library"
+msgstr ""
+
+#: includes/builders/class-foliora-beaver-library.php:18
+msgid "A grid of Media Library PDFs."
+msgstr ""
+
+#: includes/builders/class-foliora-beaver-library.php:20
+#: includes/builders/class-foliora-beaver-viewer.php:20
+#: includes/class-foliora-admin.php:875
+msgid "Media"
+msgstr ""
+
+#: includes/builders/class-foliora-beaver-viewer.php:17
+#: includes/builders/class-foliora-divi-viewer.php:24
+#: includes/builders/class-foliora-elementor-viewer.php:19
+msgid "Foliora Viewer"
+msgstr ""
+
+#: includes/builders/class-foliora-beaver-viewer.php:18
+msgid "Embed a PDF with the Foliora viewer."
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:28
+#: includes/builders/class-foliora-elementor-library.php:38
+#: includes/class-foliora-builders.php:173
+msgid "Grid"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:37
+#: includes/builders/class-foliora-elementor-library.php:45
+#: includes/class-foliora-builders.php:177
+#: assets/js/foliora-library-block.js:34
+msgid "Columns"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:52
+#: includes/builders/class-foliora-elementor-library.php:62
+#: includes/class-foliora-builders.php:190
+msgid "Per page"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:59
+#: includes/builders/class-foliora-elementor-library.php:73
+#: includes/class-foliora-builders.php:195
+#: assets/js/foliora-library-block.js:52
+msgid "Order by"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:62
+#: includes/builders/class-foliora-elementor-library.php:77
+#: includes/class-foliora-builders.php:198
+#: assets/js/foliora-library-block.js:55
+msgid "Date"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:63
+#: includes/builders/class-foliora-elementor-library.php:78
+#: includes/class-foliora-builders.php:199
+#: assets/js/foliora-block.js:116
+#: assets/js/foliora-library-block.js:56
+msgid "Title"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:64
+#: includes/builders/class-foliora-elementor-library.php:79
+#: includes/class-foliora-builders.php:200
+msgid "Modified"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:71
+#: includes/builders/class-foliora-elementor-library.php:87
+#: includes/class-foliora-builders.php:205
+#: assets/js/foliora-library-block.js:64
+msgid "Order"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:74
+#: includes/builders/class-foliora-elementor-library.php:91
+#: includes/class-foliora-builders.php:208
+#: assets/js/foliora-library-block.js:67
+msgid "Newest first"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:75
+#: includes/builders/class-foliora-elementor-library.php:92
+#: includes/class-foliora-builders.php:209
+#: assets/js/foliora-library-block.js:68
+msgid "Oldest first"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:82
+#: includes/builders/class-foliora-elementor-library.php:100
+#: includes/class-foliora-builders.php:214
+msgid "Search box"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:85
+#: includes/builders/class-foliora-divi-viewer.php:80
+#: includes/builders/class-foliora-divi-viewer.php:91
+#: includes/builders/class-foliora-elementor-library.php:102
+#: includes/builders/class-foliora-elementor-viewer.php:103
+#: includes/builders/class-foliora-elementor-viewer.php:115
+#: includes/class-foliora-builders.php:146
+#: includes/class-foliora-builders.php:155
+#: includes/class-foliora-builders.php:217
+msgid "Show"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-library.php:86
+#: includes/builders/class-foliora-divi-viewer.php:81
+#: includes/builders/class-foliora-divi-viewer.php:92
+#: includes/builders/class-foliora-elementor-library.php:103
+#: includes/builders/class-foliora-elementor-viewer.php:104
+#: includes/builders/class-foliora-elementor-viewer.php:116
+#: includes/class-foliora-builders.php:147
+#: includes/class-foliora-builders.php:156
+#: includes/class-foliora-builders.php:218
+msgid "Hide"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:30
+#: includes/builders/class-foliora-elementor-viewer.php:38
+#: includes/class-foliora-admin.php:815
+#: includes/class-foliora-builders.php:103
+msgid "Document"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:31
+#: includes/builders/class-foliora-elementor-viewer.php:76
+#: includes/class-foliora-builders.php:129
+msgid "Layout"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:40
+#: includes/builders/class-foliora-elementor-viewer.php:45
+msgid "PDF file"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:43
+msgid "Select a PDF"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:44
+msgid "Choose a PDF"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:45
+msgid "Set as PDF"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:46
+msgid "Select a PDF from the Media Library. If the upload picker shows images only, paste the PDF URL instead."
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:50
+#: includes/builders/class-foliora-elementor-viewer.php:55
+#: includes/class-foliora-builders.php:113
+msgid "Title caption"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:56
+#: includes/builders/class-foliora-elementor-viewer.php:64
+#: includes/class-foliora-builders.php:118
+#: assets/js/foliora-block.js:124
+msgid "Start page"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:63
+#: includes/builders/class-foliora-elementor-viewer.php:83
+#: includes/class-foliora-builders.php:133
+#: assets/js/foliora-block.js:98
+msgid "Width"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:70
+#: includes/builders/class-foliora-elementor-viewer.php:92
+#: includes/class-foliora-builders.php:138
+msgid "Height"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:77
+#: includes/builders/class-foliora-elementor-viewer.php:101
+#: includes/class-foliora-admin.php:251
+#: includes/class-foliora-builders.php:143
+msgid "Download button"
+msgstr ""
+
+#: includes/builders/class-foliora-divi-viewer.php:88
+#: includes/builders/class-foliora-elementor-viewer.php:113
+#: includes/class-foliora-admin.php:259
+#: includes/class-foliora-builders.php:152
+msgid "Print button"
+msgstr ""
+
+#: includes/builders/class-foliora-elementor-viewer.php:48
+msgid "Choose a PDF from the Media Library."
+msgstr ""
+
+#: includes/class-foliora-a11y.php:72
+#: includes/class-foliora-admin.php:966
+#: includes/class-foliora-admin.php:982
+#: includes/class-foliora-admin.php:1029
+#: includes/class-foliora-seo.php:68
+#: includes/class-foliora-thumbnails.php:59
+msgid "Forbidden."
+msgstr ""
+
+#: includes/class-foliora-a11y.php:76
+msgid "PDF accessibility checks are turned off."
+msgstr ""
+
+#: includes/class-foliora-a11y.php:83
+#: includes/class-foliora-seo.php:79
+#: includes/class-foliora-thumbnails.php:66
+msgid "That file is not a PDF attachment."
+msgstr ""
+
+#: includes/class-foliora-admin.php:58
+msgid "Foliora Dashboard"
+msgstr ""
+
+#: includes/class-foliora-admin.php:59
+msgid "Dashboard"
+msgstr ""
+
+#: includes/class-foliora-admin.php:67
+msgid "Foliora Documents"
+msgstr ""
+
+#: includes/class-foliora-admin.php:68
+#: includes/class-foliora-admin.php:463
+#: includes/class-foliora-admin.php:761
+msgid "Documents"
+msgstr ""
+
+#: includes/class-foliora-admin.php:76
+#: includes/class-foliora-admin.php:694
+msgid "Foliora Settings"
+msgstr ""
+
+#: includes/class-foliora-admin.php:77
+msgid "Settings"
+msgstr ""
+
+#: includes/class-foliora-admin.php:129
+#: includes/class-foliora-viewer.php:319
+msgid "Loading document…"
+msgstr ""
+
+#: includes/class-foliora-admin.php:130
+#: includes/class-foliora-viewer.php:320
+msgid "This document could not be loaded."
+msgstr ""
+
+#. translators: 1: current page number, 2: total pages.
+#: includes/class-foliora-admin.php:132
+#: includes/class-foliora-viewer.php:322
+#, php-format
+msgid "Page %1$s of %2$s"
+msgstr ""
+
+#: includes/class-foliora-admin.php:133
+#: includes/class-foliora-viewer.php:323
+msgid "This document is password-protected."
+msgstr ""
+
+#: includes/class-foliora-admin.php:134
+#: includes/class-foliora-viewer.php:324
+msgid "Incorrect password."
+msgstr ""
+
+#: includes/class-foliora-admin.php:135
+#: includes/class-foliora-viewer.php:325
+msgid "Unlock"
+msgstr ""
+
+#: includes/class-foliora-admin.php:136
+#: includes/class-foliora-viewer.php:326
+msgid "Password"
+msgstr ""
+
+#: includes/class-foliora-admin.php:137
+#: includes/class-foliora-viewer.php:183
+#: includes/class-foliora-viewer.php:327
+msgid "Table of contents"
+msgstr ""
+
+#: includes/class-foliora-admin.php:138
+#: includes/class-foliora-admin.php:140
+#: includes/class-foliora-viewer.php:186
+#: includes/class-foliora-viewer.php:328
+#: includes/class-foliora-viewer.php:330
+msgid "Page thumbnails"
+msgstr ""
+
+#: includes/class-foliora-admin.php:139
+#: includes/class-foliora-viewer.php:329
+msgid "Document outline"
+msgstr ""
+
+#: includes/class-foliora-admin.php:141
+#: includes/class-foliora-viewer.php:331
+msgid "Close panel"
+msgstr ""
+
+#: includes/class-foliora-admin.php:142
+#: includes/class-foliora-viewer.php:211
+#: includes/class-foliora-viewer.php:332
+msgid "Fit page"
+msgstr ""
+
+#: includes/class-foliora-admin.php:143
+#: includes/class-foliora-viewer.php:333
+msgid "Fit width"
+msgstr ""
+
+#: includes/class-foliora-admin.php:174
+#: includes/class-foliora-admin.php:881
+msgid "Indexed"
+msgstr ""
+
+#: includes/class-foliora-admin.php:175
+#: includes/class-foliora-admin.php:883
+msgid "No text"
+msgstr ""
+
+#: includes/class-foliora-admin.php:176
+#: includes/class-foliora-admin.php:890
+msgid "Tagged"
+msgstr ""
+
+#: includes/class-foliora-admin.php:177
+#: includes/class-foliora-admin.php:895
+msgid "Untagged"
+msgstr ""
+
+#: includes/class-foliora-admin.php:178
+#: includes/class-foliora-admin.php:894
+msgid "This PDF has no accessibility tags. Export it from Word, InDesign, or Acrobat as a tagged PDF so screen readers can follow headings and reading order."
+msgstr ""
+
+#: includes/class-foliora-admin.php:203
+#: assets/js/foliora-block.js:176
+msgid "Select PDF"
+msgstr ""
+
+#: includes/class-foliora-admin.php:204
+msgid "Use this PDF"
+msgstr ""
+
+#: includes/class-foliora-admin.php:205
+msgid "Copied!"
+msgstr ""
+
+#: includes/class-foliora-admin.php:206
+msgid "Shortcode copied"
+msgstr ""
+
+#: includes/class-foliora-admin.php:207
+msgid "Dismissed"
+msgstr ""
+
+#. translators: 1: completed steps, 2: total steps.
+#: includes/class-foliora-admin.php:209
+#: includes/class-foliora-admin.php:515
+#, php-format
+msgid "%1$s of %2$s steps complete"
+msgstr ""
+
+#: includes/class-foliora-admin.php:210
+#: includes/class-foliora-admin.php:512
+msgid "You are set. New documents go in Documents or the Media Library."
+msgstr ""
+
+#: includes/class-foliora-admin.php:211
+#: includes/class-foliora-admin.php:601
+msgid "Drop a PDF to embed it"
+msgstr ""
+
+#: includes/class-foliora-admin.php:212
+msgid "Uploading…"
+msgstr ""
+
+#: includes/class-foliora-admin.php:213
+msgid "Creating page…"
+msgstr ""
+
+#: includes/class-foliora-admin.php:214
+msgid "Please drop a PDF file."
+msgstr ""
+
+#: includes/class-foliora-admin.php:215
+msgid "Upload failed. Try the Media Library."
+msgstr ""
+
+#: includes/class-foliora-admin.php:228
+msgid "Viewer Defaults"
+msgstr ""
+
+#: includes/class-foliora-admin.php:235
+msgid "Default width"
+msgstr ""
+
+#: includes/class-foliora-admin.php:243
+msgid "Default height"
+msgstr ""
+
+#: includes/class-foliora-admin.php:267
+msgid "Search and sharing"
+msgstr ""
+
+#: includes/class-foliora-admin.php:274
+msgid "Site search"
+msgstr ""
+
+#: includes/class-foliora-admin.php:282
+msgid "Social preview"
+msgstr ""
+
+#: includes/class-foliora-admin.php:290
+msgid "Accessibility tags"
+msgstr ""
+
+#: includes/class-foliora-admin.php:355
+msgid "Show the download button on the viewer toolbar. Individual embeds can override this with download=\"false\"."
+msgstr ""
+
+#: includes/class-foliora-admin.php:366
+msgid "Show the print button on the viewer toolbar. Individual embeds can override this with print=\"false\"."
+msgstr ""
+
+#: includes/class-foliora-admin.php:371
+msgid "Make embedded PDFs findable in WordPress search and nicer when a page is shared."
+msgstr ""
+
+#: includes/class-foliora-admin.php:381
+msgid "Include text from embedded PDFs in WordPress site search (and in the document library search). Visit Foliora → Documents to extract text."
+msgstr ""
+
+#: includes/class-foliora-admin.php:392
+msgid "Use the PDF first-page thumbnail as the Open Graph / Twitter image when a post or page embeds Foliora and no SEO plugin already set an image."
+msgstr ""
+
+#: includes/class-foliora-admin.php:403
+msgid "Warn on Foliora → Documents when a PDF is not tagged. Tagged PDFs include structure (headings, reading order) that screen readers can follow."
+msgstr ""
+
+#: includes/class-foliora-admin.php:444
+msgid "Embed PDFs with a bundled viewer. No CDN, no account, no API keys."
+msgstr ""
+
+#: includes/class-foliora-admin.php:447
+msgid "Pro active"
+msgstr ""
+
+#: includes/class-foliora-admin.php:450
+msgid "Plain permalinks — share links need Post name"
+msgstr ""
+
+#: includes/class-foliora-admin.php:467
+#: includes/class-foliora-admin.php:649
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: includes/class-foliora-admin.php:477
+msgid "Pick a cover on the right — or drop a PDF — then copy the shortcode."
+msgstr ""
+
+#: includes/class-foliora-admin.php:480
+msgid "Dismiss this notice."
+msgstr ""
+
+#: includes/class-foliora-admin.php:490
+msgid "PDFs"
+msgstr ""
+
+#: includes/class-foliora-admin.php:495
+msgid "Embeds"
+msgstr ""
+
+#: includes/class-foliora-admin.php:500
+msgid "Setup"
+msgstr ""
+
+#: includes/class-foliora-admin.php:508
+msgid "Get started"
+msgstr ""
+
+#: includes/class-foliora-admin.php:529
+#: includes/class-foliora-admin.php:954
+#: includes/class-foliora-library.php:249
+msgid "Upload a PDF"
+msgstr ""
+
+#: includes/class-foliora-admin.php:530
+msgid "Add a file, or drop one on the stage."
+msgstr ""
+
+#: includes/class-foliora-admin.php:533
+msgid "Upload"
+msgstr ""
+
+#: includes/class-foliora-admin.php:539
+msgid "Copy a shortcode"
+msgstr ""
+
+#: includes/class-foliora-admin.php:540
+msgid "Click the code on the stage to copy."
+msgstr ""
+
+#: includes/class-foliora-admin.php:543
+msgid "Show stage"
+msgstr ""
+
+#: includes/class-foliora-admin.php:549
+msgid "Put it on a page"
+msgstr ""
+
+#: includes/class-foliora-admin.php:550
+msgid "Publish a test page, or use the viewer block."
+msgstr ""
+
+#: includes/class-foliora-admin.php:553
+msgid "Create page"
+msgstr ""
+
+#: includes/class-foliora-admin.php:561
+msgid "Embed a document"
+msgstr ""
+
+#: includes/class-foliora-admin.php:562
+msgid "Drop a PDF, pick a cover, or browse the library."
+msgstr ""
+
+#: includes/class-foliora-admin.php:578
+msgid "No document selected"
+msgstr ""
+
+#: includes/class-foliora-admin.php:579
+#: includes/class-foliora-admin.php:820
+msgid "Shortcode"
+msgstr ""
+
+#: includes/class-foliora-admin.php:580
+msgid "Click to copy"
+msgstr ""
+
+#: includes/class-foliora-admin.php:589
+#: includes/class-foliora-admin.php:905
+msgid "Copy"
+msgstr ""
+
+#: includes/class-foliora-admin.php:594
+msgid "Create test page"
+msgstr ""
+
+#: includes/class-foliora-admin.php:596
+msgid "Browse Media Library"
+msgstr ""
+
+#: includes/class-foliora-admin.php:606
+msgid "Recent"
+msgstr ""
+
+#: includes/class-foliora-admin.php:630
+msgid "Viewer defaults"
+msgstr ""
+
+#: includes/class-foliora-admin.php:638
+msgid "Foliora Pro"
+msgstr ""
+
+#: includes/class-foliora-admin.php:642
+msgid "Unlocked on this site. Open a tile for details."
+msgstr ""
+
+#: includes/class-foliora-admin.php:643
+msgid "Optional add-on. Open a tile to see what it adds."
+msgstr ""
+
+#: includes/class-foliora-admin.php:661
+msgid "Active"
+msgstr ""
+
+#: includes/class-foliora-admin.php:661
+msgid "Locked"
+msgstr ""
+
+#: includes/class-foliora-admin.php:696
+msgid "Back to Dashboard"
+msgstr ""
+
+#: includes/class-foliora-admin.php:709
+msgid "Live preview"
+msgstr ""
+
+#: includes/class-foliora-admin.php:711
+msgid "Width and height update this viewer immediately. Save to store them as site defaults."
+msgstr ""
+
+#: includes/class-foliora-admin.php:718
+msgid "Preview uses the most recently uploaded PDF in the Media Library."
+msgstr ""
+
+#: includes/class-foliora-admin.php:719
+msgid "Open Documents"
+msgstr ""
+
+#: includes/class-foliora-admin.php:723
+msgid "Upload a PDF to see a live preview of these defaults."
+msgstr ""
+
+#: includes/class-foliora-admin.php:724
+#: includes/class-foliora-admin.php:762
+msgid "Upload PDF"
+msgstr ""
+
+#: includes/class-foliora-admin.php:766
+msgid "PDFs already in the Media Library. Copy a shortcode to embed one with Foliora — files stay in Media, not in a separate library. Opening this screen generates first-page thumbnails, extracts PDF text for WordPress search, and checks whether each file is a tagged (accessible) PDF."
+msgstr ""
+
+#: includes/class-foliora-admin.php:768
+msgid "Generating thumbnails, indexing PDF text, and checking accessibility tags…"
+msgstr ""
+
+#: includes/class-foliora-admin.php:773
+#: includes/class-foliora-library.php:199
+msgid "Search documents"
+msgstr ""
+
+#: includes/class-foliora-admin.php:775
+#: includes/class-foliora-admin.php:816
+#: includes/class-foliora-library.php:207
+msgid "Search"
+msgstr ""
+
+#. translators: %s: number of untagged PDFs on this page.
+#: includes/class-foliora-admin.php:796
+#, php-format
+msgid "%s PDF on this page is not tagged. Screen readers may not follow the intended reading order. Export tagged PDFs from Word, InDesign, or Acrobat."
+msgid_plural "%s PDFs on this page are not tagged. Screen readers may not follow the intended reading order. Export tagged PDFs from Word, InDesign, or Acrobat."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-foliora-admin.php:814
+msgid "Preview"
+msgstr ""
+
+#: includes/class-foliora-admin.php:817
+msgid "Accessibility"
+msgstr ""
+
+#: includes/class-foliora-admin.php:818
+msgid "Size"
+msgstr ""
+
+#: includes/class-foliora-admin.php:819
+msgid "Uploaded"
+msgstr ""
+
+#: includes/class-foliora-admin.php:876
+msgid "Open file"
+msgstr ""
+
+#: includes/class-foliora-admin.php:885
+#: includes/class-foliora-admin.php:897
+msgid "Pending"
+msgstr ""
+
+#. translators: %s: number of PDFs
+#: includes/class-foliora-admin.php:921
+#, php-format
+msgid "%s document"
+msgid_plural "%s documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-foliora-admin.php:949
+#: includes/class-foliora-library.php:245
+msgid "No PDFs matched that search."
+msgstr ""
+
+#: includes/class-foliora-admin.php:950
+msgid "No PDFs in the Media Library yet."
+msgstr ""
+
+#: includes/class-foliora-admin.php:987
+msgid "Select a PDF first."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1007
+msgid "Foliora Test"
+msgstr ""
+
+#: includes/class-foliora-admin.php:1161
+msgid "Open EPUB files in the same embed, not just PDF."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1162
+msgid "Page-turn animation for a magazine-style read."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1163
+msgid "Logged-in readers can resume where they left off."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1164
+msgid "Light, sepia, and dark themes for long reading."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1165
+msgid "Password, expiry, and view-capped share URLs."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1166
+msgid "Limit documents to paying WooCommerce customers."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1167
+msgid "See which documents get opened and how far."
+msgstr ""
+
+#: includes/class-foliora-admin.php:1168
+msgid "Hide “Powered by Foliora” on the public viewer."
+msgstr ""
+
+#: includes/class-foliora-builders.php:100
+msgid "PDF"
+msgstr ""
+
+#: includes/class-foliora-builders.php:107
+msgid "PDF URL"
+msgstr ""
+
+#: includes/class-foliora-builders.php:109
+msgid "Paste a Media Library PDF URL, or copy one from Foliora → Documents."
+msgstr ""
+
+#: includes/class-foliora-builders.php:170
+msgid "Library"
+msgstr ""
+
+#: includes/class-foliora-library.php:205
+msgid "Search documents…"
+msgstr ""
+
+#: includes/class-foliora-library.php:231
+msgid "Previous"
+msgstr ""
+
+#: includes/class-foliora-library.php:232
+msgid "Next"
+msgstr ""
+
+#: includes/class-foliora-library.php:240
+msgid "Document library pages"
+msgstr ""
+
+#: includes/class-foliora-library.php:246
+msgid "No PDFs found."
+msgstr ""
+
+#: includes/class-foliora-loader.php:80
+msgid "EPUB reader mode"
+msgstr ""
+
+#: includes/class-foliora-loader.php:81
+msgid "3D WebGL flip effect"
+msgstr ""
+
+#: includes/class-foliora-loader.php:82
+msgid "Bookmarks & reading progress"
+msgstr ""
+
+#: includes/class-foliora-loader.php:83
+msgid "Font & theme customization"
+msgstr ""
+
+#: includes/class-foliora-loader.php:84
+msgid "Password-protected / expiring links"
+msgstr ""
+
+#: includes/class-foliora-loader.php:85
+msgid "WooCommerce paid-content gating"
+msgstr ""
+
+#: includes/class-foliora-loader.php:86
+msgid "Reading analytics"
+msgstr ""
+
+#: includes/class-foliora-loader.php:87
+msgid "Remove Foliora branding"
+msgstr ""
+
+#: includes/class-foliora-seo.php:72
+msgid "PDF text indexing is turned off."
+msgstr ""
+
+#: includes/class-foliora-thumbnails.php:71
+#: includes/class-foliora-thumbnails.php:76
+msgid "Invalid thumbnail data."
+msgstr ""
+
+#: includes/class-foliora-thumbnails.php:80
+msgid "Thumbnail is too large."
+msgstr ""
+
+#. translators: %s: PDF title.
+#: includes/class-foliora-thumbnails.php:105
+#, php-format
+msgid "Foliora thumbnail: %s"
+msgstr ""
+
+#: includes/class-foliora-thumbnails.php:117
+msgid "Could not save the thumbnail."
+msgstr ""
+
+#: includes/class-foliora-viewer.php:72
+msgid "Foliora: no file URL was provided. Use [foliora file=\"https://example.com/document.pdf\"]."
+msgstr ""
+
+#: includes/class-foliora-viewer.php:129
+msgid "Powered by Foliora"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:141
+#: includes/class-foliora-viewer.php:181
+msgid "PDF viewer"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:191
+msgid "Previous page"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:195
+msgid "Page"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:199
+msgid "Next page"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:204
+msgid "Zoom out"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:208
+msgid "Zoom in"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:214
+msgid "Rotate"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:221
+msgid "Find"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:221
+msgid "Find in document"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:223
+msgid "Previous match"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:226
+msgid "Next match"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:232
+msgid "Download"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:237
+msgid "Print"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:241
+msgid "Full screen"
+msgstr ""
+
+#: includes/class-foliora-viewer.php:246
+msgid "Keyboard: left and right arrows change page, plus and minus zoom, R rotates, Home and End jump to first or last page."
+msgstr ""
+
+#: includes/class-foliora-viewer.php:371
+msgid "is a Foliora Pro feature."
+msgstr ""
+
+#: includes/class-foliora-viewer.php:373
+msgid "Upgrade to unlock"
+msgstr ""
+
+#: assets/js/foliora-block.js:96
+msgid "Viewer Settings"
+msgstr ""
+
+#: assets/js/foliora-block.js:99
+msgid "CSS width, for example 100% or 720px."
+msgstr ""
+
+#: assets/js/foliora-block.js:106
+msgid "Height (px)"
+msgstr ""
+
+#: assets/js/foliora-block.js:117
+msgid "Optional caption above the viewer."
+msgstr ""
+
+#: assets/js/foliora-block.js:133
+msgid "Show download"
+msgstr ""
+
+#: assets/js/foliora-block.js:140
+msgid "Show print"
+msgstr ""
+
+#: assets/js/foliora-block.js:175
+msgid "Replace PDF"
+msgstr ""
+
+#: assets/js/foliora-block.js:194
+msgid "Select a PDF to preview the first page here. Visitors will see the full Foliora viewer."
+msgstr ""
+
+#: assets/js/foliora-library-block.js:32
+msgid "Library Settings"
+msgstr ""
+
+#: assets/js/foliora-library-block.js:43
+msgid "Documents per page"
+msgstr ""
+
+#: assets/js/foliora-library-block.js:57
+msgid "Last modified"
+msgstr ""
+
+#: assets/js/foliora-library-block.js:75
+msgid "Show search"
+msgstr ""
+
+#: blocks/library/block.json
+msgctxt "block title"
+msgid "Foliora Library"
+msgstr ""
+
+#: blocks/library/block.json
+msgctxt "block description"
+msgid "A browsable grid of PDFs from the Media Library."
+msgstr ""
+
+#: blocks/library/block.json
+#: blocks/viewer/block.json
+msgctxt "block keyword"
+msgid "pdf"
+msgstr ""
+
+#: blocks/library/block.json
+msgctxt "block keyword"
+msgid "library"
+msgstr ""
+
+#: blocks/library/block.json
+msgctxt "block keyword"
+msgid "gallery"
+msgstr ""
+
+#: blocks/library/block.json
+msgctxt "block keyword"
+msgid "documents"
+msgstr ""
+
+#: blocks/viewer/block.json
+msgctxt "block title"
+msgid "Foliora Viewer"
+msgstr ""
+
+#: blocks/viewer/block.json
+msgctxt "block description"
+msgid "Embed a PDF document with the Foliora viewer."
+msgstr ""
+
+#: blocks/viewer/block.json
+msgctxt "block keyword"
+msgid "document"
+msgstr ""
+
+#: blocks/viewer/block.json
+msgctxt "block keyword"
+msgid "viewer"
+msgstr ""
+
+#: blocks/viewer/block.json
+msgctxt "block keyword"
+msgid "ebook"
+msgstr ""

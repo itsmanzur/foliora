@@ -1,0 +1,8 @@
+This directory bundles PDF.js (pdf.min.js, pdf.worker.min.js) by Mozilla,
+version 3.11.174, distributed under the Apache License 2.0.
+
+Source: https://github.com/mozilla/pdf.js
+License: https://www.apache.org/licenses/LICENSE-2.0
+
+Bundled locally per WordPress.org plugin guidelines, which require plugins
+not to load executable code from third-party/remote servers.

@@ -1,0 +1,19 @@
+# Local / tooling — not part of the plugin runtime.
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+.cursor
+node_modules
+/vendor
+*.zip
+*.log
+phpunit.xml
+.phpunit.result.cache
+playwright-report
+test-results
+blob-report
+.playwright
+.wp-env.override.json
+wp-cli.phar
+composer.phar

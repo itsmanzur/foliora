@@ -1,0 +1,15 @@
+{
+	"name": "foliora",
+	"private": true,
+	"description": "Dev tooling for Foliora. Not shipped in the WP.org zip.",
+	"scripts": {
+		"wp-env": "wp-env",
+		"test:php": "phpunit",
+		"test:e2e": "playwright test",
+		"phpcs": "phpcs -n"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.49.0",
+		"@wordpress/env": "^10.17.0"
+	}
+}

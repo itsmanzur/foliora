@@ -1,0 +1,51 @@
+{
+    "translation-revision-date": "2026-09-24 10:55+0600",
+    "generator": "WP-CLI\/2.12.0",
+    "source": "assets\/js\/foliora-block.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "bn_BD",
+                "plural-forms": "nplurals=2; plural=(n != 1);"
+            },
+            "Title": [
+                "\u09b6\u09bf\u09b0\u09cb\u09a8\u09be\u09ae"
+            ],
+            "Start page": [
+                "\u09b6\u09c1\u09b0\u09c1\u09b0 \u09aa\u09be\u09a4\u09be"
+            ],
+            "Width": [
+                "\u09aa\u09cd\u09b0\u09b8\u09cd\u09a5"
+            ],
+            "Select PDF": [
+                "PDF \u09ac\u09c7\u099b\u09c7 \u09a8\u09bf\u09a8"
+            ],
+            "Viewer Settings": [
+                "\u09ad\u09bf\u0989\u09af\u09bc\u09be\u09b0 \u09b8\u09c7\u099f\u09bf\u0982\u09b8"
+            ],
+            "CSS width, for example 100% or 720px.": [
+                "CSS \u09aa\u09cd\u09b0\u09b8\u09cd\u09a5, \u09af\u09c7\u09ae\u09a8 100% \u09ac\u09be 720px\u0964"
+            ],
+            "Height (px)": [
+                "\u0989\u099a\u09cd\u099a\u09a4\u09be (px)"
+            ],
+            "Optional caption above the viewer.": [
+                "\u09ad\u09bf\u0989\u09af\u09bc\u09be\u09b0\u09c7\u09b0 \u0989\u09aa\u09b0\u09c7 \u0990\u099a\u09cd\u099b\u09bf\u0995 \u0995\u09cd\u09af\u09be\u09aa\u09b6\u09a8\u0964"
+            ],
+            "Show download": [
+                "\u09a1\u09be\u0989\u09a8\u09b2\u09cb\u09a1 \u09a6\u09c7\u0996\u09be\u09a8"
+            ],
+            "Show print": [
+                "\u09aa\u09cd\u09b0\u09bf\u09a8\u09cd\u099f \u09a6\u09c7\u0996\u09be\u09a8"
+            ],
+            "Replace PDF": [
+                "PDF \u09ac\u09a6\u09b2\u09be\u09a8"
+            ],
+            "Select a PDF to preview the first page here. Visitors will see the full Foliora viewer.": [
+                "\u098f\u0996\u09be\u09a8\u09c7 \u09aa\u09cd\u09b0\u09a5\u09ae \u09aa\u09be\u09a4\u09be\u09b0 \u09aa\u09cd\u09b0\u09bf\u09ad\u09bf\u0989 \u09a6\u09c7\u0996\u09a4\u09c7 \u098f\u0995\u099f\u09bf PDF \u09ac\u09c7\u099b\u09c7 \u09a8\u09bf\u09a8\u0964 \u09ad\u09bf\u099c\u09bf\u099f\u09b0\u09b0\u09be \u09aa\u09c1\u09b0\u09cb Foliora \u09ad\u09bf\u0989\u09af\u09bc\u09be\u09b0 \u09a6\u09c7\u0996\u09ac\u09c7\u0964"
+            ]
+        }
+    }
+}

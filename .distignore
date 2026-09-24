@@ -1,0 +1,36 @@
+# Files and folders excluded from a WordPress.org zip / SVN export.
+# Leading slashes are repo-root only so assets/vendor (bundled PDF.js) ships.
+
+.git
+.github
+.gitignore
+.distignore
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+.cursor
+.wp-env.json
+.wp-env.override.json
+node_modules
+package.json
+package-lock.json
+composer.json
+composer.lock
+phpcs.xml
+phpcs.xml.dist
+.phpcs.xml.dist
+phpunit.xml
+phpunit.xml.dist
+.phpunit.result.cache
+/vendor
+docs
+tests
+bin
+*.zip
+*.log
+wp-cli.phar
+composer.phar
+playwright.config.js
+playwright-report
+test-results

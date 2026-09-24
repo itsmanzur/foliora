@@ -1,0 +1,28 @@
+{
+	"name": "thereadscope/foliora",
+	"description": "Dev tooling for the Foliora WordPress plugin. Not shipped in the WP.org zip.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpunit/phpunit": "^9.6",
+		"yoast/phpunit-polyfills": "^2.0"
+	},
+	"scripts": {
+		"phpunit": "phpunit --configuration phpunit.xml.dist",
+		"phpcs": "phpcs -n --report=full"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"platform": {
+			"php": "7.4.33"
+		},
+		"sort-packages": true
+	}
+}
