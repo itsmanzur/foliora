@@ -129,16 +129,16 @@ class Foliora_Elementor_Viewer extends \Elementor\Widget_Base {
 			$file = $settings['file']['url'];
 		}
 
-		echo Foliora::instance()->viewer->render_shortcode( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- viewer HTML is escaped internally.
-			array(
-				'file'     => $file,
-				'width'    => isset( $settings['width'] ) ? $settings['width'] : '100%',
-				'height'   => isset( $settings['height'] ) ? $settings['height'] : '600px',
-				'page'     => isset( $settings['page'] ) ? $settings['page'] : 1,
-				'title'    => isset( $settings['title'] ) ? $settings['title'] : '',
-				'download' => ( ! isset( $settings['download'] ) || 'yes' === $settings['download'] ) ? 'true' : 'false',
-				'print'    => ( ! isset( $settings['print'] ) || 'yes' === $settings['print'] ) ? 'true' : 'false',
-			)
+		$atts = array(
+			'file'     => esc_url_raw( $file ),
+			'width'    => isset( $settings['width'] ) ? sanitize_text_field( (string) $settings['width'] ) : '100%',
+			'height'   => isset( $settings['height'] ) ? sanitize_text_field( (string) $settings['height'] ) : '600px',
+			'page'     => isset( $settings['page'] ) ? absint( $settings['page'] ) : 1,
+			'title'    => isset( $settings['title'] ) ? sanitize_text_field( (string) $settings['title'] ) : '',
+			'download' => ( ! isset( $settings['download'] ) || 'yes' === $settings['download'] ) ? 'true' : 'false',
+			'print'    => ( ! isset( $settings['print'] ) || 'yes' === $settings['print'] ) ? 'true' : 'false',
 		);
+
+		echo Foliora::instance()->viewer->render_shortcode( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- viewer HTML is escaped internally.
 	}
 }

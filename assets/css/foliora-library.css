@@ -177,10 +177,29 @@
 	.foliora-library-grid {
 		grid-template-columns: repeat(min(2, var(--foliora-cols, 3)), minmax(0, 1fr));
 	}
+
+	.foliora-library-search-submit {
+		min-height: 44px;
+		padding: 10px 16px;
+	}
+
+	.foliora-library-search input[type="search"] {
+		min-height: 44px;
+		font-size: 16px;
+	}
+
+	.foliora-library-card {
+		min-height: 44px;
+	}
 }
 
 @media (max-width: 480px) {
 	.foliora-library-grid {
 		grid-template-columns: 1fr;
+	}
+
+	.foliora-library-search {
+		flex-direction: column;
+		align-items: stretch;
 	}
 }

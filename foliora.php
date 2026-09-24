@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Foliora
  * Plugin URI:         https://thereadscope.com/foliora
- * Description:        A fast, accessible PDF &amp; eBook viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, and reading-progress features.
- * Version:            1.8.0
+ * Description:        A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.
+ * Version:            1.0.0
  * Requires at least:  6.0
  * Requires PHP:       7.4
  * Author:             The Read Scope
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * hard-coding paths/URLs, so the free/pro split and any future folder
  * reshuffle stay painless.
  */
-define( 'FOLIORA_VERSION', '1.8.0' );
+define( 'FOLIORA_VERSION', '1.0.0' );
 define( 'FOLIORA_FILE', __FILE__ );
 define( 'FOLIORA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FOLIORA_URL', plugin_dir_url( __FILE__ ) );
@@ -142,14 +142,24 @@ function foliora_deactivate() {
 register_deactivation_hook( FOLIORA_FILE, 'foliora_deactivate' );
 
 /**
+ * Point just-in-time translation loading at bundled /languages files
+ * without calling load_plugin_textdomain() (discouraged since WP 4.6).
+ * WordPress.org language packs in WP_LANG_DIR still take precedence.
+ */
+function foliora_register_textdomain_path() {
+	if ( ! isset( $GLOBALS['wp_textdomain_registry'] ) || ! is_object( $GLOBALS['wp_textdomain_registry'] ) ) {
+		return;
+	}
+	if ( method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
+		$GLOBALS['wp_textdomain_registry']->set_custom_path( 'foliora', FOLIORA_DIR . 'languages' );
+	}
+}
+add_action( 'plugins_loaded', 'foliora_register_textdomain_path', 1 );
+
+/**
  * Boot the plugin once all plugins are loaded, so Foliora Pro (if active)
  * has had a chance to register itself before we check for it.
  */
-function foliora_load_textdomain() {
-	load_plugin_textdomain( 'foliora', false, dirname( FOLIORA_BASENAME ) . '/languages' );
-}
-add_action( 'init', 'foliora_load_textdomain' );
-
 function foliora_run() {
 	Foliora::instance()->run();
 }

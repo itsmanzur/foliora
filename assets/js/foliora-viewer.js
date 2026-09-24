@@ -216,8 +216,20 @@
 		var pageLive = toolbar ? $( '.foliora-page-live', toolbar ) : null;
 		var shell = container.closest ? container.closest( '.foliora-shell' ) : container.parentNode;
 
-		function viewMode() {
+		function preferredView() {
 			return state.viewMode === 'scroll' || state.viewMode === 'spread' ? state.viewMode : 'page';
+		}
+
+		function isNarrow() {
+			return container.clientWidth > 0 && container.clientWidth < 640;
+		}
+
+		function viewMode() {
+			var mode = preferredView();
+			if ( mode === 'spread' && isNarrow() ) {
+				return 'page';
+			}
+			return mode;
 		}
 
 		function resumeKey() {
@@ -269,7 +281,7 @@
 		}
 
 		function viewLabel() {
-			var mode = viewMode();
+			var mode = preferredView();
 			if ( mode === 'scroll' ) {
 				return i18n.viewScroll || 'Continuous scroll';
 			}
@@ -286,7 +298,7 @@
 			var label = viewLabel();
 			viewBtn.setAttribute( 'title', label );
 			viewBtn.setAttribute( 'aria-label', label );
-			viewBtn.classList.toggle( 'is-active', viewMode() !== 'page' );
+			viewBtn.classList.toggle( 'is-active', preferredView() !== 'page' );
 		}
 
 		function updateFindStatus() {
@@ -748,6 +760,7 @@
 			if ( ! state.pdf ) {
 				return Promise.resolve();
 			}
+			container.classList.toggle( 'is-narrow', isNarrow() );
 			var mode = viewMode();
 			var expected = visibleNums();
 			if ( ! slotsMatch( expected ) ) {
@@ -875,7 +888,7 @@
 		}
 
 		function cycleView() {
-			var i = VIEW_MODES.indexOf( viewMode() );
+			var i = VIEW_MODES.indexOf( preferredView() );
 			var next = VIEW_MODES[ ( i + 1 ) % VIEW_MODES.length ];
 			state.viewMode = next;
 			container.setAttribute( 'data-view', next );
@@ -897,10 +910,43 @@
 			pagesEl.style.overflow = ( viewMode() === 'scroll' || state.fitMode === 'none' || state.tool === 'pan' ) ? 'auto' : 'hidden';
 		}
 
+		function isCoarsePointer() {
+			return !!( window.matchMedia && window.matchMedia( '(pointer: coarse)' ).matches );
+		}
+
+		function isFs() {
+			return !!( document.fullscreenElement || document.webkitFullscreenElement );
+		}
+
+		function requestFs( node ) {
+			var fn = node.requestFullscreen || node.webkitRequestFullscreen || node.msRequestFullscreen;
+			if ( ! fn ) {
+				return;
+			}
+			var req = fn.call( node );
+			if ( req && req.catch ) {
+				req.catch( function () {
+					return undefined;
+				} );
+			}
+		}
+
+		function exitFs() {
+			var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+			if ( fn ) {
+				fn.call( document );
+			}
+		}
+
 		function setPresentation( on ) {
 			state.presentation = !! on;
 			if ( shell ) {
 				shell.classList.toggle( 'is-present', state.presentation );
+				if ( ! state.presentation ) {
+					shell.classList.remove( 'is-present-show' );
+				} else if ( isCoarsePointer() ) {
+					shell.classList.add( 'is-present-show' );
+				}
 			}
 			if ( presentBtn ) {
 				presentBtn.classList.toggle( 'is-active', state.presentation );
@@ -908,16 +954,20 @@
 			}
 			var node = shell || container;
 			if ( state.presentation ) {
-				if ( ! document.fullscreenElement && node.requestFullscreen ) {
-					var req = node.requestFullscreen();
-					if ( req && req.catch ) {
-						req.catch( function () {
-							return undefined;
-						} );
-					}
+				if ( ! isFs() ) {
+					requestFs( node );
 				}
-			} else if ( document.fullscreenElement && document.exitFullscreen ) {
-				document.exitFullscreen();
+			} else if ( isFs() ) {
+				exitFs();
+			}
+		}
+
+		function toggleFullscreen() {
+			var node = shell || container;
+			if ( ! isFs() ) {
+				requestFs( node );
+			} else {
+				exitFs();
 			}
 		}
 
@@ -942,17 +992,6 @@
 				frame.document.close();
 			} catch ( err ) {
 				window.open( fileUrl, '_blank', 'noopener,noreferrer' );
-			}
-		}
-
-		function toggleFullscreen() {
-			var node = shell || container;
-			if ( ! document.fullscreenElement ) {
-				if ( node.requestFullscreen ) {
-					node.requestFullscreen();
-				}
-			} else if ( document.exitFullscreen ) {
-				document.exitFullscreen();
 			}
 		}
 
@@ -1404,6 +1443,30 @@
 				moreBtn.setAttribute( 'aria-expanded', toolbar.classList.contains( 'is-more-open' ) ? 'true' : 'false' );
 			} );
 		}
+		var presentTap = null;
+		if ( shell ) {
+			shell.addEventListener( 'pointerdown', function ( e ) {
+				if ( ! state.presentation ) {
+					return;
+				}
+				presentTap = { x: e.clientX, y: e.clientY };
+			} );
+			shell.addEventListener( 'pointerup', function ( e ) {
+				if ( ! state.presentation || ! presentTap ) {
+					return;
+				}
+				var dx = Math.abs( e.clientX - presentTap.x );
+				var dy = Math.abs( e.clientY - presentTap.y );
+				presentTap = null;
+				if ( dx > 12 || dy > 12 ) {
+					return;
+				}
+				if ( e.target && e.target.closest && e.target.closest( '.foliora-chrome, .foliora-side' ) ) {
+					return;
+				}
+				shell.classList.toggle( 'is-present-show' );
+			} );
+		}
 		if ( findInput ) {
 			findInput.addEventListener( 'keydown', function ( e ) {
 				if ( e.key === 'Enter' ) {
@@ -1541,8 +1604,9 @@
 					setPresentation( false );
 					return;
 				}
-				if ( document.fullscreenElement && document.exitFullscreen ) {
-					document.exitFullscreen();
+				if ( isFs() ) {
+					e.preventDefault();
+					exitFs();
 				}
 				return;
 			}
@@ -1597,11 +1661,12 @@
 			} ).observe( container );
 		}
 
-		document.addEventListener( 'fullscreenchange', function () {
-			if ( ! document.fullscreenElement && state.presentation ) {
+		function onFsChange() {
+			if ( ! isFs() && state.presentation ) {
 				state.presentation = false;
 				if ( shell ) {
 					shell.classList.remove( 'is-present' );
+					shell.classList.remove( 'is-present-show' );
 				}
 				if ( presentBtn ) {
 					presentBtn.classList.remove( 'is-active' );
@@ -1611,7 +1676,9 @@
 			if ( state.pdf ) {
 				renderCurrent();
 			}
-		} );
+		}
+		document.addEventListener( 'fullscreenchange', onFsChange );
+		document.addEventListener( 'webkitfullscreenchange', onFsChange );
 
 		var loadingTask = window.pdfjsLib.getDocument( {
 			url: fileUrl,

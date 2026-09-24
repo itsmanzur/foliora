@@ -338,13 +338,18 @@ class Foliora_SEO {
 
 		$found = array();
 		foreach ( $needles as $needle ) {
-			$like = '%' . $wpdb->esc_like( (string) $needle ) . '%';
-			$rows = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT 50",
-				$like
-			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-off LIKE lookup of posts embedding this PDF.
+			$like      = '%' . $wpdb->esc_like( (string) $needle ) . '%';
+			$cache_key = 'embed_posts_' . md5( $like );
+			$rows      = wp_cache_get( $cache_key, 'foliora' );
+			if ( false === $rows ) {
+				$rows = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- one-off LIKE lookup of posts embedding this PDF; cached in the foliora group.
+					$wpdb->prepare(
+						"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT 50",
+						$like
+					)
+				);
+				wp_cache_set( $cache_key, is_array( $rows ) ? $rows : array(), 'foliora' );
+			}
 			if ( is_array( $rows ) ) {
 				$found = array_merge( $found, $rows );
 			}
@@ -427,23 +432,34 @@ class Foliora_SEO {
 		}
 
 		global $wpdb;
-		$guid  = trailingslashit( $baseurl ) . $relative;
-		$found = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND guid = %s LIMIT 1",
-				$guid
-			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- fallback when attachment_url_to_postid misses.
+
+		$guid      = trailingslashit( $baseurl ) . $relative;
+		$cache_key = 'attach_guid_' . md5( $guid );
+		$found     = wp_cache_get( $cache_key, 'foliora' );
+		if ( false === $found ) {
+			$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- fallback when attachment_url_to_postid misses; cached in the foliora group.
+				$wpdb->prepare(
+					"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND guid = %s LIMIT 1",
+					$guid
+				)
+			);
+			wp_cache_set( $cache_key, $found, 'foliora' );
+		}
 		if ( $found ) {
 			return absint( $found );
 		}
 
-		$found = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s LIMIT 1",
-				$relative
-			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- fallback when attachment_url_to_postid misses.
+		$cache_key = 'attach_file_' . md5( $relative );
+		$found     = wp_cache_get( $cache_key, 'foliora' );
+		if ( false === $found ) {
+			$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- fallback when attachment_url_to_postid misses; cached in the foliora group.
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s LIMIT 1",
+					$relative
+				)
+			);
+			wp_cache_set( $cache_key, $found, 'foliora' );
+		}
 
 		return absint( $found );
 	}

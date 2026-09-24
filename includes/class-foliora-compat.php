@@ -99,13 +99,18 @@ class Foliora_Compat {
 			return 0;
 		}
 
-		global $wpdb;
-		$found = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s LIMIT 1",
-				$relative
-			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- fallback when attachment_url_to_postid misses.
+		$cache_key = 'attach_file_' . md5( $relative );
+		$found     = wp_cache_get( $cache_key, 'foliora' );
+		if ( false === $found ) {
+			global $wpdb;
+			$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- fallback when attachment_url_to_postid misses; cached in the foliora group.
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s LIMIT 1",
+					$relative
+				)
+			);
+			wp_cache_set( $cache_key, $found, 'foliora' );
+		}
 
 		return absint( $found );
 	}
@@ -122,7 +127,7 @@ class Foliora_Compat {
 		}
 
 		if ( has_filter( 'wpml_object_id' ) ) {
-			$translated = absint( apply_filters( 'wpml_object_id', $attachment_id, 'attachment', true ) );
+			$translated = absint( apply_filters( 'wpml_object_id', $attachment_id, 'attachment', true ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML public API.
 			if ( $translated ) {
 				$attachment_id = $translated;
 			}

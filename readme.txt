@@ -4,7 +4,7 @@ Tags: pdf, pdf viewer, ebook, document viewer, gutenberg
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.8.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,105 +140,15 @@ Foliora Pro (and any third-party add-on) extends the viewer through public WordP
 
 == Changelog ==
 
-= 1.8.0 =
-* Viewer: clickable PDF links (annotation layer), Find N of M, Ctrl/Cmd+F, and Page Up/Down.
-* Continuous scroll, two-page spread, hand/pan tool, Hi-DPI rendering on every page.
-* Guest last-page resume in the browser, and `#page=` updates as you read.
-* Compact mobile toolbar (More), loading percent, and presentation mode (fullscreen, chrome hides until hover).
-* Shortcode/block attributes `view` (`page` | `scroll` | `spread`) and `resume`.
-
-= 1.7.0 =
-* Documents warns when a PDF is not tagged (no accessibility structure for screen readers).
-* Bundled Bengali (bn_BD) translation.
-
-= 1.6.0 =
-* PHPUnit coverage for the loader, viewer, thumbnails, and document library.
-* GitHub Actions runs PHPCS (PHP 7.4 compatibility), Plugin Check, PHPUnit, and Playwright on every push.
-* Playwright E2E for the viewer, library grid, and Documents first-page thumbnail generation.
-
-= 1.5.0 =
-* Native Elementor, Divi, and Beaver Builder widgets for the viewer and document library.
-* WPML / Polylang: serve the translated Media Library PDF for the current language.
-* Exclude viewer JS from WP Rocket, W3 Total Cache, Autoptimize, LiteSpeed, and SiteGround minify/combine/delay.
-
-= 1.4.0 =
-* Site search indexes text inside embedded PDFs (extracted once from Foliora → Documents).
-* Open Graph / Twitter cards use the PDF first-page thumbnail when a page is shared.
-* Settings toggles for PDF search indexing and social preview.
-
-= 1.3.0 =
-* Viewer: start page, title caption, rotate, fit-width, #page= deep links, and hide download/print.
-* Library search on [foliora_library] and the Foliora Library block.
-
-= 1.2.4 =
-* Dashboard polish: ink hero, document stage, cover picker, click-to-copy, and drag-and-drop PDFs.
-
-= 1.2.3 =
-* Cleaner, more interactive dashboard: compact metrics, recent-PDF picker, and a collapsible Pro list.
-
-= 1.2.2 =
-* Developer hooks reference (`docs/HOOKS.md`) and filters to override viewer attributes or wrap rendered HTML.
-
-= 1.2.1 =
-* WordPress.org Plugin Check compliance: translators comments, block apiVersion 3, Tested up to 7.1.
-
-= 1.2.0 =
-* New [foliora_library] shortcode and Foliora Library block: a grid of Media Library PDFs.
-* Persistent first-page thumbnails, generated once from Foliora → Documents.
-
-= 1.1.0 =
-* Password-protected PDFs unlock with an inline prompt (no page reload).
-* Table of contents sidebar from the PDF outline, hidden when none exists.
-* Lazy page-thumbnail rail for jumping between pages.
-* Swipe to change page and pinch to zoom on touch devices.
-
-= 1.0.4 =
-* Gutenberg block uses wp.blockEditor, block.json, and a first-page PDF preview.
-* Modest “Powered by Foliora” credit (removable with Foliora Pro).
-* Viewer accessibility: live page status, Home/End, Escape to leave fullscreen.
-* Activation redirect and a dismissible dashboard welcome.
-
-= 1.0.3 =
-* Documents library under Foliora → Documents.
-* Live viewer preview on the settings screen.
-
-= 1.0.2 =
-* Tighter toolbar so controls stay on one row without a horizontal scrollbar.
-
-= 1.0.1 =
-* Unified viewer chrome, icon toolbar, and fit-page scaling.
-
 = 1.0.0 =
-* Initial release: PDF viewer, shortcode, Gutenberg block, Pro feature scaffolding.
+* Initial release: PDF viewer with bundled PDF.js, shortcode, and Gutenberg block.
+* Page, continuous scroll, and two-page spread; zoom, rotate, find, print, download, fullscreen, and presentation mode.
+* Compact mobile toolbar, guest last-page resume, `#page=` deep links, and password-protected PDFs.
+* Documents library, `[foliora_library]` grid, first-page thumbnails, and site search inside PDFs.
+* Elementor, Divi, and Beaver Builder widgets; WPML / Polylang PDF swapping; Bengali (bn_BD) translation.
+* Public hooks so Foliora Pro (and other add-ons) can extend the viewer without modifying this plugin.
 
 == Upgrade Notice ==
 
-= 1.8.0 =
-No breaking changes. The free reader gains scroll/spread views, find counts, annotation links, last-page resume, and presentation mode. Optional shortcode attributes: view and resume.
-
-= 1.7.0 =
-No breaking changes. Documents now flags untagged PDFs, and a Bengali translation is bundled. Open Foliora → Documents once to scan existing files.
-
-= 1.6.0 =
-No breaking changes. Adds automated PHPUnit, Plugin Check, and Playwright coverage for contributors.
-
-= 1.5.0 =
-Adds Elementor/Divi/Beaver widgets, WPML/Polylang PDF swapping, and cache-plugin exclusions for PDF.js.
-
-= 1.4.0 =
-WordPress search can now find text inside embedded PDFs, and shared pages can show the PDF cover as the preview image. Open Foliora → Documents once to index existing files.
-
-= 1.3.0 =
-New free viewer controls: start page, rotate, fit width, captions, and optional download/print. Library grids gain search.
-
-= 1.2.4 =
-No breaking changes. The dashboard is more visual: pick a cover, copy the shortcode, or drop a PDF.
-
-= 1.2.3 =
-No breaking changes. Dashboard layout is tighter and the shortcode builder can pick a recent PDF.
-
-= 1.2.2 =
-No breaking changes. Adds documented developer filters for viewer attributes and HTML.
-
-= 1.2.1 =
-No breaking changes. WordPress 7.1 compatibility and Plugin Check fixes only.
+= 1.0.0 =
+Initial release.

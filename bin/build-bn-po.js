@@ -10,7 +10,7 @@ const pot = fs.readFileSync( path.join( root, 'languages', 'foliora.pot' ), 'utf
 const t = {
 	'Foliora': 'Foliora',
 	'https://thereadscope.com/foliora': 'https://thereadscope.com/foliora',
-	'A fast, accessible PDF &amp; eBook viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, and reading-progress features.': 'ওয়ার্ডপ্রেসের জন্য একটি দ্রুত, অ্যাকসেসিবল PDF ও ই-বুক ভিউয়ার। বান্ডেল করা PDF.js রেন্ডারিং, শর্টকোড ও ব্লক এমবেড, আর EPUB, বুকমার্ক ও রিডিং-প্রগ্রেসের জন্য Foliora Pro-তে আপগ্রেডের সহজ পথ।',
+	'A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.': 'ওয়ার্ডপ্রেসের জন্য একটি দ্রুত, অ্যাকসেসিবল PDF ভিউয়ার। বান্ডেল করা PDF.js রেন্ডারিং, শর্টকোড ও ব্লক এমবেড, আর EPUB, বুকমার্ক, রিডিং প্রগ্রেস ও প্রটেক্টেড লিংকের জন্য Foliora Pro-তে আপগ্রেডের সহজ পথ।',
 	'The Read Scope': 'The Read Scope',
 	'https://thereadscope.com': 'https://thereadscope.com',
 	'Foliora Library': 'Foliora লাইব্রেরি',
@@ -276,7 +276,7 @@ const header = `# Copyright (C) 2026 The Read Scope
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Foliora 1.7.0\\n"
+"Project-Id-Version: Foliora 1.0.0\\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/foliora\\n"
 "POT-Creation-Date: 2026-09-24T04:54:10+00:00\\n"
 "PO-Revision-Date: 2026-09-24 10:55+0600\\n"

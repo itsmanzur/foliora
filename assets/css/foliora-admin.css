@@ -924,6 +924,11 @@ a.foliora-metric:focus {
 		width: 64px;
 		height: 86px;
 	}
+
+	.foliora-setup-actions .button,
+	#foliora-copy-shortcode {
+		min-height: 44px;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

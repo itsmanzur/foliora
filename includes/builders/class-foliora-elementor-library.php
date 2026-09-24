@@ -111,15 +111,14 @@ class Foliora_Elementor_Library extends \Elementor\Widget_Base {
 
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-
-		echo Foliora::instance()->library->render_shortcode( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- library HTML is escaped internally.
-			array(
-				'columns'  => isset( $settings['columns'] ) ? $settings['columns'] : '3',
-				'per_page' => isset( $settings['per_page'] ) ? $settings['per_page'] : '12',
-				'orderby'  => isset( $settings['orderby'] ) ? $settings['orderby'] : 'date',
-				'order'    => isset( $settings['order'] ) ? $settings['order'] : 'DESC',
-				'search'   => ( ! isset( $settings['search'] ) || 'yes' === $settings['search'] ) ? 'true' : 'false',
-			)
+		$atts     = array(
+			'columns'  => isset( $settings['columns'] ) ? sanitize_text_field( (string) $settings['columns'] ) : '3',
+			'per_page' => isset( $settings['per_page'] ) ? absint( $settings['per_page'] ) : 12,
+			'orderby'  => isset( $settings['orderby'] ) ? sanitize_key( $settings['orderby'] ) : 'date',
+			'order'    => isset( $settings['order'] ) ? sanitize_key( $settings['order'] ) : 'DESC',
+			'search'   => ( ! isset( $settings['search'] ) || 'yes' === $settings['search'] ) ? 'true' : 'false',
 		);
+
+		echo Foliora::instance()->library->render_shortcode( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- library HTML is escaped internally.
 	}
 }

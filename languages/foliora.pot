@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Foliora 1.7.0\n"
+"Project-Id-Version: Foliora 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/foliora\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 
 #. Description of the plugin
 #: foliora.php
-msgid "A fast, accessible PDF &amp; eBook viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, and reading-progress features."
+msgid "A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links."
 msgstr ""
 
 #. Author of the plugin
