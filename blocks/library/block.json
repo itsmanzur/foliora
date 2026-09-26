@@ -21,6 +21,10 @@
 			"type": "string",
 			"default": "date"
 		},
+		"order": {
+			"type": "string",
+			"default": "DESC"
+		},
 		"search": {
 			"type": "boolean",
 			"default": true

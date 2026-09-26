@@ -246,6 +246,77 @@ class Foliora_Admin {
 			'foliora_general'
 		);
 
+		add_settings_field(
+			'default_theme',
+			__( 'Default theme', 'foliora' ),
+			array( $this, 'field_default_theme' ),
+			self::PAGE_SLUG,
+			'foliora_general'
+		);
+
+		add_settings_field(
+			'lazy_loading',
+			__( 'Lazy loading', 'foliora' ),
+			array( $this, 'field_lazy_loading' ),
+			self::PAGE_SLUG,
+			'foliora_general'
+		);
+
+		add_settings_section(
+			'foliora_toolbar',
+			__( 'Toolbar Controls', 'foliora' ),
+			array( $this, 'section_toolbar' ),
+			self::PAGE_SLUG
+		);
+
+		add_settings_field(
+			'allow_search',
+			__( 'Search in document', 'foliora' ),
+			array( $this, 'field_allow_search' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
+		add_settings_field(
+			'allow_theme',
+			__( 'Theme switcher', 'foliora' ),
+			array( $this, 'field_allow_theme' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
+		add_settings_field(
+			'allow_share',
+			__( 'Share button', 'foliora' ),
+			array( $this, 'field_allow_share' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
+		add_settings_field(
+			'allow_shortcuts',
+			__( 'Keyboard shortcuts guide', 'foliora' ),
+			array( $this, 'field_allow_shortcuts' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
+		add_settings_field(
+			'allow_fullscreen',
+			__( 'Full screen button', 'foliora' ),
+			array( $this, 'field_allow_fullscreen' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
+		add_settings_field(
+			'allow_presentation',
+			__( 'Presentation button', 'foliora' ),
+			array( $this, 'field_allow_presentation' ),
+			self::PAGE_SLUG,
+			'foliora_toolbar'
+		);
+
 		add_settings_section(
 			'foliora_discover',
 			__( 'Search and sharing', 'foliora' ),
@@ -299,15 +370,122 @@ class Foliora_Admin {
 
 		$form = array_key_exists( 'default_width', $input );
 
+		$valid_themes = array( 'light', 'dark', 'sepia' );
+		$theme = isset( $input['default_theme'] ) && in_array( $input['default_theme'], $valid_themes, true )
+			? $input['default_theme']
+			: ( $existing['default_theme'] ?? 'light' );
+
 		return array(
 			'default_width'          => isset( $input['default_width'] ) ? sanitize_text_field( $input['default_width'] ) : ( $existing['default_width'] ?? '100%' ),
 			'default_height'         => isset( $input['default_height'] ) ? sanitize_text_field( $input['default_height'] ) : ( $existing['default_height'] ?? '600px' ),
+			'default_theme'          => $theme,
+			'lazy_loading'           => $form ? ! empty( $input['lazy_loading'] ) : ( $existing['lazy_loading'] ?? false ),
 			'allow_download'         => $form ? ! empty( $input['allow_download'] ) : ( $existing['allow_download'] ?? true ),
 			'allow_print'            => $form ? ! empty( $input['allow_print'] ) : ( $existing['allow_print'] ?? true ),
+			'allow_search'           => $form ? ! empty( $input['allow_search'] ) : ( $existing['allow_search'] ?? true ),
+			'allow_theme'            => $form ? ! empty( $input['allow_theme'] ) : ( $existing['allow_theme'] ?? true ),
+			'allow_share'            => $form ? ! empty( $input['allow_share'] ) : ( $existing['allow_share'] ?? true ),
+			'allow_shortcuts'        => $form ? ! empty( $input['allow_shortcuts'] ) : ( $existing['allow_shortcuts'] ?? true ),
+			'allow_fullscreen'       => $form ? ! empty( $input['allow_fullscreen'] ) : ( $existing['allow_fullscreen'] ?? true ),
+			'allow_presentation'     => $form ? ! empty( $input['allow_presentation'] ) : ( $existing['allow_presentation'] ?? true ),
 			'index_pdf_text'         => $form ? ! empty( $input['index_pdf_text'] ) : ( $existing['index_pdf_text'] ?? true ),
 			'social_preview'         => $form ? ! empty( $input['social_preview'] ) : ( $existing['social_preview'] ?? true ),
 			'check_pdf_a11y'         => $form ? ! empty( $input['check_pdf_a11y'] ) : ( $existing['check_pdf_a11y'] ?? true ),
 			'setup_copied_shortcode' => $copied,
+		);
+	}
+
+	public function section_toolbar() {
+		echo '<p class="description">' . esc_html__( 'Enable or disable specific buttons across all embedded PDF viewers. Individual embeds can also customize controls via the "hide" attribute.', 'foliora' ) . '</p>';
+	}
+
+	public function field_default_theme() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$current  = $settings['default_theme'] ?? 'light';
+		?>
+		<select name="<?php echo esc_attr( self::OPTION_NAME ); ?>[default_theme]" id="foliora-default-theme">
+			<option value="light" <?php selected( $current, 'light' ); ?>><?php esc_html_e( 'Light (Default)', 'foliora' ); ?></option>
+			<option value="dark" <?php selected( $current, 'dark' ); ?>><?php esc_html_e( 'Dark', 'foliora' ); ?></option>
+			<option value="sepia" <?php selected( $current, 'sepia' ); ?>><?php esc_html_e( 'Sepia (Warm)', 'foliora' ); ?></option>
+		</select>
+		<p class="description"><?php esc_html_e( 'Default reader color scheme for visitors.', 'foliora' ); ?></p>
+		<?php
+	}
+
+	public function field_lazy_loading() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! empty( $settings['lazy_loading'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[lazy_loading]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Only load PDF documents when they scroll into the visitor viewport (faster initial page load).', 'foliora' )
+		);
+	}
+
+	public function field_allow_search() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_search'] ) || ! empty( $settings['allow_search'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_search]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the search/find input on the toolbar (or hide via hide="search").', 'foliora' )
+		);
+	}
+
+	public function field_allow_theme() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_theme'] ) || ! empty( $settings['allow_theme'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_theme]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the Dark / Light / Sepia theme toggle button.', 'foliora' )
+		);
+	}
+
+	public function field_allow_share() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_share'] ) || ! empty( $settings['allow_share'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_share]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the share and copy page link button.', 'foliora' )
+		);
+	}
+
+	public function field_allow_shortcuts() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_shortcuts'] ) || ! empty( $settings['allow_shortcuts'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_shortcuts]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the keyboard shortcuts guide button (?) and enable keyboard navigation.', 'foliora' )
+		);
+	}
+
+	public function field_allow_fullscreen() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_fullscreen'] ) || ! empty( $settings['allow_fullscreen'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_fullscreen]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the full screen toggle button.', 'foliora' )
+		);
+	}
+
+	public function field_allow_presentation() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['allow_presentation'] ) || ! empty( $settings['allow_presentation'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[allow_presentation]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Show the distraction-free presentation mode button.', 'foliora' )
 		);
 	}
 
@@ -975,13 +1153,17 @@ class Foliora_Admin {
 		$existing = get_page_by_path( 'foliora-test' );
 
 		if ( $existing ) {
-			wp_update_post(
+			$result = wp_update_post(
 				array(
 					'ID'           => $existing->ID,
 					'post_content' => $content,
 					'post_status'  => 'publish',
-				)
+				),
+				true
 			);
+			if ( is_wp_error( $result ) || ! $result ) {
+				wp_send_json_error( array( 'message' => is_wp_error( $result ) ? $result->get_error_message() : __( 'Could not update the test page.', 'foliora' ) ) );
+			}
 			$page_id = $existing->ID;
 		} else {
 			$page_id = wp_insert_post(

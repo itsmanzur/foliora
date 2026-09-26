@@ -91,6 +91,10 @@ require_once FOLIORA_DIR . 'includes/class-foliora-block.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-admin.php';
 require_once FOLIORA_DIR . 'includes/class-foliora.php';
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once FOLIORA_DIR . 'includes/class-foliora-cli.php';
+}
+
 /**
  * Activation hook: create default options, flush rewrite rules if we ever
  * add custom endpoints, etc.

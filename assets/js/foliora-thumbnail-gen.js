@@ -223,7 +223,11 @@
 		img.alt = alt || '';
 		img.className = 'foliora-docs-thumb-img';
 		img.loading = 'lazy';
-		placeholder.replaceWith( img );
+		if ( typeof placeholder.replaceWith === 'function' ) {
+			placeholder.replaceWith( img );
+		} else if ( placeholder.parentNode ) {
+			placeholder.parentNode.replaceChild( img, placeholder );
+		}
 	}
 
 	function markIndexed( job, empty ) {

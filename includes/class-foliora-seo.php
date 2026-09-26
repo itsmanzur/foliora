@@ -164,7 +164,7 @@ class Foliora_SEO {
 		}
 
 		global $wpdb;
-		$pattern = '/\(' . preg_quote( $wpdb->posts, '/' ) . '\.post_content LIKE (\'[^\']+\')\)/';
+		$pattern = '/\(' . preg_quote( $wpdb->posts, '/' ) . '\.post_content LIKE (\'(?:[^\'\\\\]|\\\\.)*\')\)/';
 		$replaced = preg_replace(
 			$pattern,
 			'($0 OR (foliora_search_idx.meta_value LIKE $1))',
@@ -283,7 +283,7 @@ class Foliora_SEO {
 			return;
 		}
 
-		$ids  = $this->find_pdf_ids_in_content( $content );
+		$ids  = $this->find_pdf_ids_for_post( $post_id, $content );
 		$blob = '';
 		foreach ( $ids as $pdf_id ) {
 			$piece = self::get_extracted_text( $pdf_id );
@@ -340,11 +340,11 @@ class Foliora_SEO {
 		foreach ( $needles as $needle ) {
 			$like = '%' . $wpdb->esc_like( (string) $needle ) . '%';
 			$rows = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT 50",
-				$like
-			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-off LIKE lookup of posts embedding this PDF.
+				$wpdb->prepare(
+					"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT 50",
+					$like
+				)
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-off LIKE lookup of posts embedding this PDF.
 			if ( is_array( $rows ) ) {
 				$found = array_merge( $found, $rows );
 			}
@@ -360,30 +360,26 @@ class Foliora_SEO {
 	}
 
 	/**
+	 * Find PDF attachment IDs embedded in post content or page builder metadata.
+	 *
+	 * @param int    $post_id Post ID.
 	 * @param string $content Post content.
 	 * @return int[]
 	 */
-	private function find_pdf_ids_in_content( $content ) {
-		$urls = array();
+	private function find_pdf_ids_for_post( $post_id, $content = '' ) {
+		$urls = $this->extract_urls_from_content( $content );
 
-		if ( function_exists( 'has_shortcode' ) && has_shortcode( $content, 'foliora' ) ) {
-			$pattern = get_shortcode_regex( array( 'foliora' ) );
-			if ( preg_match_all( '/' . $pattern . '/s', $content, $matches, PREG_SET_ORDER ) ) {
-				foreach ( $matches as $shortcode ) {
-					$atts = shortcode_parse_atts( $shortcode[3] );
-					if ( is_array( $atts ) && ! empty( $atts['file'] ) && is_string( $atts['file'] ) ) {
-						$urls[] = $atts['file'];
-					}
-				}
+		if ( $post_id ) {
+			// Elementor builder support.
+			$elementor_data = get_post_meta( $post_id, '_elementor_data', true );
+			if ( is_string( $elementor_data ) && '' !== $elementor_data ) {
+				$urls = array_merge( $urls, $this->extract_urls_from_elementor( $elementor_data ) );
 			}
-		}
 
-		if ( preg_match_all( '/<!--\s+wp:foliora\/viewer\s+(\{.*?\})\s+\/?-->/s', $content, $blocks ) ) {
-			foreach ( $blocks[1] as $json ) {
-				$data = json_decode( $json, true );
-				if ( is_array( $data ) && ! empty( $data['file'] ) && is_string( $data['file'] ) ) {
-					$urls[] = $data['file'];
-				}
+			// Beaver Builder support.
+			$beaver_data = get_post_meta( $post_id, '_fl_builder_data', true );
+			if ( is_array( $beaver_data ) || is_object( $beaver_data ) ) {
+				$urls = array_merge( $urls, $this->extract_urls_from_beaver( $beaver_data ) );
 			}
 		}
 
@@ -396,6 +392,144 @@ class Foliora_SEO {
 		}
 
 		return array_values( array_unique( $ids ) );
+	}
+
+	/**
+	 * @param string $content Post content.
+	 * @return int[]
+	 */
+	private function find_pdf_ids_in_content( $content ) {
+		return $this->find_pdf_ids_for_post( 0, $content );
+	}
+
+	/**
+	 * Extract PDF URLs from post_content (shortcodes + Gutenberg blocks).
+	 *
+	 * @param string $content
+	 * @return string[]
+	 */
+	private function extract_urls_from_content( $content ) {
+		if ( ! is_string( $content ) || '' === $content ) {
+			return array();
+		}
+
+		$urls = array();
+
+		// Check shortcodes: [foliora] and [foliora_viewer].
+		$shortcode_tags = array( 'foliora', 'foliora_viewer' );
+		foreach ( $shortcode_tags as $tag ) {
+			if ( function_exists( 'has_shortcode' ) && has_shortcode( $content, $tag ) ) {
+				$pattern = get_shortcode_regex( array( $tag ) );
+				if ( preg_match_all( '/' . $pattern . '/s', $content, $matches, PREG_SET_ORDER ) ) {
+					foreach ( $matches as $shortcode ) {
+						$atts = shortcode_parse_atts( $shortcode[3] );
+						if ( is_array( $atts ) && ! empty( $atts['file'] ) && is_string( $atts['file'] ) ) {
+							$urls[] = $atts['file'];
+						}
+					}
+				}
+			}
+		}
+
+		// Check Gutenberg blocks with parse_blocks if available.
+		if ( function_exists( 'parse_blocks' ) && has_block( 'foliora/viewer', $content ) ) {
+			$blocks = parse_blocks( $content );
+			$this->extract_block_urls( $blocks, $urls );
+		} else {
+			// Fallback regex for block comments.
+			if ( preg_match_all( '/<!--\s+wp:foliora\/viewer\s+(\{.*?\})\s+\/?-->/s', $content, $blocks ) ) {
+				foreach ( $blocks[1] as $json ) {
+					$data = json_decode( $json, true );
+					if ( is_array( $data ) && ! empty( $data['file'] ) && is_string( $data['file'] ) ) {
+						$urls[] = $data['file'];
+					}
+				}
+			}
+		}
+
+		return $urls;
+	}
+
+	/**
+	 * Recursively extract file URLs from parsed Gutenberg blocks.
+	 *
+	 * @param array    $blocks Parsed blocks.
+	 * @param string[] $urls   Collected URLs.
+	 */
+	private function extract_block_urls( $blocks, &$urls ) {
+		if ( ! is_array( $blocks ) ) {
+			return;
+		}
+		foreach ( $blocks as $block ) {
+			if ( isset( $block['blockName'] ) && 'foliora/viewer' === $block['blockName'] ) {
+				if ( ! empty( $block['attrs']['file'] ) && is_string( $block['attrs']['file'] ) ) {
+					$urls[] = $block['attrs']['file'];
+				}
+			}
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$this->extract_block_urls( $block['innerBlocks'], $urls );
+			}
+		}
+	}
+
+	/**
+	 * Extract PDF URLs from Elementor data JSON.
+	 *
+	 * @param string $elementor_json
+	 * @return string[]
+	 */
+	private function extract_urls_from_elementor( $elementor_json ) {
+		$data = json_decode( $elementor_json, true );
+		if ( ! is_array( $data ) ) {
+			return array();
+		}
+		$urls = array();
+		$this->walk_elementor_elements( $data, $urls );
+		return $urls;
+	}
+
+	/**
+	 * Walk Elementor elements array.
+	 *
+	 * @param array    $elements
+	 * @param string[] $urls
+	 */
+	private function walk_elementor_elements( $elements, &$urls ) {
+		if ( ! is_array( $elements ) ) {
+			return;
+		}
+		foreach ( $elements as $element ) {
+			if ( isset( $element['widgetType'] ) && 'foliora-viewer' === $element['widgetType'] ) {
+				if ( ! empty( $element['settings']['file']['url'] ) ) {
+					$urls[] = (string) $element['settings']['file']['url'];
+				}
+			}
+			if ( ! empty( $element['elements'] ) && is_array( $element['elements'] ) ) {
+				$this->walk_elementor_elements( $element['elements'], $urls );
+			}
+		}
+	}
+
+	/**
+	 * Extract PDF URLs from Beaver Builder data.
+	 *
+	 * @param array|object $beaver_data
+	 * @return string[]
+	 */
+	private function extract_urls_from_beaver( $beaver_data ) {
+		$urls = array();
+		$nodes = is_object( $beaver_data ) ? (array) $beaver_data : $beaver_data;
+		if ( ! is_array( $nodes ) ) {
+			return $urls;
+		}
+		foreach ( $nodes as $node ) {
+			if ( is_object( $node ) && isset( $node->type ) && 'module' === $node->type && isset( $node->settings->file ) ) {
+				if ( ! empty( $node->settings->file ) && is_string( $node->settings->file ) ) {
+					$urls[] = $node->settings->file;
+				}
+			}
+		}
+		return $urls;
 	}
 
 	/**
@@ -461,7 +595,7 @@ class Foliora_SEO {
 			return (string) Foliora_Thumbnails::get_thumbnail_url( $post->ID, 'large' );
 		}
 
-		$ids = $this->find_pdf_ids_in_content( $post->post_content );
+		$ids = $this->find_pdf_ids_for_post( $post->ID, $post->post_content );
 		if ( empty( $ids ) ) {
 			return '';
 		}
@@ -489,7 +623,7 @@ class Foliora_SEO {
 		if ( ! $post instanceof WP_Post ) {
 			return '';
 		}
-		$ids = $this->find_pdf_ids_in_content( $post->post_content );
+		$ids = $this->find_pdf_ids_for_post( $post->ID, $post->post_content );
 		if ( empty( $ids ) && 'attachment' === $post->post_type ) {
 			$ids = array( (int) $post->ID );
 		}
@@ -516,7 +650,7 @@ class Foliora_SEO {
 		if ( 'attachment' === $post->post_type ) {
 			$pdf_id = (int) $post->ID;
 		} else {
-			$ids = $this->find_pdf_ids_in_content( $post->post_content );
+			$ids = $this->find_pdf_ids_for_post( $post->ID, $post->post_content );
 			$pdf_id = empty( $ids ) ? 0 : (int) $ids[0];
 		}
 		$thumb_id = Foliora_Thumbnails::get_thumbnail_id( $pdf_id );

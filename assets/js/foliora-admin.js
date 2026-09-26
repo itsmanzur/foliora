@@ -113,10 +113,40 @@
 				onCopied();
 			}
 		};
-		if ( navigator.clipboard && navigator.clipboard.writeText ) {
-			navigator.clipboard.writeText( text ).then( done ).catch( done );
-		} else {
+
+		var fallbackCopy = function () {
+			try {
+				var textarea = document.createElement( 'textarea' );
+				textarea.value = text;
+				textarea.setAttribute( 'readonly', '' );
+				textarea.style.position = 'fixed';
+				textarea.style.left = '-9999px';
+				textarea.style.top = '0';
+				textarea.style.opacity = '0';
+				document.body.appendChild( textarea );
+				textarea.focus();
+				textarea.select();
+				var successful = document.execCommand( 'copy' );
+				document.body.removeChild( textarea );
+				if ( successful ) {
+					done();
+					return;
+				}
+			} catch ( err ) {
+				// Fallback failed.
+			}
 			done();
+		};
+
+		if ( window.isSecureContext && navigator.clipboard && typeof navigator.clipboard.writeText === 'function' ) {
+			navigator.clipboard
+				.writeText( text )
+				.then( done )
+				.catch( function () {
+					fallbackCopy();
+				} );
+		} else {
+			fallbackCopy();
 		}
 	}
 
@@ -499,6 +529,11 @@
 			button.addEventListener( 'click', function ( e ) {
 				e.preventDefault();
 				copyText( button.getAttribute( 'data-foliora-copy' ) || '', button, markCopiedStep );
+			} );
+		} );
+		$$( '.foliora-docs-shortcode' ).forEach( function ( input ) {
+			input.addEventListener( 'click', function () {
+				input.select();
 			} );
 		} );
 	}

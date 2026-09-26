@@ -55,8 +55,31 @@
 		return count;
 	}
 
+	function clearChildren( el ) {
+		if ( ! el ) {
+			return;
+		}
+		if ( typeof el.replaceChildren === 'function' ) {
+			el.replaceChildren();
+		} else {
+			while ( el.firstChild ) {
+				el.removeChild( el.firstChild );
+			}
+		}
+	}
+
+	function setChildren( el, child ) {
+		if ( ! el ) {
+			return;
+		}
+		clearChildren( el );
+		if ( child ) {
+			el.appendChild( child );
+		}
+	}
+
 	function renderTextLayer( page, viewport, layerEl ) {
-		layerEl.replaceChildren();
+		clearChildren( layerEl );
 		layerEl.style.setProperty( '--scale-factor', String( viewport.scale ) );
 		layerEl.style.width = viewport.width + 'px';
 		layerEl.style.height = viewport.height + 'px';
@@ -194,6 +217,9 @@
 				thumbsBtn.setAttribute( 'aria-controls', thumbsPanel.id );
 			}
 		}
+		var themeToggleBtn = toolbar ? $( '.foliora-theme-toggle', toolbar ) : null;
+		var shareBtn = toolbar ? $( '.foliora-share-btn', toolbar ) : null;
+		var shortcutsBtn = toolbar ? $( '.foliora-shortcuts-btn', toolbar ) : null;
 		var prevBtn = toolbar ? $( '.foliora-prev', toolbar ) : null;
 		var nextBtn = toolbar ? $( '.foliora-next', toolbar ) : null;
 		var pageInput = toolbar ? $( '.foliora-page-input', toolbar ) : null;
@@ -215,6 +241,146 @@
 		var findStatus = toolbar ? $( '.foliora-find-status', toolbar ) : null;
 		var pageLive = toolbar ? $( '.foliora-page-live', toolbar ) : null;
 		var shell = container.closest ? container.closest( '.foliora-shell' ) : container.parentNode;
+
+		var shortcutsModal = shell ? $( '.foliora-shortcuts-modal', shell ) : null;
+		var shareModal = shell ? $( '.foliora-share-modal', shell ) : null;
+		var shareInput = shareModal ? $( '.foliora-share-input', shareModal ) : null;
+		var shareCopyBtn = shareModal ? $( '.foliora-share-copy', shareModal ) : null;
+		var sharePageCheck = shareModal ? $( '.foliora-share-page-check', shareModal ) : null;
+		var shareCurrPage = shareModal ? $( '.foliora-share-curr-page', shareModal ) : null;
+
+		var THEMES = [ 'light', 'dark', 'sepia' ];
+		var currentTheme = ( function () {
+			try {
+				var saved = window.localStorage.getItem( 'foliora_theme' );
+				if ( saved && THEMES.indexOf( saved ) !== -1 ) {
+					return saved;
+				}
+			} catch ( e ) {}
+			return container.getAttribute( 'data-theme' ) || 'light';
+		} )();
+
+		function applyTheme( t ) {
+			if ( ! shell ) {
+				return;
+			}
+			THEMES.forEach( function ( name ) {
+				shell.classList.remove( 'foliora-theme-' + name );
+			} );
+			shell.classList.add( 'foliora-theme-' + t );
+			currentTheme = t;
+			try {
+				window.localStorage.setItem( 'foliora_theme', t );
+			} catch ( e ) {}
+		}
+		applyTheme( currentTheme );
+
+		function cycleTheme() {
+			var idx = THEMES.indexOf( currentTheme );
+			var next = THEMES[ ( idx + 1 ) % THEMES.length ];
+			applyTheme( next );
+		}
+
+		function openModal( modal ) {
+			if ( ! modal ) {
+				return;
+			}
+			modal.hidden = false;
+			var closeBtn = $( '.foliora-modal-close', modal );
+			if ( closeBtn ) {
+				closeBtn.focus();
+			}
+		}
+
+		function closeModal( modal ) {
+			if ( ! modal ) {
+				return;
+			}
+			modal.hidden = true;
+		}
+
+		function closeAllModals() {
+			closeModal( shortcutsModal );
+			closeModal( shareModal );
+		}
+
+		function getShareUrl() {
+			var base = window.location.origin + window.location.pathname + window.location.search;
+			var incPage = sharePageCheck ? sharePageCheck.checked : true;
+			return incPage ? base + '#page=' + state.page : base;
+		}
+
+		function updateShareModal() {
+			if ( ! shareModal ) {
+				return;
+			}
+			if ( shareCurrPage ) {
+				shareCurrPage.textContent = String( state.page );
+			}
+			var url = getShareUrl();
+			if ( shareInput ) {
+				shareInput.value = url;
+			}
+			var encoded = encodeURIComponent( url );
+			var docTitle = encodeURIComponent( document.title || 'PDF Document' );
+			var xBtn = $( '.foliora-share-x', shareModal );
+			var fbBtn = $( '.foliora-share-fb', shareModal );
+			var liBtn = $( '.foliora-share-linkedin', shareModal );
+			var waBtn = $( '.foliora-share-wa', shareModal );
+			var emBtn = $( '.foliora-share-email', shareModal );
+			if ( xBtn ) {
+				xBtn.href = 'https://twitter.com/intent/tweet?url=' + encoded + '&text=' + docTitle;
+			}
+			if ( fbBtn ) {
+				fbBtn.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encoded;
+			}
+			if ( liBtn ) {
+				liBtn.href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encoded;
+			}
+			if ( waBtn ) {
+				waBtn.href = 'https://api.whatsapp.com/send?text=' + docTitle + '%20' + encoded;
+			}
+			if ( emBtn ) {
+				emBtn.href = 'mailto:?subject=' + docTitle + '&body=' + encoded;
+			}
+		}
+
+		function copyShareLink() {
+			if ( ! shareInput ) {
+				return;
+			}
+			var text = shareInput.value;
+			var btnText = shareCopyBtn ? $( '.foliora-share-copy-text', shareCopyBtn ) : null;
+			var oldText = btnText ? btnText.textContent : 'Copy';
+
+			function showSuccess() {
+				if ( btnText ) {
+					btnText.textContent = i18n.copied || 'Copied!';
+					window.setTimeout( function () {
+						btnText.textContent = oldText;
+					}, 2000 );
+				}
+			}
+
+			if ( window.navigator && window.navigator.clipboard && window.isSecureContext ) {
+				window.navigator.clipboard.writeText( text ).then( showSuccess ).catch( function () {
+					fallbackCopy( text, showSuccess );
+				} );
+			} else {
+				fallbackCopy( text, showSuccess );
+			}
+		}
+
+		function fallbackCopy( text, cb ) {
+			try {
+				shareInput.focus();
+				shareInput.select();
+				var ok = document.execCommand( 'copy' );
+				if ( ok && cb ) {
+					cb();
+				}
+			} catch ( e ) {}
+		}
 
 		function viewMode() {
 			return state.viewMode === 'scroll' || state.viewMode === 'spread' ? state.viewMode : 'page';
@@ -495,7 +661,7 @@
 		};
 
 		function renderAnnotations( page, viewport, layerEl ) {
-			layerEl.replaceChildren();
+			clearChildren( layerEl );
 			layerEl.hidden = false;
 			layerEl.style.setProperty( '--scale-factor', String( viewport.scale ) );
 			layerEl.style.width = viewport.width + 'px';
@@ -656,6 +822,29 @@
 			pageObserver = null;
 		}
 
+		function unloadSlot( slot ) {
+			if ( ! slot || ! slot.rendered ) {
+				return;
+			}
+			if ( slot.task && slot.task.cancel ) {
+				try {
+					slot.task.cancel();
+				} catch ( err ) {
+					// Ignore cancel error.
+				}
+			}
+			slot.task = null;
+			slot.rendered = false;
+			var ctx = slot.canvas.getContext( '2d' );
+			if ( ctx && slot.canvas.width && slot.canvas.height ) {
+				ctx.clearRect( 0, 0, slot.canvas.width, slot.canvas.height );
+			}
+			slot.canvas.width = 1;
+			slot.canvas.height = 1;
+			clearChildren( slot.textLayer );
+			clearChildren( slot.annotLayer );
+		}
+
 		function rebuildSlots() {
 			disconnectPageObserver();
 			slots.forEach( function ( slot ) {
@@ -668,7 +857,7 @@
 				}
 			} );
 			slots = [];
-			pagesEl.replaceChildren();
+			clearChildren( pagesEl );
 			var mode = viewMode();
 			pagesEl.classList.toggle( 'is-scroll', mode === 'scroll' );
 			pagesEl.classList.toggle( 'is-spread', mode === 'spread' );
@@ -682,19 +871,23 @@
 				pageObserver = new window.IntersectionObserver(
 					function ( entries ) {
 						entries.forEach( function ( entry ) {
-							if ( ! entry.isIntersecting ) {
-								return;
-							}
 							var n = Number( entry.target.getAttribute( 'data-page' ) );
 							var slot = slots.filter( function ( s ) {
 								return s.pageNum === n;
 							} )[ 0 ];
-							if ( slot && ! slot.rendered ) {
-								renderSlot( slot );
+							if ( ! slot ) {
+								return;
+							}
+							if ( entry.isIntersecting ) {
+								if ( ! slot.rendered ) {
+									renderSlot( slot );
+								}
+							} else if ( state.numPages > 10 && Math.abs( n - state.page ) > 5 ) {
+								unloadSlot( slot );
 							}
 						} );
 					},
-					{ root: pagesEl, rootMargin: '240px 0px', threshold: 0.01 }
+					{ root: pagesEl, rootMargin: '300px 0px', threshold: 0.01 }
 				);
 				slots.forEach( function ( slot ) {
 					pageObserver.observe( slot.wrap );
@@ -1119,7 +1312,7 @@
 		}
 
 		function fillOutline( items ) {
-			tocPanel.replaceChildren();
+			clearChildren( tocPanel );
 			( items || [] ).forEach( function ( item ) {
 				addOutlineItem( item, 0 );
 				if ( item.items && item.items.length ) {
@@ -1138,7 +1331,7 @@
 			}
 			if ( state.thumbCache[ pageNum ] ) {
 				if ( ! slot.contains( state.thumbCache[ pageNum ] ) ) {
-					slot.replaceChildren( state.thumbCache[ pageNum ] );
+					setChildren( slot, state.thumbCache[ pageNum ] );
 				}
 				return;
 			}
@@ -1160,7 +1353,7 @@
 					viewport: viewport,
 				} ).promise.then( function () {
 					state.thumbCache[ pageNum ] = thumbCanvas;
-					slot.replaceChildren( thumbCanvas );
+					setChildren( slot, thumbCanvas );
 				} );
 			} ).catch( function () {
 				state.thumbPending[ pageNum ] = false;
@@ -1168,7 +1361,7 @@
 		}
 
 		function buildThumbs() {
-			thumbsPanel.replaceChildren();
+			clearChildren( thumbsPanel );
 			if ( thumbObserver && thumbObserver.disconnect ) {
 				thumbObserver.disconnect();
 			}
@@ -1352,6 +1545,57 @@
 			} );
 		}
 		sideClose.addEventListener( 'click', closePanel );
+		if ( themeToggleBtn ) {
+			themeToggleBtn.addEventListener( 'click', cycleTheme );
+		}
+		if ( shortcutsBtn ) {
+			shortcutsBtn.addEventListener( 'click', function () {
+				openModal( shortcutsModal );
+			} );
+		}
+		if ( shareBtn ) {
+			shareBtn.addEventListener( 'click', function () {
+				updateShareModal();
+				openModal( shareModal );
+			} );
+		}
+		if ( shareCopyBtn ) {
+			shareCopyBtn.addEventListener( 'click', copyShareLink );
+		}
+		if ( sharePageCheck ) {
+			sharePageCheck.addEventListener( 'change', updateShareModal );
+		}
+
+		if ( shortcutsModal ) {
+			var scClose = $( '.foliora-modal-close', shortcutsModal );
+			var scBackdrop = $( '.foliora-modal-backdrop', shortcutsModal );
+			if ( scClose ) {
+				scClose.addEventListener( 'click', function () {
+					closeModal( shortcutsModal );
+				} );
+			}
+			if ( scBackdrop ) {
+				scBackdrop.addEventListener( 'click', function () {
+					closeModal( shortcutsModal );
+				} );
+			}
+		}
+
+		if ( shareModal ) {
+			var shClose = $( '.foliora-modal-close', shareModal );
+			var shBackdrop = $( '.foliora-modal-backdrop', shareModal );
+			if ( shClose ) {
+				shClose.addEventListener( 'click', function () {
+					closeModal( shareModal );
+				} );
+			}
+			if ( shBackdrop ) {
+				shBackdrop.addEventListener( 'click', function () {
+					closeModal( shareModal );
+				} );
+			}
+		}
+
 		if ( prevBtn ) {
 			prevBtn.addEventListener( 'click', prevPage );
 		}
@@ -1526,6 +1770,16 @@
 			}
 			var mode = viewMode();
 			if ( e.key === 'Escape' ) {
+				if ( shortcutsModal && ! shortcutsModal.hidden ) {
+					e.preventDefault();
+					closeModal( shortcutsModal );
+					return;
+				}
+				if ( shareModal && ! shareModal.hidden ) {
+					e.preventDefault();
+					closeModal( shareModal );
+					return;
+				}
 				if ( state.query ) {
 					e.preventDefault();
 					clearFind();
@@ -1546,6 +1800,37 @@
 				}
 				return;
 			}
+			if ( e.key === '?' ) {
+				e.preventDefault();
+				if ( shortcutsModal ) {
+					if ( shortcutsModal.hidden ) {
+						openModal( shortcutsModal );
+					} else {
+						closeModal( shortcutsModal );
+					}
+				}
+				return;
+			}
+			if ( e.key === '/' && ! e.ctrlKey && ! e.metaKey ) {
+				e.preventDefault();
+				focusFind();
+				return;
+			}
+			if ( e.key === 'd' || e.key === 'D' ) {
+				e.preventDefault();
+				cycleTheme();
+				return;
+			}
+			if ( ( e.key === 'f' || e.key === 'F' ) && ! e.ctrlKey && ! e.metaKey ) {
+				e.preventDefault();
+				toggleFullscreen();
+				return;
+			}
+			if ( ( e.key === 'p' || e.key === 'P' ) && ! e.ctrlKey && ! e.metaKey ) {
+				e.preventDefault();
+				setPresentation( ! state.presentation );
+				return;
+			}
 			if ( state.presentation && e.key === ' ' ) {
 				e.preventDefault();
 				if ( e.shiftKey ) {
@@ -1555,10 +1840,10 @@
 				}
 				return;
 			}
-			if ( e.key === 'PageDown' ) {
+			if ( e.key === 'PageDown' || e.key === 'j' || e.key === 'J' ) {
 				e.preventDefault();
 				nextPage();
-			} else if ( e.key === 'PageUp' ) {
+			} else if ( e.key === 'PageUp' || e.key === 'k' || e.key === 'K' ) {
 				e.preventDefault();
 				prevPage();
 			} else if ( e.key === 'ArrowLeft' || ( mode !== 'scroll' && e.key === 'ArrowUp' ) ) {
@@ -1573,9 +1858,15 @@
 			} else if ( e.key === '-' ) {
 				e.preventDefault();
 				zoomBy( -0.15 );
+			} else if ( e.key === '0' ) {
+				e.preventDefault();
+				cycleFit();
 			} else if ( e.key === 'r' || e.key === 'R' ) {
 				e.preventDefault();
 				rotatePage();
+			} else if ( ( e.key === 'h' || e.key === 'H' ) && ! e.ctrlKey && ! e.metaKey ) {
+				e.preventDefault();
+				setTool( state.tool === 'pan' ? 'select' : 'pan' );
 			} else if ( e.key === 'Home' ) {
 				e.preventDefault();
 				goTo( 1 );
@@ -1613,33 +1904,69 @@
 			}
 		} );
 
-		var loadingTask = window.pdfjsLib.getDocument( {
-			url: fileUrl,
-			onPassword: function ( updatePassword, reason ) {
-				showPasswordForm( updatePassword, reason );
-			},
-		} );
-		if ( loadingTask.onProgress !== undefined ) {
-			loadingTask.onProgress = function ( ev ) {
-				if ( ! status || ! ev || ! ev.total ) {
-					return;
-				}
-				var pct = Math.min( 99, Math.round( ( ev.loaded / ev.total ) * 100 ) );
-				var tpl = i18n.loadingPct || 'Loading %s…';
-				status.textContent = tpl.replace( '%s', String( pct ) + '%' );
-			};
-		}
-		loadingTask.promise.then( afterDocumentReady ).catch( function () {
-			if ( passwordForm ) {
-				passwordForm.remove();
-				passwordForm = null;
+		function startLoadingDocument() {
+			var loadingTask = window.pdfjsLib.getDocument( {
+				url: fileUrl,
+				onPassword: function ( updatePassword, reason ) {
+					showPasswordForm( updatePassword, reason );
+				},
+			} );
+			if ( loadingTask.onProgress !== undefined ) {
+				loadingTask.onProgress = function ( ev ) {
+					if ( ! status || ! ev || ! ev.total ) {
+						return;
+					}
+					var pct = Math.min( 99, Math.round( ( ev.loaded / ev.total ) * 100 ) );
+					var tpl = i18n.loadingPct || 'Loading %s…';
+					status.textContent = tpl.replace( '%s', String( pct ) + '%' );
+				};
 			}
-			status.hidden = false;
-			pagesEl.hidden = false;
-			status.textContent = i18n.error || 'This document could not be loaded.';
-			status.classList.add( 'foliora-error' );
-			container.setAttribute( 'aria-busy', 'false' );
-		} );
+			loadingTask.promise.then( afterDocumentReady ).catch( function () {
+				if ( passwordForm ) {
+					passwordForm.remove();
+					passwordForm = null;
+				}
+				status.hidden = false;
+				pagesEl.hidden = false;
+				status.textContent = i18n.error || 'This document could not be loaded.';
+				status.classList.add( 'foliora-error' );
+				container.setAttribute( 'aria-busy', 'false' );
+			} );
+		}
+
+		var isLazy = container.getAttribute( 'data-loading' ) === 'lazy';
+		if ( isLazy && typeof window.IntersectionObserver === 'function' ) {
+			var lazyPlaceholder = document.createElement( 'div' );
+			lazyPlaceholder.className = 'foliora-lazy-placeholder';
+			var lazyBtn = document.createElement( 'button' );
+			lazyBtn.type = 'button';
+			lazyBtn.className = 'foliora-lazy-btn';
+			lazyBtn.textContent = i18n.clickToLoad || 'Click to load document';
+			lazyPlaceholder.appendChild( lazyBtn );
+			container.appendChild( lazyPlaceholder );
+
+			var lazyObserver = new window.IntersectionObserver( function ( entries ) {
+				if ( entries[ 0 ] && entries[ 0 ].isIntersecting ) {
+					lazyObserver.disconnect();
+					if ( lazyPlaceholder.parentNode ) {
+						lazyPlaceholder.remove();
+					}
+					startLoadingDocument();
+				}
+			}, { rootMargin: '200px' } );
+
+			lazyObserver.observe( container );
+
+			lazyBtn.addEventListener( 'click', function () {
+				lazyObserver.disconnect();
+				if ( lazyPlaceholder.parentNode ) {
+					lazyPlaceholder.remove();
+				}
+				startLoadingDocument();
+			} );
+		} else {
+			startLoadingDocument();
+		}
 	}
 
 	function init() {
