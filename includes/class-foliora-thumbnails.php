@@ -72,7 +72,11 @@ class Foliora_Thumbnails {
 		}
 
 		$binary = base64_decode( preg_replace( '#^data:image/png;base64,#i', '', $raw ), true );
-		if ( false === $binary || 0 !== strpos( $binary, "\x89PNG" ) ) {
+		// Verify the full 8-byte PNG signature (\x89PNG\r\n\x1a\n).
+		// Checking only the first 4 bytes ("\x89PNG") is insufficient; the
+		// complete signature guards against other binary formats that share
+		// that prefix.
+		if ( false === $binary || substr( $binary, 0, 8 ) !== "\x89PNG\r\n\x1a\n" ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid thumbnail data.', 'foliora' ) ) );
 		}
 

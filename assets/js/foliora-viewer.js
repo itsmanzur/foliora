@@ -202,6 +202,7 @@
 		var zoomOutBtn = toolbar ? $( '.foliora-zoom-out', toolbar ) : null;
 		var zoomLabel = toolbar ? $( '.foliora-zoom-label', toolbar ) : null;
 		var fitBtn = toolbar ? $( '.foliora-fit', toolbar ) : null;
+		var downloadBtn = toolbar ? $( '.foliora-download', toolbar ) : null;
 		var rotateBtn = toolbar ? $( '.foliora-rotate', toolbar ) : null;
 		var viewBtn = toolbar ? $( '.foliora-view', toolbar ) : null;
 		var panBtn = toolbar ? $( '.foliora-pan', toolbar ) : null;
@@ -236,12 +237,21 @@
 			return 'foliora:page:' + fileUrl;
 		}
 
+		function pageFromHash() {
+			var hash = window.location.hash || '';
+			var match = hash.match( /^#(?:foliora-)?page=(\d+)/i );
+			if ( match ) {
+				return parseInt( match[ 1 ], 10 );
+			}
+			return 0;
+		}
+
 		function persistLocation() {
 			window.clearTimeout( persistTimer );
 			persistTimer = window.setTimeout( function () {
 				if ( container.getAttribute( 'data-hash' ) !== '0' ) {
 					var cur = window.location.hash || '';
-					var allowed = ! cur || /^#page=\d+/i.test( cur );
+					var allowed = ! cur || /^#(?:foliora-)?page=\d+/i.test( cur );
 					if ( allowed && window.history && window.history.replaceState ) {
 						var next = '#page=' + state.page;
 						if ( cur !== next ) {
@@ -259,13 +269,25 @@
 			}, 80 );
 		}
 
-		function dispatchPage() {
+		function dispatchEvent( name, detail ) {
+			var evDetail = { fileUrl: fileUrl };
+			if ( detail && typeof detail === 'object' ) {
+				for ( var k in detail ) {
+					if ( Object.prototype.hasOwnProperty.call( detail, k ) ) {
+						evDetail[ k ] = detail[ k ];
+					}
+				}
+			}
 			container.dispatchEvent(
-				new CustomEvent( 'foliora:pagechange', {
+				new CustomEvent( name, {
 					bubbles: true,
-					detail: { page: state.page, numPages: state.numPages },
+					detail: evDetail,
 				} )
 			);
+		}
+
+		function dispatchPage() {
+			dispatchEvent( 'foliora:pagechange', { page: state.page, numPages: state.numPages } );
 		}
 
 		function highlightCurrentThumb() {
@@ -661,6 +683,35 @@
 			} );
 		}
 
+		function releaseSlotCanvas( slot ) {
+			if ( ! slot ) {
+				return;
+			}
+			if ( slot.task && slot.task.cancel ) {
+				try {
+					slot.task.cancel();
+				} catch ( err ) {
+					// Ignore task cancellation error.
+				}
+				slot.task = null;
+			}
+			if ( slot.rendered ) {
+				slot.rendered = false;
+				slot.canvas.width = 1;
+				slot.canvas.height = 1;
+				var ctx = slot.canvas.getContext( '2d' );
+				if ( ctx ) {
+					ctx.clearRect( 0, 0, 1, 1 );
+				}
+				if ( slot.textLayer ) {
+					slot.textLayer.replaceChildren();
+				}
+				if ( slot.annotLayer ) {
+					slot.annotLayer.replaceChildren();
+				}
+			}
+		}
+
 		function disconnectPageObserver() {
 			if ( pageObserver && pageObserver.disconnect ) {
 				pageObserver.disconnect();
@@ -671,13 +722,7 @@
 		function rebuildSlots() {
 			disconnectPageObserver();
 			slots.forEach( function ( slot ) {
-				if ( slot.task && slot.task.cancel ) {
-					try {
-						slot.task.cancel();
-					} catch ( err ) {
-						// Ignore cancelled work.
-					}
-				}
+				releaseSlotCanvas( slot );
 			} );
 			slots = [];
 			pagesEl.replaceChildren();
@@ -694,19 +739,27 @@
 				pageObserver = new window.IntersectionObserver(
 					function ( entries ) {
 						entries.forEach( function ( entry ) {
-							if ( ! entry.isIntersecting ) {
-								return;
-							}
 							var n = Number( entry.target.getAttribute( 'data-page' ) );
 							var slot = slots.filter( function ( s ) {
 								return s.pageNum === n;
 							} )[ 0 ];
-							if ( slot && ! slot.rendered ) {
-								renderSlot( slot );
+							if ( ! slot ) {
+								return;
+							}
+							if ( entry.isIntersecting ) {
+								if ( ! slot.rendered ) {
+									renderSlot( slot );
+								}
+							} else {
+								// Memory virtualization: release canvas memory if the page is far
+								// from the user's active viewport (prevents iOS Safari memory crashes).
+								if ( slot.rendered && Math.abs( slot.pageNum - state.page ) > 3 ) {
+									releaseSlotCanvas( slot );
+								}
 							}
 						} );
 					},
-					{ root: pagesEl, rootMargin: '240px 0px', threshold: 0.01 }
+					{ root: pagesEl, rootMargin: '300px 0px', threshold: 0.01 }
 				);
 				slots.forEach( function ( slot ) {
 					pageObserver.observe( slot.wrap );
@@ -856,6 +909,7 @@
 			state.fitMode = 'none';
 			state.zoom = clamp( next, 0.4, 3 );
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: state.zoom, fitMode: 'none' } );
 		}
 
 		function zoomBy( delta ) {
@@ -866,12 +920,14 @@
 			state.fitMode = 'page';
 			state.zoom = 1;
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: 1, fitMode: 'page' } );
 		}
 
 		function fitWidth() {
 			state.fitMode = 'width';
 			state.zoom = 1;
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: 1, fitMode: 'width' } );
 		}
 
 		function cycleFit() {
@@ -978,6 +1034,7 @@
 			if ( ! slot ) {
 				return;
 			}
+			dispatchEvent( 'foliora:print', { page: state.page } );
 			try {
 				var url = slot.canvas.toDataURL( 'image/png' );
 				var frame = window.open( '', '_blank' );
@@ -1034,6 +1091,7 @@
 				if ( ! state.findHits.length ) {
 					highlightAll( query );
 					updateFindStatus();
+					dispatchEvent( 'foliora:search', { query: query, hitsCount: 0 } );
 					return Promise.resolve();
 				}
 				if ( dir ) {
@@ -1043,6 +1101,7 @@
 				return goTo( page ).then( function () {
 					highlightAll( query );
 					updateFindStatus();
+					dispatchEvent( 'foliora:search', { query: query, hitsCount: state.findHits.length, currentHit: state.findAt + 1 } );
 				} );
 			}
 
@@ -1281,15 +1340,19 @@
 					return undefined;
 				} );
 			}
+			dispatchEvent( 'foliora:ready', {
+				numPages: state.numPages,
+				viewMode: viewMode(),
+			} );
 			return goTo( initialPage(), { silent: true } );
 		}
 
 		function initialPage() {
 			var fromAttr = parseInt( container.getAttribute( 'data-page' ), 10 ) || 1;
 			if ( container.getAttribute( 'data-hash' ) !== '0' ) {
-				var match = ( window.location.hash || '' ).match( /^#page=(\d+)/i );
-				if ( match ) {
-					return parseInt( match[ 1 ], 10 ) || fromAttr;
+				var fromHash = pageFromHash();
+				if ( fromHash > 0 ) {
+					return fromHash;
 				}
 			}
 			if ( fromAttr > 1 ) {
@@ -1307,6 +1370,17 @@
 			}
 			return fromAttr;
 		}
+
+		function onHashChange() {
+			if ( container.getAttribute( 'data-hash' ) === '0' || ! state.pdf ) {
+				return;
+			}
+			var p = pageFromHash();
+			if ( p > 0 && p !== state.page ) {
+				goTo( p );
+			}
+		}
+		window.addEventListener( 'hashchange', onHashChange );
 
 		function showPasswordForm( updatePassword, reason ) {
 			passwordUpdate = updatePassword;
@@ -1379,6 +1453,12 @@
 		container.__folioraGetPage = function () {
 			return state.page;
 		};
+
+		if ( downloadBtn ) {
+			downloadBtn.addEventListener( 'click', function () {
+				dispatchEvent( 'foliora:download', { fileUrl: fileUrl } );
+			} );
+		}
 
 		if ( tocBtn ) {
 			tocBtn.addEventListener( 'click', function () {
@@ -1497,6 +1577,8 @@
 		var didPinch = false;
 		var pinchStartDist = 0;
 		var pinchStartZoom = 1;
+		var pinchRatio = 1;
+		var pinchCenter = { x: 0, y: 0 };
 		var pan = { active: false, x: 0, y: 0, sl: 0, st: 0 };
 
 		pagesEl.addEventListener( 'pointerdown', function ( e ) {
@@ -1534,6 +1616,14 @@
 				swipeStart = null;
 				pinchStartDist = touchDistance( e.touches[ 0 ], e.touches[ 1 ] );
 				pinchStartZoom = state.fitMode === 'none' ? state.zoom : 1;
+				pinchRatio = 1;
+				var rect = pagesEl.getBoundingClientRect();
+				pinchCenter = {
+					x: ( ( e.touches[ 0 ].clientX + e.touches[ 1 ].clientX ) / 2 ) - rect.left,
+					y: ( ( e.touches[ 0 ].clientY + e.touches[ 1 ].clientY ) / 2 ) - rect.top,
+				};
+				pagesEl.style.transformOrigin = pinchCenter.x + 'px ' + pinchCenter.y + 'px';
+				pagesEl.style.willChange = 'transform';
 			} else if ( e.touches.length === 1 && ! didPinch && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
 				swipeStart = { x: e.touches[ 0 ].clientX, y: e.touches[ 0 ].clientY };
 			}
@@ -1542,9 +1632,11 @@
 		pagesEl.addEventListener( 'touchmove', function ( e ) {
 			if ( e.touches.length >= 2 && pinchStartDist > 0 ) {
 				e.preventDefault();
-				var ratio = touchDistance( e.touches[ 0 ], e.touches[ 1 ] ) / pinchStartDist;
-				if ( ratio && isFinite( ratio ) ) {
-					setZoom( pinchStartZoom * ratio );
+				var dist = touchDistance( e.touches[ 0 ], e.touches[ 1 ] );
+				pinchRatio = dist / pinchStartDist;
+				if ( pinchRatio && isFinite( pinchRatio ) ) {
+					// Phase 1: Hardware-accelerated GPU transform (smooth 60/120 fps, no canvas redraws)
+					pagesEl.style.transform = 'scale(' + pinchRatio + ')';
 				}
 			}
 		}, { passive: false } );
@@ -1553,7 +1645,21 @@
 			if ( e.touches.length > 0 ) {
 				return;
 			}
-			if ( ! didPinch && swipeStart && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
+			if ( didPinch ) {
+				// Phase 2: Clear GPU transform and perform a single high-resolution canvas redraw
+				pagesEl.style.transform = '';
+				pagesEl.style.transformOrigin = '';
+				pagesEl.style.willChange = '';
+				if ( pinchRatio && isFinite( pinchRatio ) && Math.abs( pinchRatio - 1 ) > 0.04 ) {
+					setZoom( pinchStartZoom * pinchRatio );
+				}
+				didPinch = false;
+				pinchStartDist = 0;
+				pinchRatio = 1;
+				swipeStart = null;
+				return;
+			}
+			if ( swipeStart && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
 				var endX = ( e.changedTouches[ 0 ] && e.changedTouches[ 0 ].clientX ) || swipeStart.x;
 				var endY = ( e.changedTouches[ 0 ] && e.changedTouches[ 0 ].clientY ) || swipeStart.y;
 				var dx = endX - swipeStart.x;
@@ -1569,6 +1675,7 @@
 			swipeStart = null;
 			didPinch = false;
 			pinchStartDist = 0;
+			pinchRatio = 1;
 		}, { passive: true } );
 
 		pagesEl.addEventListener( 'scroll', function () {
@@ -1709,19 +1816,58 @@
 		} );
 	}
 
+	var viewerObserver = null;
+
 	function init() {
-		document.querySelectorAll( '.foliora-viewer[data-file]:not([data-foliora-defer]):not([data-foliora-bound])' ).forEach( function ( container ) {
-			var toolbar = container.id
-				? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
-				: null;
-			bindViewer( container, toolbar );
-		} );
+		var containers = Array.prototype.slice.call(
+			document.querySelectorAll( '.foliora-viewer[data-file]:not([data-foliora-defer]):not([data-foliora-bound])' )
+		);
+		if ( ! containers.length ) {
+			return;
+		}
+
+		if ( typeof window.IntersectionObserver === 'function' ) {
+			if ( ! viewerObserver ) {
+				viewerObserver = new window.IntersectionObserver(
+					function ( entries ) {
+						entries.forEach( function ( entry ) {
+							if ( entry.isIntersecting ) {
+								viewerObserver.unobserve( entry.target );
+								var container = entry.target;
+								var toolbar = container.id
+									? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
+									: null;
+								bindViewer( container, toolbar );
+							}
+						} );
+					},
+					{ rootMargin: '300px 0px', threshold: 0.01 }
+				);
+			}
+			containers.forEach( function ( container ) {
+				viewerObserver.observe( container );
+			} );
+		} else {
+			containers.forEach( function ( container ) {
+				var toolbar = container.id
+					? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
+					: null;
+				bindViewer( container, toolbar );
+			} );
+		}
 	}
 
 	window.FolioraViewer = {
 		bind: function ( container ) {
 			if ( ! container ) {
 				return;
+			}
+			if ( viewerObserver ) {
+				try {
+					viewerObserver.unobserve( container );
+				} catch ( err ) {
+					// Ignore observer error.
+				}
 			}
 			var toolbar = container.id
 				? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )

@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Foliora_Viewer {
 
+	use Foliora_Att_Flag;
+
 	/**
 	 * Track whether we've already enqueued assets for this request, so
 	 * multiple shortcodes on one page don't double-load PDF.js.
@@ -137,8 +139,18 @@ class Foliora_Viewer {
 			);
 		}
 
+		$noscript = sprintf(
+			'<noscript><div class="foliora-noscript"><p><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p></div></noscript>',
+			esc_url( $atts['file'] ),
+			sprintf(
+				/* translators: %s: document title or fallback */
+				esc_html__( 'Open document: %s (PDF)', 'foliora' ),
+				esc_html( '' !== $title ? $title : wp_basename( (string) $atts['file'] ) )
+			)
+		);
+
 		$container = sprintf(
-			'<div class="foliora-wrap" style="width:%1$s;" role="region" aria-label="%7$s">%9$s<div class="foliora-shell" style="height:%2$s;"><div class="foliora-chrome" style="display:flex;flex-wrap:nowrap;align-items:center;">%3$s%4$s</div><div id="%5$s" class="foliora-viewer" data-file="%6$s" data-page="%10$s" data-hash="%11$s" data-view="%12$s" data-resume="%13$s" tabindex="0" role="document" aria-busy="true"></div></div>%8$s</div>',
+			'<div class="foliora-wrap" style="width:%1$s;" role="region" aria-label="%7$s">%9$s<div class="foliora-shell" style="height:%2$s;"><div class="foliora-chrome" style="display:flex;flex-wrap:nowrap;align-items:center;">%3$s%4$s</div><div id="%5$s" class="foliora-viewer" data-file="%6$s" data-page="%10$s" data-hash="%11$s" data-view="%12$s" data-resume="%13$s" tabindex="0" role="document" aria-busy="true">%14$s</div></div>%8$s</div>',
 			esc_attr( $atts['width'] ),
 			esc_attr( $atts['height'] ),
 			$before,
@@ -151,7 +163,8 @@ class Foliora_Viewer {
 			esc_attr( (string) $start_page ),
 			$sync_hash ? '1' : '0',
 			esc_attr( $view ),
-			$resume ? '1' : '0'
+			$resume ? '1' : '0',
+			$noscript
 		);
 
 		/**
@@ -383,22 +396,6 @@ class Foliora_Viewer {
 		);
 	}
 
-	private function att_flag( $value, $default ) {
-		if ( is_bool( $value ) ) {
-			return $value;
-		}
-		if ( null === $value || '' === $value ) {
-			return (bool) $default;
-		}
-		$v = strtolower( (string) $value );
-		if ( in_array( $v, array( '0', 'false', 'no', 'off' ), true ) ) {
-			return false;
-		}
-		if ( in_array( $v, array( '1', 'true', 'yes', 'on' ), true ) ) {
-			return true;
-		}
-		return (bool) $default;
-	}
 
 	/**
 	 * Small inline "upgrade to unlock" block, shown in place of a locked

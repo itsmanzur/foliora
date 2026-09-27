@@ -40,6 +40,18 @@ class Foliora_Admin {
 		add_action( 'wp_ajax_foliora_mark_setup_copied', array( $this, 'ajax_mark_setup_copied' ) );
 		add_action( 'wp_ajax_foliora_create_test_page', array( $this, 'ajax_create_test_page' ) );
 		add_action( 'wp_ajax_foliora_dismiss_welcome', array( $this, 'ajax_dismiss_welcome' ) );
+		// Invalidate the embed-count cache whenever a post is saved so the
+		// Dashboard metric stays accurate without waiting for the 5-minute TTL.
+		add_action( 'save_post', array( $this, 'flush_embed_count_cache' ) );
+		add_action( 'delete_post', array( $this, 'flush_embed_count_cache' ) );
+	}
+
+	/**
+	 * Delete the cached embed count so the Dashboard stat is recalculated on
+	 * the next page load. Called on save_post and delete_post.
+	 */
+	public function flush_embed_count_cache() {
+		wp_cache_delete( 'embed_count', 'foliora' );
 	}
 
 	public function add_settings_page() {
@@ -300,8 +312,8 @@ class Foliora_Admin {
 		$form = array_key_exists( 'default_width', $input );
 
 		return array(
-			'default_width'          => isset( $input['default_width'] ) ? sanitize_text_field( $input['default_width'] ) : ( $existing['default_width'] ?? '100%' ),
-			'default_height'         => isset( $input['default_height'] ) ? sanitize_text_field( $input['default_height'] ) : ( $existing['default_height'] ?? '600px' ),
+			'default_width'          => isset( $input['default_width'] ) ? $this->sanitize_css_dimension( $input['default_width'], $existing['default_width'] ?? '100%' ) : ( $existing['default_width'] ?? '100%' ),
+			'default_height'         => isset( $input['default_height'] ) ? $this->sanitize_css_dimension( $input['default_height'], $existing['default_height'] ?? '600px' ) : ( $existing['default_height'] ?? '600px' ),
 			'allow_download'         => $form ? ! empty( $input['allow_download'] ) : ( $existing['allow_download'] ?? true ),
 			'allow_print'            => $form ? ! empty( $input['allow_print'] ) : ( $existing['allow_print'] ?? true ),
 			'index_pdf_text'         => $form ? ! empty( $input['index_pdf_text'] ) : ( $existing['index_pdf_text'] ?? true ),
@@ -309,6 +321,27 @@ class Foliora_Admin {
 			'check_pdf_a11y'         => $form ? ! empty( $input['check_pdf_a11y'] ) : ( $existing['check_pdf_a11y'] ?? true ),
 			'setup_copied_shortcode' => $copied,
 		);
+	}
+
+	/**
+	 * Validate a user-supplied CSS dimension value. Accepts common units:
+	 * px, %, em, rem, vh, vw, svh, dvh, lvh. Returns $default on failure.
+	 *
+	 * @param string $value   Raw value from the settings form.
+	 * @param string $default Fallback if the value is not a valid CSS dimension.
+	 * @return string
+	 */
+	private function sanitize_css_dimension( $value, $default ) {
+		$value = trim( sanitize_text_field( (string) $value ) );
+		// Allow a positive number followed by a recognised CSS length unit.
+		if ( preg_match( '/^\d+(\.\d+)?(px|%|em|rem|vh|vw|svh|dvh|lvh)$/', $value ) ) {
+			return $value;
+		}
+		// Also allow bare "0" (no unit required for zero).
+		if ( '0' === $value ) {
+			return $value;
+		}
+		return $default;
 	}
 
 	public function field_default_width() {
@@ -941,7 +974,9 @@ class Foliora_Admin {
 			<?php endif; ?>
 		</div>
 		<?php
-		wp_reset_postdata();
+		// Custom WP_Query does not change $wp_query, so wp_reset_postdata() is
+		// not needed here. Explicitly unset to release the object from memory.
+		unset( $query );
 	}
 
 	public function ajax_mark_setup_copied() {
@@ -969,6 +1004,17 @@ class Foliora_Admin {
 		$file = isset( $_POST['file'] ) ? esc_url_raw( wp_unslash( $_POST['file'] ) ) : '';
 		if ( '' === $file ) {
 			wp_send_json_error( array( 'message' => __( 'Select a PDF first.', 'foliora' ) ) );
+		}
+
+		// Ensure the URL resolves to a PDF attachment in this site's Media Library
+		// so an arbitrary external URL cannot be published via this AJAX endpoint.
+		$attachment_id = Foliora_Compat::attachment_id_from_url( $file );
+		if ( ! $attachment_id ) {
+			wp_send_json_error( array( 'message' => __( 'Only PDFs from the Media Library can be used here.', 'foliora' ) ) );
+		}
+		$mime = get_post_mime_type( $attachment_id );
+		if ( 'application/pdf' !== $mime ) {
+			wp_send_json_error( array( 'message' => __( 'That file is not a PDF.', 'foliora' ) ) );
 		}
 
 		$content  = '[foliora file="' . $file . '"]';
@@ -1080,17 +1126,10 @@ class Foliora_Admin {
 	}
 
 	private function count_pdfs() {
-		$query = new WP_Query(
-			array(
-				'post_type'      => 'attachment',
-				'post_status'    => 'inherit',
-				'post_mime_type' => 'application/pdf',
-				'posts_per_page' => 1,
-				'no_found_rows'  => false,
-				'fields'         => 'ids',
-			)
-		);
-		return (int) $query->found_posts;
+		// wp_count_attachments() returns a cached stdClass keyed by post_status.
+		// PDFs in the Media Library always have post_status 'inherit'.
+		$counts = wp_count_attachments( 'application/pdf' );
+		return isset( $counts->inherit ) ? (int) $counts->inherit : 0;
 	}
 
 	private function count_embeds() {

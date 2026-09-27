@@ -79,6 +79,7 @@ define( 'FOLIORA_BASENAME', plugin_basename( __FILE__ ) );
  * Dependencies
  * ---------------------------------------------------------------------
  */
+require_once FOLIORA_DIR . 'includes/trait-foliora-att-flag.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-loader.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-viewer.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-thumbnails.php';
@@ -147,12 +148,14 @@ register_deactivation_hook( FOLIORA_FILE, 'foliora_deactivate' );
  * WordPress.org language packs in WP_LANG_DIR still take precedence.
  */
 function foliora_register_textdomain_path() {
-	if ( ! isset( $GLOBALS['wp_textdomain_registry'] ) || ! is_object( $GLOBALS['wp_textdomain_registry'] ) ) {
+	if ( isset( $GLOBALS['wp_textdomain_registry'] ) && is_object( $GLOBALS['wp_textdomain_registry'] )
+		&& method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
+		// WP 6.7+: JIT loader reads bundled languages before WP_LANG_DIR.
+		$GLOBALS['wp_textdomain_registry']->set_custom_path( 'foliora', FOLIORA_DIR . 'languages' );
 		return;
 	}
-	if ( method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
-		$GLOBALS['wp_textdomain_registry']->set_custom_path( 'foliora', FOLIORA_DIR . 'languages' );
-	}
+	// WP 6.0–6.6: fall back to the classic loader so bundled .mo files are found.
+	load_plugin_textdomain( 'foliora', false, dirname( FOLIORA_BASENAME ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'foliora_register_textdomain_path', 1 );
 

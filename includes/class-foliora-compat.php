@@ -201,7 +201,11 @@ class Foliora_Compat {
 	 */
 	public function w3tc_skip_js( $do, $tag, $file ) {
 		unset( $tag );
-		if ( is_string( $file ) && false !== strpos( $file, '/plugins/foliora/' ) ) {
+		// Use the plugin's own basename rather than a hard-coded folder name so
+		// this works regardless of where WordPress is installed or if the plugin
+		// folder was renamed.
+		$plugin_basename = trailingslashit( wp_basename( FOLIORA_DIR ) );
+		if ( is_string( $file ) && false !== strpos( $file, $plugin_basename ) ) {
 			return false;
 		}
 		return $do;
@@ -215,7 +219,8 @@ class Foliora_Compat {
 	 */
 	public function w3tc_skip_css( $do, $tag, $file ) {
 		unset( $tag );
-		if ( is_string( $file ) && false !== strpos( $file, '/plugins/foliora/assets/css/' ) ) {
+		$plugin_basename = trailingslashit( wp_basename( FOLIORA_DIR ) );
+		if ( is_string( $file ) && false !== strpos( $file, $plugin_basename . 'assets/css/' ) ) {
 			return false;
 		}
 		return $do;

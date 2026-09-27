@@ -336,6 +336,7 @@
 	min-height: 100%;
 	height: 100%;
 	overflow: auto;
+	touch-action: pan-x pan-y;
 }
 
 .foliora-page-wrap {
@@ -357,6 +358,9 @@
 	line-height: 1;
 	opacity: 1;
 	pointer-events: auto;
+	user-select: text;
+	-webkit-user-select: text;
+	z-index: 1;
 }
 
 .foliora-text-layer span {
@@ -367,13 +371,14 @@
 	transform-origin: 0% 0%;
 }
 
-.foliora-text-layer span.foliora-hl {
-	background: rgba(255, 213, 0, 0.45);
+.foliora-text-layer span::selection {
+	background: rgba(0, 102, 204, 0.35);
 	color: transparent;
 }
 
-.foliora-text-layer {
-	z-index: 1;
+.foliora-text-layer span.foliora-hl {
+	background: rgba(255, 213, 0, 0.45);
+	color: transparent;
 }
 
 .foliora-annotation-layer {
@@ -849,4 +854,18 @@
 .foliora-shell.is-present .foliora-viewer {
 	flex: 1 1 auto;
 	min-height: 0;
+}
+
+.foliora-noscript {
+	padding: 24px;
+	text-align: center;
+	background: #2c3338;
+	color: #fff;
+	border-radius: 4px;
+}
+
+.foliora-noscript a {
+	color: #72aee6;
+	font-weight: 600;
+	text-decoration: underline;
 }
