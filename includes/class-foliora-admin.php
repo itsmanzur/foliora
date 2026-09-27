@@ -40,10 +40,15 @@ class Foliora_Admin {
 		add_action( 'wp_ajax_foliora_mark_setup_copied', array( $this, 'ajax_mark_setup_copied' ) );
 		add_action( 'wp_ajax_foliora_create_test_page', array( $this, 'ajax_create_test_page' ) );
 		add_action( 'wp_ajax_foliora_dismiss_welcome', array( $this, 'ajax_dismiss_welcome' ) );
-		// Invalidate the embed-count cache whenever a post is saved so the
-		// Dashboard metric stays accurate without waiting for the 5-minute TTL.
+		// Invalidate the embed-count cache whenever a post is saved, trashed,
+		// restored, or deleted so the Dashboard metric stays accurate without
+		// waiting for the 5-minute TTL. count_embeds() only counts
+		// publish/draft/private posts, so trash/untrash need their own hooks —
+		// save_post does not reliably fire for those status transitions.
 		add_action( 'save_post', array( $this, 'flush_embed_count_cache' ) );
 		add_action( 'delete_post', array( $this, 'flush_embed_count_cache' ) );
+		add_action( 'trashed_post', array( $this, 'flush_embed_count_cache' ) );
+		add_action( 'untrashed_post', array( $this, 'flush_embed_count_cache' ) );
 	}
 
 	/**

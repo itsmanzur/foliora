@@ -85,7 +85,7 @@ class Foliora_Thumbnails {
 		}
 
 		$old_id = self::get_thumbnail_id( $pdf_id );
-		if ( $old_id && $old_id !== $pdf_id ) {
+		if ( $old_id ) {
 			wp_delete_attachment( $old_id, true );
 		}
 

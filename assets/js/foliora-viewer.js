@@ -368,8 +368,12 @@
 			}
 			if ( fitBtn ) {
 				var widthMode = state.fitMode === 'width';
+				// Label describes what clicking will switch TO, matching cycleFit():
+				// from 'page' it goes to width, from anything else (including a
+				// manual zoom left in fitMode 'none') it goes to page.
+				var nextIsWidth = state.fitMode === 'page';
 				fitBtn.classList.toggle( 'is-width', widthMode );
-				fitBtn.setAttribute( 'title', widthMode ? ( i18n.fitPage || 'Fit page' ) : ( i18n.fitWidth || 'Fit width' ) );
+				fitBtn.setAttribute( 'title', nextIsWidth ? ( i18n.fitWidth || 'Fit width' ) : ( i18n.fitPage || 'Fit page' ) );
 				fitBtn.setAttribute( 'aria-label', fitBtn.getAttribute( 'title' ) );
 			}
 			if ( pageLive ) {
@@ -809,6 +813,22 @@
 			}
 		}
 
+		function showRenderError( err ) {
+			if ( err && err.name === 'RenderingCancelledException' ) {
+				return;
+			}
+			if ( window.console && window.console.error ) {
+				window.console.error( 'Foliora: page render failed', err );
+			}
+			if ( ! status.parentNode ) {
+				container.appendChild( status );
+			}
+			status.hidden = false;
+			status.classList.add( 'foliora-error' );
+			status.textContent = i18n.error || 'This document could not be loaded.';
+			dispatchEvent( 'foliora:error', { stage: 'render' } );
+		}
+
 		function renderCurrent() {
 			if ( ! state.pdf ) {
 				return Promise.resolve();
@@ -838,7 +858,7 @@
 				return chain.then( function () {
 					scrollSlotIntoView( state.page );
 					updateToolbar();
-				} );
+				} ).catch( showRenderError );
 			}
 
 			var all = Promise.resolve();
@@ -849,7 +869,7 @@
 			} );
 			return all.then( function () {
 				updateToolbar();
-			} );
+			} ).catch( showRenderError );
 		}
 
 		function goTo( page, opts ) {
@@ -878,7 +898,7 @@
 					scrollSlotIntoView( page );
 					updateToolbar();
 					after();
-				} );
+				} ).catch( showRenderError );
 			}
 			return renderCurrent().then( after );
 		}
@@ -1027,24 +1047,71 @@
 			}
 		}
 
+		/**
+		 * Pages to print for the current view mode: both sides of a spread,
+		 * every rendered page near the viewport in scroll mode, or just the
+		 * current page otherwise. Falls back to whatever slot is actually
+		 * rendered so a virtualized (released) canvas is never printed blank.
+		 */
+		function printPageNums() {
+			var mode = viewMode();
+			if ( mode === 'spread' ) {
+				return spreadPages( state.page );
+			}
+			if ( mode === 'scroll' ) {
+				var rendered = slots
+					.filter( function ( s ) {
+						return s.rendered;
+					} )
+					.map( function ( s ) {
+						return s.pageNum;
+					} );
+				return rendered.length ? rendered : [ state.page ];
+			}
+			return [ state.page ];
+		}
+
 		function printCurrent() {
-			var slot = slots.filter( function ( s ) {
-				return s.pageNum === state.page;
-			} )[ 0 ] || slots[ 0 ];
-			if ( ! slot ) {
+			var printSlots = printPageNums()
+				.map( function ( n ) {
+					return slots.filter( function ( s ) {
+						return s.pageNum === n;
+					} )[ 0 ];
+				} )
+				.filter( function ( s ) {
+					return s && s.rendered;
+				} );
+
+			if ( ! printSlots.length ) {
+				printSlots = slots.filter( function ( s ) {
+					return s.rendered;
+				} );
+			}
+			if ( ! printSlots.length ) {
 				return;
 			}
-			dispatchEvent( 'foliora:print', { page: state.page } );
+
+			dispatchEvent( 'foliora:print', {
+				page: state.page,
+				pages: printSlots.map( function ( s ) {
+					return s.pageNum;
+				} ),
+			} );
+
 			try {
-				var url = slot.canvas.toDataURL( 'image/png' );
+				var images = printSlots
+					.map( function ( s ) {
+						return '<img src="' + s.canvas.toDataURL( 'image/png' ) + '" style="max-width:100%;display:block;page-break-after:always;" />';
+					} )
+					.join( '' );
 				var frame = window.open( '', '_blank' );
 				if ( ! frame ) {
 					return;
 				}
 				frame.document.write(
-					'<!DOCTYPE html><title>Print</title><img src="' +
-						url +
-						'" style="max-width:100%;" onload="window.focus();window.print();" />'
+					'<!DOCTYPE html><title>Print</title>' +
+						images +
+						'<script>window.onload=function(){window.focus();window.print();};</script>'
 				);
 				frame.document.close();
 			} catch ( err ) {
