@@ -420,20 +420,40 @@ class Foliora_SEO {
 			)
 		);
 
+		// Page through matches instead of a flat LIMIT so a PDF embedded on more
+		// than a handful of posts still gets every one reindexed. $max_rows is
+		// a safety cap, not an expected ceiling, so a single stray PDF can't
+		// run away on a very large site.
+		$batch_size = 200;
+		$max_rows   = 5000;
+
 		$found = array();
 		foreach ( $needles as $needle ) {
 			$like      = '%' . $wpdb->esc_like( (string) $needle ) . '%';
 			$cache_key = 'embed_posts_' . md5( $like );
 			$rows      = wp_cache_get( $cache_key, 'foliora' );
+
 			if ( false === $rows ) {
-				$rows = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- one-off LIKE lookup of posts embedding this PDF; cached in the foliora group.
-					$wpdb->prepare(
-						"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT 50",
-						$like
-					)
-				);
-				wp_cache_set( $cache_key, is_array( $rows ) ? $rows : array(), 'foliora', HOUR_IN_SECONDS );
+				$rows   = array();
+				$offset = 0;
+				do {
+					$page = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-off LIKE lookup of posts embedding this PDF; cached in the foliora group.
+						$wpdb->prepare(
+							"SELECT ID FROM {$wpdb->posts} WHERE post_type NOT IN ('revision','attachment','nav_menu_item') AND post_status IN ('publish','private','draft','pending') AND post_content LIKE %s LIMIT %d OFFSET %d",
+							$like,
+							$batch_size,
+							$offset
+						)
+					);
+					if ( is_array( $page ) ) {
+						$rows = array_merge( $rows, $page );
+					}
+					$offset += $batch_size;
+				} while ( is_array( $page ) && count( $page ) === $batch_size && count( $rows ) < $max_rows );
+
+				wp_cache_set( $cache_key, $rows, 'foliora', HOUR_IN_SECONDS );
 			}
+
 			if ( is_array( $rows ) ) {
 				$found = array_merge( $found, $rows );
 			}
