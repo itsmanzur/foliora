@@ -1,0 +1,25 @@
+<wpml-config>
+	<gutenberg-blocks>
+		<gutenberg-block type="foliora/viewer" translate="1">
+			<key name="file" />
+			<key name="title" />
+		</gutenberg-block>
+		<gutenberg-block type="foliora/library" translate="0" />
+	</gutenberg-blocks>
+	<shortcodes>
+		<shortcode>
+			<tag>foliora</tag>
+			<attributes>
+				<attribute encoding="url">file</attribute>
+				<attribute>title</attribute>
+			</attributes>
+		</shortcode>
+	</shortcodes>
+	<custom-fields>
+		<custom-field action="copy">_foliora_extracted_text</custom-field>
+		<custom-field action="copy">_foliora_extracted_pages</custom-field>
+		<custom-field action="copy">_foliora_text_indexed</custom-field>
+		<custom-field action="copy">_foliora_search_index</custom-field>
+		<custom-field action="copy">_foliora_thumbnail_id</custom-field>
+	</custom-fields>
+</wpml-config>
