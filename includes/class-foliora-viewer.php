@@ -542,6 +542,11 @@ class Foliora_Viewer {
 			'present'        => __( 'Presentation', 'foliora' ),
 			'copied'         => __( 'Link copied!', 'foliora' ),
 			'clickToLoad'    => __( 'Click to load document', 'foliora' ),
+			'corsTitle'      => __( 'Unable to load document (Cross-Origin Restriction)', 'foliora' ),
+			/* translators: %s: remote host name */
+			'corsDesc'       => __( 'This PDF is hosted on an external domain (%s) which restricts cross-origin access (CORS).', 'foliora' ),
+			'corsDownload'   => __( 'Open / Download PDF directly', 'foliora' ),
+			'corsAdminHint'  => __( 'Site Admin: To enable direct embedding, configure Access-Control-Allow-Origin headers on the host server or upload the PDF to your WordPress Media Library.', 'foliora' ),
 		);
 	}
 

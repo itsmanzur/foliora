@@ -1231,3 +1231,74 @@
 	text-decoration: underline;
 }
 
+
+/* ==========================================================================
+   CORS & Error Diagnostics
+   ========================================================================== */
+.foliora-cors-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 32px 20px;
+	text-align: center;
+	max-width: 520px;
+	margin: 0 auto;
+	color: #f0f0f1;
+}
+
+.foliora-cors-icon {
+	color: #f0b849;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.foliora-cors-title {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.foliora-cors-desc {
+	margin: 0 0 16px;
+	font-size: 13px;
+	line-height: 1.5;
+	color: #c3c4c7;
+}
+
+.foliora-cors-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 9px 18px;
+	background: #2271b1;
+	color: #fff !important;
+	text-decoration: none !important;
+	font-weight: 500;
+	font-size: 13px;
+	border-radius: 6px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.12s ease, transform 0.1s ease;
+}
+
+.foliora-cors-btn:hover,
+.foliora-cors-btn:focus {
+	background: #135e96;
+	color: #fff !important;
+	transform: translateY(-1px);
+}
+
+.foliora-cors-admin-hint {
+	margin-top: 18px;
+	padding: 10px 14px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 6px;
+	font-size: 11px;
+	line-height: 1.4;
+	color: #a7aaad;
+	text-align: left;
+}

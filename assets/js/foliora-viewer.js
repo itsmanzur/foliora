@@ -2158,15 +2158,76 @@
 					status.textContent = tpl.replace( '%s', String( pct ) + '%' );
 				};
 			}
-			loadingTask.promise.then( afterDocumentReady ).catch( function () {
+			loadingTask.promise.then( afterDocumentReady ).catch( function ( err ) {
 				if ( passwordForm ) {
 					passwordForm.remove();
 					passwordForm = null;
 				}
 				status.hidden = false;
 				pagesEl.hidden = false;
-				status.textContent = i18n.error || 'This document could not be loaded.';
-				status.classList.add( 'foliora-error' );
+
+				var isCrossOrigin = false;
+				var remoteDomain = '';
+				try {
+					var parsedUrl = new URL( fileUrl, window.location.href );
+					isCrossOrigin = parsedUrl.origin !== window.location.origin;
+					remoteDomain = parsedUrl.hostname;
+				} catch ( e ) {
+					isCrossOrigin = false;
+				}
+
+				var isCorsOrNetwork = isCrossOrigin || ( err && ( /network|cors|fetch|cross-origin|failed to fetch/i.test( ( err && err.message ) || '' ) || ( err && err.name === 'MissingPDFException' ) || ( err && err.name === 'UnknownErrorException' ) ) );
+
+				if ( isCrossOrigin && isCorsOrNetwork ) {
+					status.textContent = '';
+					status.classList.add( 'foliora-error', 'foliora-cors-error' );
+
+					var corsCard = document.createElement( 'div' );
+					corsCard.className = 'foliora-cors-card';
+
+					var icon = document.createElement( 'div' );
+					icon.className = 'foliora-cors-icon';
+					icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+					corsCard.appendChild( icon );
+
+					var title = document.createElement( 'h4' );
+					title.className = 'foliora-cors-title';
+					title.textContent = i18n.corsTitle || 'Unable to load document (Cross-Origin Restriction)';
+					corsCard.appendChild( title );
+
+					var desc = document.createElement( 'p' );
+					desc.className = 'foliora-cors-desc';
+					desc.textContent = ( i18n.corsDesc || 'This PDF is hosted on an external domain (%s) which restricts cross-origin access.' ).replace( '%s', remoteDomain || 'remote host' );
+					corsCard.appendChild( desc );
+
+					var actionBtn = document.createElement( 'a' );
+					actionBtn.className = 'foliora-cors-btn';
+					actionBtn.href = fileUrl;
+					actionBtn.target = '_blank';
+					actionBtn.rel = 'noopener noreferrer';
+					actionBtn.textContent = i18n.corsDownload || 'Open / Download PDF directly';
+					corsCard.appendChild( actionBtn );
+
+					var adminHint = document.createElement( 'div' );
+					adminHint.className = 'foliora-cors-admin-hint';
+					adminHint.textContent = i18n.corsAdminHint || 'Site Admin: To enable direct embedding, configure Access-Control-Allow-Origin headers on the host server or upload the PDF to your WordPress Media Library.';
+					corsCard.appendChild( adminHint );
+
+					status.appendChild( corsCard );
+				} else {
+					status.textContent = i18n.error || 'This document could not be loaded.';
+					status.classList.add( 'foliora-error' );
+				}
+
+				try {
+					container.dispatchEvent( new CustomEvent( 'foliora:error', {
+						bubbles: true,
+						detail: { error: err, isCors: isCrossOrigin, url: fileUrl }
+					} ) );
+				} catch ( e ) {
+					// Fallback if CustomEvent fails
+				}
+
 				container.setAttribute( 'aria-busy', 'false' );
 			} );
 		}

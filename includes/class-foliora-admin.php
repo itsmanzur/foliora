@@ -364,6 +364,14 @@ class Foliora_Admin {
 			self::PAGE_SLUG,
 			'foliora_discover'
 		);
+
+		add_settings_field(
+			'embed_attachment_pages',
+			__( 'Attachment pages', 'foliora' ),
+			array( $this, 'field_embed_attachment_pages' ),
+			self::PAGE_SLUG,
+			'foliora_discover'
+		);
 	}
 
 	/**
@@ -408,6 +416,7 @@ class Foliora_Admin {
 			'index_pdf_text'         => $form ? ! empty( $input['index_pdf_text'] ) : ( $existing['index_pdf_text'] ?? true ),
 			'social_preview'         => $form ? ! empty( $input['social_preview'] ) : ( $existing['social_preview'] ?? true ),
 			'check_pdf_a11y'         => $form ? ! empty( $input['check_pdf_a11y'] ) : ( $existing['check_pdf_a11y'] ?? true ),
+			'embed_attachment_pages' => $form ? ! empty( $input['embed_attachment_pages'] ) : ( $existing['embed_attachment_pages'] ?? true ),
 			'setup_copied_shortcode' => $copied,
 		);
 	}
@@ -602,6 +611,17 @@ class Foliora_Admin {
 			esc_attr( self::OPTION_NAME ),
 			checked( $checked, true, false ),
 			esc_html__( 'Warn on Foliora → Documents when a PDF is not tagged. Tagged PDFs include structure (headings, reading order) that screen readers can follow.', 'foliora' )
+		);
+	}
+
+	public function field_embed_attachment_pages() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['embed_attachment_pages'] ) || ! empty( $settings['embed_attachment_pages'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[embed_attachment_pages]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Automatically display the interactive Foliora PDF viewer on standard WordPress PDF attachment pages.', 'foliora' )
 		);
 	}
 
@@ -1074,7 +1094,8 @@ class Foliora_Admin {
 									<strong><a href="<?php echo esc_url( $edit ); ?>"><?php echo esc_html( $title ); ?></a></strong>
 									<div class="row-actions">
 										<span class="edit"><a href="<?php echo esc_url( $edit ); ?>"><?php esc_html_e( 'Media', 'foliora' ); ?></a> | </span>
-										<span class="view"><a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open file', 'foliora' ); ?></a></span>
+										<span class="view"><a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open file', 'foliora' ); ?></a> | </span>
+										<span class="foliora-test-page"><button type="button" class="button-link foliora-doc-create-test-btn" data-pdf-url="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Create test page', 'foliora' ); ?></button></span>
 									</div>
 								</td>
 								<td>
