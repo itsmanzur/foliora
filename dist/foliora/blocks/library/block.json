@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "foliora/library",
+	"title": "Foliora Library",
+	"category": "media",
+	"icon": "grid-view",
+	"description": "A browsable grid of PDFs from the Media Library.",
+	"keywords": [ "pdf", "library", "gallery", "documents" ],
+	"textdomain": "foliora",
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 3
+		},
+		"per_page": {
+			"type": "number",
+			"default": 12
+		},
+		"orderby": {
+			"type": "string",
+			"default": "date"
+		},
+		"search": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "foliora-library-block-editor",
+	"editorStyle": "foliora-library",
+	"style": "foliora-library"
+}

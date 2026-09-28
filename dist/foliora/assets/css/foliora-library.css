@@ -1,0 +1,205 @@
+.foliora-library {
+	margin: 1.5em 0;
+}
+
+.foliora-library-search {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 0 0 16px;
+}
+
+.foliora-library-search input[type="search"] {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 8px 10px;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+}
+
+.foliora-library-search-submit {
+	padding: 8px 14px;
+	border: 1px solid #1d2327;
+	border-radius: 6px;
+	background: #1d2327;
+	color: #fff;
+	cursor: pointer;
+}
+
+.foliora-library-search-submit:hover,
+.foliora-library-search-submit:focus {
+	background: #2c3338;
+}
+
+.foliora-library-grid {
+	display: grid;
+	grid-template-columns: repeat(var(--foliora-cols, 3), minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.foliora-library-item {
+	margin: 0;
+	padding: 0;
+}
+
+.foliora-library-item.is-open {
+	grid-column: 1 / -1;
+}
+
+.foliora-library-card {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	background: #fff;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.foliora-library-card:hover,
+.foliora-library-card:focus {
+	border-color: #2271b1;
+}
+
+.foliora-library-card:focus-visible {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+.foliora-library-card[aria-expanded="true"] {
+	border-color: #1d2327;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.foliora-library-thumb {
+	display: block;
+	aspect-ratio: 3 / 4;
+	background: #f6f7f7;
+	overflow: hidden;
+}
+
+.foliora-library-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.foliora-library-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	color: #646970;
+}
+
+.foliora-library-title {
+	display: block;
+	padding: 10px 12px;
+	font-size: 14px;
+	line-height: 1.4;
+	font-weight: 600;
+}
+
+.foliora-library-embed {
+	margin: 0;
+	padding: 12px;
+	border: 1px solid #1d2327;
+	border-top: 0;
+	border-radius: 0 0 8px 8px;
+	background: #2c3338;
+}
+
+.foliora-library-embed .foliora-wrap {
+	margin: 0;
+}
+
+.foliora-library-pager {
+	margin-top: 20px;
+}
+
+.foliora-library-pager .page-numbers {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.foliora-library-pager .page-numbers li {
+	margin: 0;
+}
+
+.foliora-library-pager a,
+.foliora-library-pager span {
+	display: inline-block;
+	min-width: 2em;
+	padding: 4px 8px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.foliora-library-pager a:hover,
+.foliora-library-pager a:focus {
+	border-color: #2271b1;
+	color: #2271b1;
+}
+
+.foliora-library-pager .current {
+	background: #1d2327;
+	border-color: #1d2327;
+	color: #fff;
+}
+
+.foliora-library-empty {
+	padding: 32px 16px;
+	text-align: center;
+	background: #f6f7f7;
+	border: 1px dashed #c3c4c7;
+	border-radius: 8px;
+}
+
+@media (max-width: 720px) {
+	.foliora-library-grid {
+		grid-template-columns: repeat(min(2, var(--foliora-cols, 3)), minmax(0, 1fr));
+	}
+
+	.foliora-library-search-submit {
+		min-height: 44px;
+		padding: 10px 16px;
+	}
+
+	.foliora-library-search input[type="search"] {
+		min-height: 44px;
+		font-size: 16px;
+	}
+
+	.foliora-library-card {
+		min-height: 44px;
+	}
+}
+
+@media (max-width: 480px) {
+	.foliora-library-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.foliora-library-search {
+		flex-direction: column;
+		align-items: stretch;
+	}
+}

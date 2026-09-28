@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "foliora/viewer",
+	"title": "Foliora Viewer",
+	"category": "media",
+	"icon": "media-document",
+	"description": "Embed a PDF document with the Foliora viewer.",
+	"keywords": [ "pdf", "document", "viewer", "ebook" ],
+	"textdomain": "foliora",
+	"attributes": {
+		"file": {
+			"type": "string",
+			"default": ""
+		},
+		"width": {
+			"type": "string",
+			"default": "100%"
+		},
+		"height": {
+			"type": "string",
+			"default": "600px"
+		},
+		"page": {
+			"type": "number",
+			"default": 1
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"download": {
+			"type": "boolean",
+			"default": true
+		},
+		"print": {
+			"type": "boolean",
+			"default": true
+		},
+		"view": {
+			"type": "string",
+			"default": "page"
+		},
+		"resume": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "foliora-block-editor",
+	"editorStyle": "foliora-block-editor"
+}

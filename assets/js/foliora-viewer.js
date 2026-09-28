@@ -228,6 +228,7 @@
 		var zoomOutBtn = toolbar ? $( '.foliora-zoom-out', toolbar ) : null;
 		var zoomLabel = toolbar ? $( '.foliora-zoom-label', toolbar ) : null;
 		var fitBtn = toolbar ? $( '.foliora-fit', toolbar ) : null;
+		var downloadBtn = toolbar ? $( '.foliora-download', toolbar ) : null;
 		var rotateBtn = toolbar ? $( '.foliora-rotate', toolbar ) : null;
 		var viewBtn = toolbar ? $( '.foliora-view', toolbar ) : null;
 		var panBtn = toolbar ? $( '.foliora-pan', toolbar ) : null;
@@ -382,12 +383,33 @@
 			} catch ( e ) {}
 		}
 
-		function viewMode() {
+		function preferredView() {
 			return state.viewMode === 'scroll' || state.viewMode === 'spread' ? state.viewMode : 'page';
+		}
+
+		function isNarrow() {
+			return container.clientWidth > 0 && container.clientWidth < 640;
+		}
+
+		function viewMode() {
+			var mode = preferredView();
+			if ( mode === 'spread' && isNarrow() ) {
+				return 'page';
+			}
+			return mode;
 		}
 
 		function resumeKey() {
 			return 'foliora:page:' + fileUrl;
+		}
+
+		function pageFromHash() {
+			var hash = window.location.hash || '';
+			var match = hash.match( /^#(?:foliora-)?page=(\d+)/i );
+			if ( match ) {
+				return parseInt( match[ 1 ], 10 );
+			}
+			return 0;
 		}
 
 		function persistLocation() {
@@ -395,7 +417,7 @@
 			persistTimer = window.setTimeout( function () {
 				if ( container.getAttribute( 'data-hash' ) !== '0' ) {
 					var cur = window.location.hash || '';
-					var allowed = ! cur || /^#page=\d+/i.test( cur );
+					var allowed = ! cur || /^#(?:foliora-)?page=\d+/i.test( cur );
 					if ( allowed && window.history && window.history.replaceState ) {
 						var next = '#page=' + state.page;
 						if ( cur !== next ) {
@@ -413,13 +435,25 @@
 			}, 80 );
 		}
 
-		function dispatchPage() {
+		function dispatchEvent( name, detail ) {
+			var evDetail = { fileUrl: fileUrl };
+			if ( detail && typeof detail === 'object' ) {
+				for ( var k in detail ) {
+					if ( Object.prototype.hasOwnProperty.call( detail, k ) ) {
+						evDetail[ k ] = detail[ k ];
+					}
+				}
+			}
 			container.dispatchEvent(
-				new CustomEvent( 'foliora:pagechange', {
+				new CustomEvent( name, {
 					bubbles: true,
-					detail: { page: state.page, numPages: state.numPages },
+					detail: evDetail,
 				} )
 			);
+		}
+
+		function dispatchPage() {
+			dispatchEvent( 'foliora:pagechange', { page: state.page, numPages: state.numPages } );
 		}
 
 		function highlightCurrentThumb() {
@@ -435,7 +469,7 @@
 		}
 
 		function viewLabel() {
-			var mode = viewMode();
+			var mode = preferredView();
 			if ( mode === 'scroll' ) {
 				return i18n.viewScroll || 'Continuous scroll';
 			}
@@ -452,7 +486,7 @@
 			var label = viewLabel();
 			viewBtn.setAttribute( 'title', label );
 			viewBtn.setAttribute( 'aria-label', label );
-			viewBtn.classList.toggle( 'is-active', viewMode() !== 'page' );
+			viewBtn.classList.toggle( 'is-active', preferredView() !== 'page' );
 		}
 
 		function updateFindStatus() {
@@ -500,8 +534,12 @@
 			}
 			if ( fitBtn ) {
 				var widthMode = state.fitMode === 'width';
+				// Label describes what clicking will switch TO, matching cycleFit():
+				// from 'page' it goes to width, from anything else (including a
+				// manual zoom left in fitMode 'none') it goes to page.
+				var nextIsWidth = state.fitMode === 'page';
 				fitBtn.classList.toggle( 'is-width', widthMode );
-				fitBtn.setAttribute( 'title', widthMode ? ( i18n.fitPage || 'Fit page' ) : ( i18n.fitWidth || 'Fit width' ) );
+				fitBtn.setAttribute( 'title', nextIsWidth ? ( i18n.fitWidth || 'Fit width' ) : ( i18n.fitPage || 'Fit page' ) );
 				fitBtn.setAttribute( 'aria-label', fitBtn.getAttribute( 'title' ) );
 			}
 			if ( pageLive ) {
@@ -815,6 +853,35 @@
 			} );
 		}
 
+		function releaseSlotCanvas( slot ) {
+			if ( ! slot ) {
+				return;
+			}
+			if ( slot.task && slot.task.cancel ) {
+				try {
+					slot.task.cancel();
+				} catch ( err ) {
+					// Ignore task cancellation error.
+				}
+				slot.task = null;
+			}
+			if ( slot.rendered ) {
+				slot.rendered = false;
+				slot.canvas.width = 1;
+				slot.canvas.height = 1;
+				var ctx = slot.canvas.getContext( '2d' );
+				if ( ctx ) {
+					ctx.clearRect( 0, 0, 1, 1 );
+				}
+				if ( slot.textLayer ) {
+					slot.textLayer.replaceChildren();
+				}
+				if ( slot.annotLayer ) {
+					slot.annotLayer.replaceChildren();
+				}
+			}
+		}
+
 		function disconnectPageObserver() {
 			if ( pageObserver && pageObserver.disconnect ) {
 				pageObserver.disconnect();
@@ -848,13 +915,7 @@
 		function rebuildSlots() {
 			disconnectPageObserver();
 			slots.forEach( function ( slot ) {
-				if ( slot.task && slot.task.cancel ) {
-					try {
-						slot.task.cancel();
-					} catch ( err ) {
-						// Ignore cancelled work.
-					}
-				}
+				releaseSlotCanvas( slot );
 			} );
 			slots = [];
 			clearChildren( pagesEl );
@@ -882,8 +943,12 @@
 								if ( ! slot.rendered ) {
 									renderSlot( slot );
 								}
-							} else if ( state.numPages > 10 && Math.abs( n - state.page ) > 5 ) {
-								unloadSlot( slot );
+							} else {
+								// Memory virtualization: release canvas memory if the page is far
+								// from the user's active viewport (prevents iOS Safari memory crashes).
+								if ( slot.rendered && Math.abs( slot.pageNum - state.page ) > 3 ) {
+									releaseSlotCanvas( slot );
+								}
 							}
 						} );
 					},
@@ -937,10 +1002,27 @@
 			}
 		}
 
+		function showRenderError( err ) {
+			if ( err && err.name === 'RenderingCancelledException' ) {
+				return;
+			}
+			if ( window.console && window.console.error ) {
+				window.console.error( 'Foliora: page render failed', err );
+			}
+			if ( ! status.parentNode ) {
+				container.appendChild( status );
+			}
+			status.hidden = false;
+			status.classList.add( 'foliora-error' );
+			status.textContent = i18n.error || 'This document could not be loaded.';
+			dispatchEvent( 'foliora:error', { stage: 'render' } );
+		}
+
 		function renderCurrent() {
 			if ( ! state.pdf ) {
 				return Promise.resolve();
 			}
+			container.classList.toggle( 'is-narrow', isNarrow() );
 			var mode = viewMode();
 			var expected = visibleNums();
 			if ( ! slotsMatch( expected ) ) {
@@ -965,7 +1047,7 @@
 				return chain.then( function () {
 					scrollSlotIntoView( state.page );
 					updateToolbar();
-				} );
+				} ).catch( showRenderError );
 			}
 
 			var all = Promise.resolve();
@@ -976,7 +1058,7 @@
 			} );
 			return all.then( function () {
 				updateToolbar();
-			} );
+			} ).catch( showRenderError );
 		}
 
 		function goTo( page, opts ) {
@@ -1005,7 +1087,7 @@
 					scrollSlotIntoView( page );
 					updateToolbar();
 					after();
-				} );
+				} ).catch( showRenderError );
 			}
 			return renderCurrent().then( after );
 		}
@@ -1036,6 +1118,7 @@
 			state.fitMode = 'none';
 			state.zoom = clamp( next, 0.4, 3 );
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: state.zoom, fitMode: 'none' } );
 		}
 
 		function zoomBy( delta ) {
@@ -1046,12 +1129,14 @@
 			state.fitMode = 'page';
 			state.zoom = 1;
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: 1, fitMode: 'page' } );
 		}
 
 		function fitWidth() {
 			state.fitMode = 'width';
 			state.zoom = 1;
 			renderCurrent();
+			dispatchEvent( 'foliora:zoom', { zoom: 1, fitMode: 'width' } );
 		}
 
 		function cycleFit() {
@@ -1068,7 +1153,7 @@
 		}
 
 		function cycleView() {
-			var i = VIEW_MODES.indexOf( viewMode() );
+			var i = VIEW_MODES.indexOf( preferredView() );
 			var next = VIEW_MODES[ ( i + 1 ) % VIEW_MODES.length ];
 			state.viewMode = next;
 			container.setAttribute( 'data-view', next );
@@ -1090,10 +1175,43 @@
 			pagesEl.style.overflow = ( viewMode() === 'scroll' || state.fitMode === 'none' || state.tool === 'pan' ) ? 'auto' : 'hidden';
 		}
 
+		function isCoarsePointer() {
+			return !!( window.matchMedia && window.matchMedia( '(pointer: coarse)' ).matches );
+		}
+
+		function isFs() {
+			return !!( document.fullscreenElement || document.webkitFullscreenElement );
+		}
+
+		function requestFs( node ) {
+			var fn = node.requestFullscreen || node.webkitRequestFullscreen || node.msRequestFullscreen;
+			if ( ! fn ) {
+				return;
+			}
+			var req = fn.call( node );
+			if ( req && req.catch ) {
+				req.catch( function () {
+					return undefined;
+				} );
+			}
+		}
+
+		function exitFs() {
+			var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+			if ( fn ) {
+				fn.call( document );
+			}
+		}
+
 		function setPresentation( on ) {
 			state.presentation = !! on;
 			if ( shell ) {
 				shell.classList.toggle( 'is-present', state.presentation );
+				if ( ! state.presentation ) {
+					shell.classList.remove( 'is-present-show' );
+				} else if ( isCoarsePointer() ) {
+					shell.classList.add( 'is-present-show' );
+				}
 			}
 			if ( presentBtn ) {
 				presentBtn.classList.toggle( 'is-active', state.presentation );
@@ -1101,51 +1219,92 @@
 			}
 			var node = shell || container;
 			if ( state.presentation ) {
-				if ( ! document.fullscreenElement && node.requestFullscreen ) {
-					var req = node.requestFullscreen();
-					if ( req && req.catch ) {
-						req.catch( function () {
-							return undefined;
-						} );
-					}
+				if ( ! isFs() ) {
+					requestFs( node );
 				}
-			} else if ( document.fullscreenElement && document.exitFullscreen ) {
-				document.exitFullscreen();
-			}
-		}
-
-		function printCurrent() {
-			var slot = slots.filter( function ( s ) {
-				return s.pageNum === state.page;
-			} )[ 0 ] || slots[ 0 ];
-			if ( ! slot ) {
-				return;
-			}
-			try {
-				var url = slot.canvas.toDataURL( 'image/png' );
-				var frame = window.open( '', '_blank' );
-				if ( ! frame ) {
-					return;
-				}
-				frame.document.write(
-					'<!DOCTYPE html><title>Print</title><img src="' +
-						url +
-						'" style="max-width:100%;" onload="window.focus();window.print();" />'
-				);
-				frame.document.close();
-			} catch ( err ) {
-				window.open( fileUrl, '_blank', 'noopener,noreferrer' );
+			} else if ( isFs() ) {
+				exitFs();
 			}
 		}
 
 		function toggleFullscreen() {
 			var node = shell || container;
-			if ( ! document.fullscreenElement ) {
-				if ( node.requestFullscreen ) {
-					node.requestFullscreen();
+			if ( ! isFs() ) {
+				requestFs( node );
+			} else {
+				exitFs();
+			}
+		}
+
+		/**
+		 * Pages to print for the current view mode: both sides of a spread,
+		 * every rendered page near the viewport in scroll mode, or just the
+		 * current page otherwise. Falls back to whatever slot is actually
+		 * rendered so a virtualized (released) canvas is never printed blank.
+		 */
+		function printPageNums() {
+			var mode = viewMode();
+			if ( mode === 'spread' ) {
+				return spreadPages( state.page );
+			}
+			if ( mode === 'scroll' ) {
+				var rendered = slots
+					.filter( function ( s ) {
+						return s.rendered;
+					} )
+					.map( function ( s ) {
+						return s.pageNum;
+					} );
+				return rendered.length ? rendered : [ state.page ];
+			}
+			return [ state.page ];
+		}
+
+		function printCurrent() {
+			var printSlots = printPageNums()
+				.map( function ( n ) {
+					return slots.filter( function ( s ) {
+						return s.pageNum === n;
+					} )[ 0 ];
+				} )
+				.filter( function ( s ) {
+					return s && s.rendered;
+				} );
+
+			if ( ! printSlots.length ) {
+				printSlots = slots.filter( function ( s ) {
+					return s.rendered;
+				} );
+			}
+			if ( ! printSlots.length ) {
+				return;
+			}
+
+			dispatchEvent( 'foliora:print', {
+				page: state.page,
+				pages: printSlots.map( function ( s ) {
+					return s.pageNum;
+				} ),
+			} );
+
+			try {
+				var images = printSlots
+					.map( function ( s ) {
+						return '<img src="' + s.canvas.toDataURL( 'image/png' ) + '" style="max-width:100%;display:block;page-break-after:always;" />';
+					} )
+					.join( '' );
+				var frame = window.open( '', '_blank' );
+				if ( ! frame ) {
+					return;
 				}
-			} else if ( document.exitFullscreen ) {
-				document.exitFullscreen();
+				frame.document.write(
+					'<!DOCTYPE html><title>Print</title>' +
+						images +
+						'<script>window.onload=function(){window.focus();window.print();};</script>'
+				);
+				frame.document.close();
+			} catch ( err ) {
+				window.open( fileUrl, '_blank', 'noopener,noreferrer' );
 			}
 		}
 
@@ -1188,6 +1347,7 @@
 				if ( ! state.findHits.length ) {
 					highlightAll( query );
 					updateFindStatus();
+					dispatchEvent( 'foliora:search', { query: query, hitsCount: 0 } );
 					return Promise.resolve();
 				}
 				if ( dir ) {
@@ -1197,6 +1357,7 @@
 				return goTo( page ).then( function () {
 					highlightAll( query );
 					updateFindStatus();
+					dispatchEvent( 'foliora:search', { query: query, hitsCount: state.findHits.length, currentHit: state.findAt + 1 } );
 				} );
 			}
 
@@ -1435,15 +1596,19 @@
 					return undefined;
 				} );
 			}
+			dispatchEvent( 'foliora:ready', {
+				numPages: state.numPages,
+				viewMode: viewMode(),
+			} );
 			return goTo( initialPage(), { silent: true } );
 		}
 
 		function initialPage() {
 			var fromAttr = parseInt( container.getAttribute( 'data-page' ), 10 ) || 1;
 			if ( container.getAttribute( 'data-hash' ) !== '0' ) {
-				var match = ( window.location.hash || '' ).match( /^#page=(\d+)/i );
-				if ( match ) {
-					return parseInt( match[ 1 ], 10 ) || fromAttr;
+				var fromHash = pageFromHash();
+				if ( fromHash > 0 ) {
+					return fromHash;
 				}
 			}
 			if ( fromAttr > 1 ) {
@@ -1461,6 +1626,17 @@
 			}
 			return fromAttr;
 		}
+
+		function onHashChange() {
+			if ( container.getAttribute( 'data-hash' ) === '0' || ! state.pdf ) {
+				return;
+			}
+			var p = pageFromHash();
+			if ( p > 0 && p !== state.page ) {
+				goTo( p );
+			}
+		}
+		window.addEventListener( 'hashchange', onHashChange );
 
 		function showPasswordForm( updatePassword, reason ) {
 			passwordUpdate = updatePassword;
@@ -1533,6 +1709,12 @@
 		container.__folioraGetPage = function () {
 			return state.page;
 		};
+
+		if ( downloadBtn ) {
+			downloadBtn.addEventListener( 'click', function () {
+				dispatchEvent( 'foliora:download', { fileUrl: fileUrl } );
+			} );
+		}
 
 		if ( tocBtn ) {
 			tocBtn.addEventListener( 'click', function () {
@@ -1648,6 +1830,30 @@
 				moreBtn.setAttribute( 'aria-expanded', toolbar.classList.contains( 'is-more-open' ) ? 'true' : 'false' );
 			} );
 		}
+		var presentTap = null;
+		if ( shell ) {
+			shell.addEventListener( 'pointerdown', function ( e ) {
+				if ( ! state.presentation ) {
+					return;
+				}
+				presentTap = { x: e.clientX, y: e.clientY };
+			} );
+			shell.addEventListener( 'pointerup', function ( e ) {
+				if ( ! state.presentation || ! presentTap ) {
+					return;
+				}
+				var dx = Math.abs( e.clientX - presentTap.x );
+				var dy = Math.abs( e.clientY - presentTap.y );
+				presentTap = null;
+				if ( dx > 12 || dy > 12 ) {
+					return;
+				}
+				if ( e.target && e.target.closest && e.target.closest( '.foliora-chrome, .foliora-side' ) ) {
+					return;
+				}
+				shell.classList.toggle( 'is-present-show' );
+			} );
+		}
 		if ( findInput ) {
 			findInput.addEventListener( 'keydown', function ( e ) {
 				if ( e.key === 'Enter' ) {
@@ -1678,6 +1884,8 @@
 		var didPinch = false;
 		var pinchStartDist = 0;
 		var pinchStartZoom = 1;
+		var pinchRatio = 1;
+		var pinchCenter = { x: 0, y: 0 };
 		var pan = { active: false, x: 0, y: 0, sl: 0, st: 0 };
 
 		pagesEl.addEventListener( 'pointerdown', function ( e ) {
@@ -1715,6 +1923,14 @@
 				swipeStart = null;
 				pinchStartDist = touchDistance( e.touches[ 0 ], e.touches[ 1 ] );
 				pinchStartZoom = state.fitMode === 'none' ? state.zoom : 1;
+				pinchRatio = 1;
+				var rect = pagesEl.getBoundingClientRect();
+				pinchCenter = {
+					x: ( ( e.touches[ 0 ].clientX + e.touches[ 1 ].clientX ) / 2 ) - rect.left,
+					y: ( ( e.touches[ 0 ].clientY + e.touches[ 1 ].clientY ) / 2 ) - rect.top,
+				};
+				pagesEl.style.transformOrigin = pinchCenter.x + 'px ' + pinchCenter.y + 'px';
+				pagesEl.style.willChange = 'transform';
 			} else if ( e.touches.length === 1 && ! didPinch && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
 				swipeStart = { x: e.touches[ 0 ].clientX, y: e.touches[ 0 ].clientY };
 			}
@@ -1723,9 +1939,11 @@
 		pagesEl.addEventListener( 'touchmove', function ( e ) {
 			if ( e.touches.length >= 2 && pinchStartDist > 0 ) {
 				e.preventDefault();
-				var ratio = touchDistance( e.touches[ 0 ], e.touches[ 1 ] ) / pinchStartDist;
-				if ( ratio && isFinite( ratio ) ) {
-					setZoom( pinchStartZoom * ratio );
+				var dist = touchDistance( e.touches[ 0 ], e.touches[ 1 ] );
+				pinchRatio = dist / pinchStartDist;
+				if ( pinchRatio && isFinite( pinchRatio ) ) {
+					// Phase 1: Hardware-accelerated GPU transform (smooth 60/120 fps, no canvas redraws)
+					pagesEl.style.transform = 'scale(' + pinchRatio + ')';
 				}
 			}
 		}, { passive: false } );
@@ -1734,7 +1952,21 @@
 			if ( e.touches.length > 0 ) {
 				return;
 			}
-			if ( ! didPinch && swipeStart && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
+			if ( didPinch ) {
+				// Phase 2: Clear GPU transform and perform a single high-resolution canvas redraw
+				pagesEl.style.transform = '';
+				pagesEl.style.transformOrigin = '';
+				pagesEl.style.willChange = '';
+				if ( pinchRatio && isFinite( pinchRatio ) && Math.abs( pinchRatio - 1 ) > 0.04 ) {
+					setZoom( pinchStartZoom * pinchRatio );
+				}
+				didPinch = false;
+				pinchStartDist = 0;
+				pinchRatio = 1;
+				swipeStart = null;
+				return;
+			}
+			if ( swipeStart && viewMode() !== 'scroll' && state.tool !== 'pan' ) {
 				var endX = ( e.changedTouches[ 0 ] && e.changedTouches[ 0 ].clientX ) || swipeStart.x;
 				var endY = ( e.changedTouches[ 0 ] && e.changedTouches[ 0 ].clientY ) || swipeStart.y;
 				var dx = endX - swipeStart.x;
@@ -1750,6 +1982,7 @@
 			swipeStart = null;
 			didPinch = false;
 			pinchStartDist = 0;
+			pinchRatio = 1;
 		}, { passive: true } );
 
 		pagesEl.addEventListener( 'scroll', function () {
@@ -1795,8 +2028,9 @@
 					setPresentation( false );
 					return;
 				}
-				if ( document.fullscreenElement && document.exitFullscreen ) {
-					document.exitFullscreen();
+				if ( isFs() ) {
+					e.preventDefault();
+					exitFs();
 				}
 				return;
 			}
@@ -1888,11 +2122,12 @@
 			} ).observe( container );
 		}
 
-		document.addEventListener( 'fullscreenchange', function () {
-			if ( ! document.fullscreenElement && state.presentation ) {
+		function onFsChange() {
+			if ( ! isFs() && state.presentation ) {
 				state.presentation = false;
 				if ( shell ) {
 					shell.classList.remove( 'is-present' );
+					shell.classList.remove( 'is-present-show' );
 				}
 				if ( presentBtn ) {
 					presentBtn.classList.remove( 'is-active' );
@@ -1902,7 +2137,9 @@
 			if ( state.pdf ) {
 				renderCurrent();
 			}
-		} );
+		}
+		document.addEventListener( 'fullscreenchange', onFsChange );
+		document.addEventListener( 'webkitfullscreenchange', onFsChange );
 
 		function startLoadingDocument() {
 			var loadingTask = window.pdfjsLib.getDocument( {
@@ -1969,19 +2206,58 @@
 		}
 	}
 
+	var viewerObserver = null;
+
 	function init() {
-		document.querySelectorAll( '.foliora-viewer[data-file]:not([data-foliora-defer]):not([data-foliora-bound])' ).forEach( function ( container ) {
-			var toolbar = container.id
-				? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
-				: null;
-			bindViewer( container, toolbar );
-		} );
+		var containers = Array.prototype.slice.call(
+			document.querySelectorAll( '.foliora-viewer[data-file]:not([data-foliora-defer]):not([data-foliora-bound])' )
+		);
+		if ( ! containers.length ) {
+			return;
+		}
+
+		if ( typeof window.IntersectionObserver === 'function' ) {
+			if ( ! viewerObserver ) {
+				viewerObserver = new window.IntersectionObserver(
+					function ( entries ) {
+						entries.forEach( function ( entry ) {
+							if ( entry.isIntersecting ) {
+								viewerObserver.unobserve( entry.target );
+								var container = entry.target;
+								var toolbar = container.id
+									? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
+									: null;
+								bindViewer( container, toolbar );
+							}
+						} );
+					},
+					{ rootMargin: '300px 0px', threshold: 0.01 }
+				);
+			}
+			containers.forEach( function ( container ) {
+				viewerObserver.observe( container );
+			} );
+		} else {
+			containers.forEach( function ( container ) {
+				var toolbar = container.id
+					? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )
+					: null;
+				bindViewer( container, toolbar );
+			} );
+		}
 	}
 
 	window.FolioraViewer = {
 		bind: function ( container ) {
 			if ( ! container ) {
 				return;
+			}
+			if ( viewerObserver ) {
+				try {
+					viewerObserver.unobserve( container );
+				} catch ( err ) {
+					// Ignore observer error.
+				}
 			}
 			var toolbar = container.id
 				? document.querySelector( '.foliora-toolbar[data-target="' + container.id + '"]' )

@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Foliora_Library {
 
+	use Foliora_Att_Flag;
+
 	/**
 	 * @var bool
 	 */
@@ -185,13 +187,13 @@ class Foliora_Library {
 			if ( isset( $_GET ) && is_array( $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- preserve public query args.
 				foreach ( wp_unslash( $_GET ) as $key => $value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- preserve public query args.
 					$key = sanitize_key( $key );
-					if ( ! $key || $key === $search_var || $key === $query_var || is_array( $value ) ) {
+					if ( ! $key || $key === $search_var || $key === $query_var || ! is_scalar( $value ) ) {
 						continue;
 					}
 					printf(
 						'<input type="hidden" name="%1$s" value="%2$s" />',
 						esc_attr( $key ),
-						esc_attr( sanitize_text_field( $value ) )
+						esc_attr( sanitize_text_field( (string) $value ) )
 					);
 				}
 			}
@@ -280,22 +282,6 @@ class Foliora_Library {
 		return '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2="12" y2="17" /></svg>';
 	}
 
-	private function att_flag( $value, $default ) {
-		if ( is_bool( $value ) ) {
-			return $value;
-		}
-		if ( null === $value || '' === $value ) {
-			return (bool) $default;
-		}
-		$v = strtolower( (string) $value );
-		if ( in_array( $v, array( '0', 'false', 'no', 'off' ), true ) ) {
-			return false;
-		}
-		if ( in_array( $v, array( '1', 'true', 'yes', 'on' ), true ) ) {
-			return true;
-		}
-		return (bool) $default;
-	}
 
 	private function clamp_int( $value, $min, $max, $default ) {
 		$n = absint( $value );

@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Foliora_Viewer {
 
+	use Foliora_Att_Flag;
+
 	/**
 	 * Track whether we've already enqueued assets for this request, so
 	 * multiple shortcodes on one page don't double-load PDF.js.
@@ -153,10 +155,20 @@ class Foliora_Viewer {
 
 		$file_src = apply_filters( 'foliora/viewer_file_url', $atts['file'], $atts );
 
+		$noscript = sprintf(
+			'<noscript><div class="foliora-noscript"><p><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p></div></noscript>',
+			esc_url( $file_src ),
+			sprintf(
+				/* translators: %s: document title or fallback */
+				esc_html__( 'Open document: %s (PDF)', 'foliora' ),
+				esc_html( '' !== $title ? $title : wp_basename( (string) $file_src ) )
+			)
+		);
+
 		$modals = $this->render_modals();
 
 		$container = sprintf(
-			'<div class="foliora-wrap" style="width:%1$s;" role="region" aria-label="%7$s">%9$s<div class="foliora-shell foliora-theme-%14$s" style="height:%2$s;"><div class="foliora-chrome" style="display:flex;flex-wrap:nowrap;align-items:center;">%3$s%4$s</div><div id="%5$s" class="foliora-viewer" data-file="%6$s" data-page="%10$s" data-hash="%11$s" data-view="%12$s" data-resume="%13$s" data-theme="%14$s" data-loading="%15$s" tabindex="0" role="document" aria-busy="true"></div>%16$s</div>%8$s</div>',
+			'<div class="foliora-wrap" style="width:%1$s;" role="region" aria-label="%7$s">%9$s<div class="foliora-shell foliora-theme-%14$s" style="height:%2$s;"><div class="foliora-chrome" style="display:flex;flex-wrap:nowrap;align-items:center;">%3$s%4$s</div><div id="%5$s" class="foliora-viewer" data-file="%6$s" data-page="%10$s" data-hash="%11$s" data-view="%12$s" data-resume="%13$s" data-theme="%14$s" data-loading="%15$s" tabindex="0" role="document" aria-busy="true">%17$s</div>%16$s</div>%8$s</div>',
 			esc_attr( $atts['width'] ),
 			esc_attr( $atts['height'] ),
 			$before,
@@ -172,7 +184,8 @@ class Foliora_Viewer {
 			$resume ? '1' : '0',
 			esc_attr( $initial_theme ),
 			$is_lazy ? 'lazy' : 'eager',
-			$modals
+			$modals,
+			$noscript
 		);
 
 		/**
@@ -576,22 +589,6 @@ class Foliora_Viewer {
 		);
 	}
 
-	private function att_flag( $value, $default ) {
-		if ( is_bool( $value ) ) {
-			return $value;
-		}
-		if ( null === $value || '' === $value ) {
-			return (bool) $default;
-		}
-		$v = strtolower( (string) $value );
-		if ( in_array( $v, array( '0', 'false', 'no', 'off' ), true ) ) {
-			return false;
-		}
-		if ( in_array( $v, array( '1', 'true', 'yes', 'on' ), true ) ) {
-			return true;
-		}
-		return (bool) $default;
-	}
 
 	/**
 	 * Small inline "upgrade to unlock" block, shown in place of a locked
