@@ -1850,7 +1850,7 @@
 					moreBtn.classList.remove( 'is-active' );
 				}
 			} );
-			$( '.foliora-more-item', moreMenu ).forEach( function ( item ) {
+			$$( '.foliora-more-item', moreMenu ).forEach( function ( item ) {
 				item.addEventListener( 'click', function () {
 					moreMenu.hidden = true;
 					moreBtn.setAttribute( 'aria-expanded', 'false' );
