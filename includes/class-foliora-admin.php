@@ -1008,34 +1008,55 @@ class Foliora_Admin {
 
 			<div class="foliora-docs-guide-box">
 				<div class="foliora-docs-guide-header">
-					<span class="dashicons dashicons-info-outline foliora-guide-icon" aria-hidden="true"></span>
-					<div>
+					<div class="foliora-guide-header-icon">
+						<span class="dashicons dashicons-media-document" aria-hidden="true"></span>
+					</div>
+					<div class="foliora-guide-header-text">
 						<h3><?php esc_html_e( 'How to Embed & Use Your Documents', 'foliora' ); ?></h3>
 						<p><?php esc_html_e( 'All PDFs in your WordPress Media Library appear below. Files stay safely in Media without duplicating storage. Here are the easiest ways to embed them:', 'foliora' ); ?></p>
 					</div>
 				</div>
+
 				<div class="foliora-docs-guide-grid">
-					<div class="foliora-guide-col">
-						<span class="foliora-guide-tag"><?php esc_html_e( '1. Shortcode Copy', 'foliora' ); ?></span>
+					<div class="foliora-guide-card">
+						<div class="foliora-guide-card-top">
+							<span class="foliora-guide-step-pill">1</span>
+							<span class="foliora-guide-card-title"><?php esc_html_e( 'Shortcode Copy', 'foliora' ); ?></span>
+						</div>
 						<p><?php esc_html_e( 'Click "Copy" on any row to copy [foliora file="..."] and paste it into classic editor, pages, or widgets.', 'foliora' ); ?></p>
 					</div>
-					<div class="foliora-guide-col">
-						<span class="foliora-guide-tag"><?php esc_html_e( '2. 1-Click Test Page', 'foliora' ); ?></span>
+					<div class="foliora-guide-card">
+						<div class="foliora-guide-card-top">
+							<span class="foliora-guide-step-pill">2</span>
+							<span class="foliora-guide-card-title"><?php esc_html_e( '1-Click Test Page', 'foliora' ); ?></span>
+						</div>
 						<p><?php esc_html_e( 'Hover over any document title and click "Create test page" to publish and preview instantly in a new tab.', 'foliora' ); ?></p>
 					</div>
-					<div class="foliora-guide-col">
-						<span class="foliora-guide-tag"><?php esc_html_e( '3. 3D FlipBook Mode', 'foliora' ); ?></span>
+					<div class="foliora-guide-card">
+						<div class="foliora-guide-card-top">
+							<span class="foliora-guide-step-pill">3</span>
+							<span class="foliora-guide-card-title"><?php esc_html_e( '3D FlipBook Mode', 'foliora' ); ?></span>
+						</div>
 						<p><?php esc_html_e( 'Add view="flip" to your shortcode (e.g. [foliora file="..." view="flip"]) for realistic 3D page turning with sound.', 'foliora' ); ?></p>
 					</div>
-					<div class="foliora-guide-col">
-						<span class="foliora-guide-tag"><?php esc_html_e( '4. Gutenberg & oEmbed', 'foliora' ); ?></span>
+					<div class="foliora-guide-card">
+						<div class="foliora-guide-card-top">
+							<span class="foliora-guide-step-pill">4</span>
+							<span class="foliora-guide-card-title"><?php esc_html_e( 'Gutenberg & oEmbed', 'foliora' ); ?></span>
+						</div>
 						<p><?php esc_html_e( 'Use the "Foliora Viewer" block, or simply paste any direct .pdf link on a new line to auto-embed.', 'foliora' ); ?></p>
 					</div>
 				</div>
+
 				<div class="foliora-guide-footer">
-					<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
-					<span><?php esc_html_e( 'Opening this screen automatically generates first-page preview thumbnails, indexes PDF text for site search, and checks accessibility tags.', 'foliora' ); ?></span>
-					<a class="button button-secondary foliora-guide-more-btn" href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::DOCS_SLUG . '&tab=docs' ) ); ?>"><?php esc_html_e( 'Open Full Documentation & Cheatsheet →', 'foliora' ); ?></a>
+					<div class="foliora-guide-footer-status">
+						<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
+						<span><?php esc_html_e( 'Opening this screen automatically generates first-page preview thumbnails, indexes PDF text for site search, and checks accessibility tags.', 'foliora' ); ?></span>
+					</div>
+					<a class="foliora-guide-btn-doc" href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::DOCS_SLUG . '&tab=docs' ) ); ?>">
+						<span><?php esc_html_e( 'Full Documentation & Cheatsheet', 'foliora' ); ?></span>
+						<span class="dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
+					</a>
 				</div>
 			</div>
 			<p class="foliora-thumb-status" hidden><?php esc_html_e( 'Generating thumbnails, indexing PDF text, and checking accessibility tags…', 'foliora' ); ?></p>
