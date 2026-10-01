@@ -1000,9 +1000,37 @@ class Foliora_Admin {
 				<?php $this->render_features_tab( $is_pro ); ?>
 			<?php else : ?>
 
-			<p class="foliora-card-help">
-				<?php esc_html_e( 'PDFs already in the Media Library. Copy a shortcode to embed one with Foliora — files stay in Media, not in a separate library. Opening this screen generates first-page thumbnails, extracts PDF text for WordPress search, and checks whether each file is a tagged (accessible) PDF.', 'foliora' ); ?>
-			</p>
+			<div class="foliora-docs-guide-box">
+				<div class="foliora-docs-guide-header">
+					<span class="dashicons dashicons-info-outline foliora-guide-icon" aria-hidden="true"></span>
+					<div>
+						<h3><?php esc_html_e( 'How to Embed & Use Your Documents', 'foliora' ); ?></h3>
+						<p><?php esc_html_e( 'All PDFs in your WordPress Media Library appear below. Files stay safely in Media without duplicating storage. Here are the easiest ways to embed them:', 'foliora' ); ?></p>
+					</div>
+				</div>
+				<div class="foliora-docs-guide-grid">
+					<div class="foliora-guide-col">
+						<span class="foliora-guide-tag"><?php esc_html_e( '1. Shortcode Copy', 'foliora' ); ?></span>
+						<p><?php esc_html_e( 'Click "Copy" on any row to copy [foliora file="..."] and paste it into classic editor, pages, or widgets.', 'foliora' ); ?></p>
+					</div>
+					<div class="foliora-guide-col">
+						<span class="foliora-guide-tag"><?php esc_html_e( '2. 1-Click Test Page', 'foliora' ); ?></span>
+						<p><?php esc_html_e( 'Hover over any document title and click "Create test page" to publish and preview instantly in a new tab.', 'foliora' ); ?></p>
+					</div>
+					<div class="foliora-guide-col">
+						<span class="foliora-guide-tag"><?php esc_html_e( '3. 3D FlipBook Mode', 'foliora' ); ?></span>
+						<p><?php esc_html_e( 'Add view="flip" to your shortcode (e.g. [foliora file="..." view="flip"]) for realistic 3D page turning with sound.', 'foliora' ); ?></p>
+					</div>
+					<div class="foliora-guide-col">
+						<span class="foliora-guide-tag"><?php esc_html_e( '4. Gutenberg & oEmbed', 'foliora' ); ?></span>
+						<p><?php esc_html_e( 'Use the "Foliora Viewer" block, or simply paste any direct .pdf link on a new line to auto-embed.', 'foliora' ); ?></p>
+					</div>
+				</div>
+				<div class="foliora-guide-footer">
+					<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
+					<span><?php esc_html_e( 'Opening this screen automatically generates first-page preview thumbnails, indexes PDF text for site search, and checks accessibility tags.', 'foliora' ); ?></span>
+				</div>
+			</div>
 			<p class="foliora-thumb-status" hidden><?php esc_html_e( 'Generating thumbnails, indexing PDF text, and checking accessibility tags…', 'foliora' ); ?></p>
 
 			<form method="get" class="foliora-docs-search">

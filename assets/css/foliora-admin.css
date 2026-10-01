@@ -1103,3 +1103,93 @@ a.foliora-metric:focus {
 	padding-top: 14px;
 	border-top: 1px solid #f3e8ff;
 }
+
+/* ==========================================================================
+   Documents Usage Guide Box Styles
+   ========================================================================== */
+.foliora-docs-guide-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-left: 4px solid #2271b1;
+	border-radius: 6px;
+	padding: 16px 20px;
+	margin: 16px 0 20px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.foliora-docs-guide-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.foliora-guide-icon {
+	color: #2271b1;
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+.foliora-docs-guide-header h3 {
+	margin: 0 0 4px;
+	font-size: 15px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.foliora-docs-guide-header p {
+	margin: 0;
+	font-size: 13px;
+	color: #50575e;
+	line-height: 1.4;
+}
+
+.foliora-docs-guide-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 14px;
+	padding: 12px 0;
+	border-top: 1px solid #f0f0f1;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.foliora-guide-col {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.foliora-guide-tag {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #2271b1;
+}
+
+.foliora-guide-col p {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.45;
+	color: #646970;
+}
+
+.foliora-guide-footer {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 12px;
+	font-size: 12px;
+	color: #2c3338;
+}
+
+.foliora-guide-footer .dashicons {
+	color: #008a20;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
