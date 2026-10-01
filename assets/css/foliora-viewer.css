@@ -271,6 +271,8 @@
 
 .foliora-viewer {
 	position: relative;
+	display: flex;
+	flex-direction: row;
 	flex: 1 1 auto;
 	min-height: 220px;
 	overflow: hidden;
@@ -335,6 +337,8 @@
 	box-sizing: border-box;
 	min-height: 100%;
 	height: 100%;
+	flex: 1 1 auto;
+	min-width: 0;
 	overflow: auto;
 	touch-action: pan-x pan-y;
 }
@@ -514,19 +518,35 @@
 }
 
 .foliora-side {
-	position: absolute;
+	position: relative;
 	top: 0;
 	left: 0;
 	bottom: 0;
-	z-index: 2;
+	z-index: 3;
 	display: flex;
 	flex-direction: column;
+	flex: 0 0 220px;
 	width: 220px;
 	max-width: 80%;
+	height: 100%;
 	background: #1d2327;
 	color: #dcdcde;
 	border-right: 1px solid #0a0a0a;
-	box-shadow: 8px 0 24px rgba(0, 0, 0, 0.25);
+	box-shadow: 4px 0 16px rgba(0, 0, 0, 0.25);
+	order: -1;
+}
+
+@media (max-width: 580px) {
+	.foliora-side {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		z-index: 10;
+		width: 240px;
+		max-width: 85%;
+		box-shadow: 8px 0 24px rgba(0, 0, 0, 0.5);
+	}
 }
 
 .foliora-side[hidden] {

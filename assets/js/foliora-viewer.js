@@ -608,8 +608,10 @@
 			var cs = window.getComputedStyle( pagesEl );
 			var padX = ( parseFloat( cs.paddingLeft ) || 0 ) + ( parseFloat( cs.paddingRight ) || 0 );
 			var padY = ( parseFloat( cs.paddingTop ) || 0 ) + ( parseFloat( cs.paddingBottom ) || 0 );
-			var w = Math.max( 40, container.clientWidth - padX );
-			var h = Math.max( 40, container.clientHeight - padY );
+			var baseW = ( pagesEl && pagesEl.clientWidth ) ? pagesEl.clientWidth : container.clientWidth;
+			var baseH = ( pagesEl && pagesEl.clientHeight ) ? pagesEl.clientHeight : container.clientHeight;
+			var w = Math.max( 40, baseW - padX );
+			var h = Math.max( 40, baseH - padY );
 			if ( viewMode() === 'spread' ) {
 				w = Math.max( 40, ( w - 16 ) / 2 );
 			}
@@ -1420,6 +1422,7 @@
 		function closePanel() {
 			side.hidden = true;
 			side.setAttribute( 'data-mode', '' );
+			container.classList.remove( 'has-side' );
 			tocPanel.hidden = true;
 			thumbsPanel.hidden = true;
 			if ( tocBtn ) {
@@ -1428,11 +1431,15 @@
 			if ( thumbsBtn ) {
 				thumbsBtn.setAttribute( 'aria-expanded', 'false' );
 			}
+			if ( state.pdf ) {
+				renderCurrent();
+			}
 		}
 
 		function openPanel( mode ) {
 			side.hidden = false;
 			side.setAttribute( 'data-mode', mode );
+			container.classList.add( 'has-side' );
 			tocPanel.hidden = mode !== 'toc';
 			thumbsPanel.hidden = mode !== 'thumbs';
 			sideTitle.textContent = mode === 'toc'
@@ -1449,6 +1456,9 @@
 				if ( currentThumb && currentThumb.scrollIntoView ) {
 					currentThumb.scrollIntoView( { block: 'nearest' } );
 				}
+			}
+			if ( state.pdf ) {
+				renderCurrent();
 			}
 		}
 
