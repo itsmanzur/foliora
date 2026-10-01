@@ -38,7 +38,9 @@
 	color: #dcdcde;
 	border: 0;
 	border-bottom: 1px solid #0a0a0a;
-	overflow: hidden;
+	overflow: visible !important;
+	position: relative;
+	z-index: 5;
 }
 
 .foliora-wrap .foliora-chrome .foliora-pro-toolbar {
@@ -98,15 +100,15 @@
 	flex-direction: row !important;
 	flex-wrap: nowrap !important;
 	align-items: center !important;
-	gap: 4px;
+	gap: 6px;
 	margin: 0 !important;
-	padding: 4px 6px 4px 4px;
+	padding: 4px 8px;
 	background: transparent !important;
 	border: 0 !important;
 	font-size: 12px;
 	flex: 1 1 auto;
 	min-width: 0;
-	width: auto !important;
+	width: 100% !important;
 	max-width: none !important;
 	color: inherit;
 }
@@ -137,7 +139,10 @@
 }
 
 .foliora-wrap .foliora-tool-group-end {
-	margin-left: 4px;
+	margin-left: auto !important;
+	display: flex !important;
+	align-items: center;
+	gap: 4px;
 	flex: 0 0 auto;
 }
 
