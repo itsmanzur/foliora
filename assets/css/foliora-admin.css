@@ -1303,236 +1303,796 @@ a.foliora-metric:focus {
 }
 
 /* ==========================================================================
-   User Guide & Documentation Tab Styles
+   User Guide & Documentation Tab Styles (Polished Modern Reference)
    ========================================================================== */
 .foliora-guide-wrap {
-	max-width: 1100px;
-	margin-top: 16px;
+	max-width: 1200px;
+	margin-top: 18px;
 }
 
+/* Guide Hero */
 .foliora-guide-hero {
-	background: linear-gradient(135deg, #1d2327 0%, #2c3338 100%);
+	background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 	color: #fff;
-	border-radius: 10px;
-	padding: 24px 28px;
+	border-radius: 12px;
+	padding: 26px 30px;
 	margin-bottom: 24px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+	box-shadow: 0 6px 20px -3px rgba(0, 0, 0, 0.12);
+	position: relative;
+	overflow: hidden;
+}
+
+.foliora-guide-hero::after {
+	content: "";
+	position: absolute;
+	top: -50px;
+	right: -50px;
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 70%);
+	pointer-events: none;
+}
+
+.foliora-guide-hero-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: 11.5px;
+	font-weight: 600;
+	color: #38bdf8;
+	margin-bottom: 12px;
+}
+
+.foliora-guide-hero-badge .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
 }
 
 .foliora-guide-hero h2 {
 	margin: 0 0 6px;
-	color: #fff;
-	font-size: 20px;
+	color: #ffffff;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
 }
 
 .foliora-guide-hero p {
 	margin: 0;
-	color: #c3c4c7;
-	font-size: 14px;
+	color: #94a3b8;
+	font-size: 13.5px;
 	line-height: 1.5;
+	max-width: 850px;
 }
 
+.foliora-guide-nav-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.foliora-nav-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 6px;
+	padding: 5px 12px;
+	color: #e2e8f0;
+	font-size: 12px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: all 0.15s ease;
+}
+
+.foliora-nav-pill:hover,
+.foliora-nav-pill:focus {
+	background: rgba(255, 255, 255, 0.18);
+	color: #ffffff;
+	border-color: rgba(255, 255, 255, 0.25);
+	transform: translateY(-1px);
+}
+
+.foliora-nav-pill .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	color: #38bdf8;
+}
+
+/* Sections */
 .foliora-guide-section {
-	background: #fff;
-	border: 1px solid #dcdcde;
-	border-radius: 10px;
-	padding: 22px 24px;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 24px 28px;
 	margin-bottom: 24px;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
 }
 
 .foliora-guide-section-head {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	margin-bottom: 14px;
-	padding-bottom: 12px;
-	border-bottom: 1px solid #f0f0f1;
+	gap: 14px;
+	margin-bottom: 18px;
+	padding-bottom: 14px;
+	border-bottom: 1px solid #f1f5f9;
 }
 
-.foliora-guide-icon-sec {
-	color: #2271b1;
-	font-size: 22px;
-	width: 22px;
-	height: 22px;
+.foliora-guide-sec-icon-wrap {
+	width: 38px;
+	height: 38px;
+	border-radius: 10px;
+	background: #eff6ff;
+	color: #2563eb;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.foliora-guide-sec-icon-wrap .dashicons {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
 }
 
 .foliora-guide-section-head h3 {
+	margin: 0 0 2px;
+	font-size: 16.5px;
+	font-weight: 700;
+	color: #0f172a;
+	letter-spacing: -0.01em;
+}
+
+.foliora-guide-subtitle {
 	margin: 0;
-	font-size: 16px;
-	font-weight: 600;
-	color: #1d2327;
-}
-
-.foliora-guide-desc {
-	margin: 0 0 14px;
-	color: #50575e;
+	color: #64748b;
 	font-size: 13px;
+	line-height: 1.4;
 }
 
+/* 1. Quick Start Cards */
 .foliora-guide-cards-3 {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	grid-template-columns: repeat(3, 1fr);
 	gap: 16px;
-	margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+	.foliora-guide-cards-3 {
+		grid-template-columns: 1fr;
+	}
 }
 
 .foliora-guide-step-card {
-	background: #f6f7f7;
-	border: 1px solid #dcdcde;
-	border-radius: 8px;
-	padding: 16px;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 18px;
 	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	position: relative;
+	gap: 14px;
+	transition: all 0.2s ease;
 }
 
-.foliora-step-num {
-	width: 26px;
-	height: 26px;
-	background: #2271b1;
-	color: #fff;
-	border-radius: 50%;
+.foliora-guide-step-card:hover {
+	background: #ffffff;
+	border-color: #cbd5e1;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	transform: translateY(-2px);
+}
+
+.foliora-step-badge {
+	width: 30px;
+	height: 30px;
+	border-radius: 8px;
+	background: #2563eb;
+	color: #ffffff;
+	font-weight: 700;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.foliora-step-body {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.foliora-step-body h4 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+.foliora-step-body p {
+	margin: 0;
+	font-size: 12.5px;
+	line-height: 1.45;
+	color: #64748b;
+}
+
+.foliora-mini-code-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	background: #0f172a;
+	border-radius: 6px;
+	padding: 6px 10px;
+	margin-top: 6px;
+}
+
+.foliora-mini-code-box code {
+	background: transparent;
+	color: #38bdf8;
+	font-size: 11px;
+	padding: 0;
+	border: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.foliora-copy-snippet-btn {
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	color: #e2e8f0;
+	padding: 3px 6px;
+	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	font-weight: 700;
-	font-size: 12px;
+	transition: all 0.15s ease;
 }
 
-.foliora-guide-step-card h4 {
-	margin: 0;
+.foliora-copy-snippet-btn:hover {
+	background: #2563eb;
+	color: #fff;
+	border-color: #2563eb;
+}
+
+.foliora-copy-snippet-btn .dashicons {
 	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+.foliora-step-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 10px;
+	border-radius: 6px;
+	font-size: 11.5px;
 	font-weight: 600;
-	color: #1d2327;
+	margin-top: 6px;
+	width: fit-content;
 }
 
-.foliora-guide-step-card p {
-	margin: 0;
-	font-size: 12px;
-	line-height: 1.45;
-	color: #646970;
-	flex: 1 1 auto;
+.foliora-step-chip.is-blue {
+	background: #eff6ff;
+	color: #2563eb;
+	border: 1px solid #bfdbfe;
 }
 
-.foliora-guide-step-card code {
-	background: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 4px;
-	padding: 4px 8px;
-	font-size: 11px;
-	word-break: break-all;
+.foliora-step-chip.is-green {
+	background: #ecfdf5;
+	color: #059669;
+	border: 1px solid #a7f3d0;
 }
 
-.foliora-guide-table {
-	margin-top: 12px;
-	border: 1px solid #dcdcde;
+.foliora-step-chip .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
 }
 
-.foliora-guide-table th {
-	font-weight: 600;
-	background: #f6f7f7;
+/* 2 & 3. Modern API Reference Table */
+.foliora-api-table-card {
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	overflow: hidden;
+	background: #ffffff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+	margin-bottom: 20px;
 }
 
-.foliora-guide-table td {
-	vertical-align: top;
+.foliora-api-table {
+	width: 100%;
+	border-collapse: collapse;
 	font-size: 13px;
+	text-align: left;
+}
+
+.foliora-api-table thead th {
+	background: #f8fafc;
+	color: #475569;
+	font-size: 11.5px;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	padding: 12px 16px;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.foliora-api-table tbody tr {
+	border-bottom: 1px solid #f1f5f9;
+	transition: background 0.12s ease;
+}
+
+.foliora-api-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.foliora-api-table tbody tr:hover {
+	background: #f8fafc;
+}
+
+.foliora-api-table tbody td {
+	padding: 14px 16px;
+	vertical-align: top;
+	color: #334155;
 	line-height: 1.5;
 }
 
-.foliora-req {
-	color: #d63638;
-	font-weight: bold;
-}
-
-.foliora-code-examples {
-	margin-top: 16px;
-	background: #f6f7f7;
-	border: 1px solid #dcdcde;
-	border-radius: 8px;
-	padding: 14px 18px;
-}
-
-.foliora-code-examples h4 {
-	margin: 0 0 10px;
-	font-size: 13px;
-	font-weight: 600;
-	color: #1d2327;
-}
-
-.foliora-example-row {
-	margin-bottom: 8px;
+.foliora-attr-cell {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	font-size: 12px;
+	align-items: flex-start;
 }
 
-.foliora-example-row:last-child {
-	margin-bottom: 0;
-}
-
-.foliora-example-row code {
-	background: #1d2327;
-	color: #72aee6;
-	padding: 6px 10px;
-	border-radius: 4px;
-	font-family: Consolas, Monaco, monospace;
-	font-size: 12px;
-	display: block;
-}
-
-.foliora-callout {
-	background: #f0f6fc;
-	border-left: 4px solid #72aee6;
-	padding: 12px 16px;
-	border-radius: 4px;
+.foliora-param-code {
+	font-family: Consolas, Monaco, "Courier New", monospace;
 	font-size: 13px;
+	font-weight: 700;
+	color: #0f172a;
+	background: #f1f5f9;
+	border: 1px solid #cbd5e1;
+	border-radius: 5px;
+	padding: 3px 7px;
 }
 
-.foliora-callout p {
-	margin: 0 0 6px;
+.foliora-pill-req {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #dc2626;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 4px;
+	padding: 1px 5px;
+	letter-spacing: 0.03em;
 }
 
-.foliora-callout p:last-child {
+.foliora-pill-opt {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: #64748b;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 4px;
+	padding: 1px 5px;
+	letter-spacing: 0.03em;
+}
+
+.foliora-type-pill {
+	display: inline-block;
+	font-size: 11.5px;
+	font-family: Consolas, Monaco, monospace;
+	color: #0369a1;
+	background: #f0f9ff;
+	border: 1px solid #bae6fd;
+	border-radius: 4px;
+	padding: 2px 7px;
+	margin-bottom: 4px;
+}
+
+.foliora-default-pill {
+	display: block;
+	font-size: 11px;
+	color: #64748b;
+	font-style: italic;
+}
+
+.foliora-tbl-desc {
 	margin: 0;
+	font-size: 13px;
+	color: #334155;
+	line-height: 1.5;
 }
 
-.foliora-guide-grid-2 {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 16px;
+.foliora-option-list {
+	margin: 6px 0 0 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 }
 
-.foliora-builder-card {
-	background: #f6f7f7;
-	border: 1px solid #dcdcde;
+.foliora-option-list li {
+	margin: 0;
+	font-size: 12.5px;
+	color: #475569;
+}
+
+.foliora-val-code {
+	font-family: Consolas, Monaco, monospace;
+	font-weight: 700;
+	font-size: 12px;
+	color: #2563eb;
+	background: #eff6ff;
+	border: 1px solid #dbeafe;
+	border-radius: 4px;
+	padding: 1px 5px;
+}
+
+.foliora-csv-pills {
+	margin: 6px 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.foliora-csv-pills span {
+	font-family: Consolas, Monaco, monospace;
+	font-size: 11px;
+	color: #475569;
+	background: #f1f5f9;
+	border: 1px solid #e2e8f0;
+	border-radius: 4px;
+	padding: 1px 5px;
+}
+
+.foliora-code-chip-copy {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	max-width: 100%;
+}
+
+.foliora-code-chip-copy:hover {
+	background: #ffffff;
+	border-color: #2563eb;
+	box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+}
+
+.foliora-code-chip-copy code {
+	background: transparent;
+	border: none;
+	padding: 0;
+	font-size: 11.5px;
+	color: #0f172a;
+	font-family: Consolas, Monaco, monospace;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.foliora-code-chip-copy .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	color: #64748b;
+	transition: color 0.15s ease;
+}
+
+.foliora-code-chip-copy:hover .dashicons {
+	color: #2563eb;
+}
+
+/* Ready to Use Copy Presets Shelf */
+.foliora-presets-shelf {
+	background: #0f172a;
+	border-radius: 10px;
+	padding: 20px 22px;
+	color: #fff;
+	margin-top: 18px;
+}
+
+.foliora-presets-head {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.foliora-presets-icon {
+	color: #fbbf24;
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+}
+
+.foliora-presets-head h4 {
+	margin: 0 0 2px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #ffffff;
+}
+
+.foliora-presets-head p {
+	margin: 0;
+	font-size: 12.5px;
+	color: #94a3b8;
+}
+
+.foliora-presets-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.foliora-preset-card {
+	background: #1e293b;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 	border-radius: 8px;
-	padding: 16px 18px;
+	padding: 12px 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	transition: border-color 0.15s ease;
 }
 
-.foliora-builder-card h4 {
+.foliora-preset-card:hover {
+	border-color: rgba(255, 255, 255, 0.25);
+}
+
+.foliora-preset-card-top {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	margin: 0 0 8px;
-	font-size: 14px;
-	font-weight: 600;
-	color: #1d2327;
 }
 
-.foliora-builder-card h4 .dashicons {
-	color: #2271b1;
+.foliora-preset-tag {
+	font-size: 11px;
+	font-weight: 700;
+	padding: 2px 7px;
+	border-radius: 4px;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.foliora-preset-tag.is-purple {
+	background: rgba(168, 85, 247, 0.2);
+	color: #c084fc;
+	border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.foliora-preset-tag.is-blue {
+	background: rgba(56, 189, 248, 0.2);
+	color: #38bdf8;
+	border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.foliora-preset-tag.is-slate {
+	background: rgba(148, 163, 184, 0.2);
+	color: #cbd5e1;
+	border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.foliora-preset-tag.is-teal {
+	background: rgba(45, 212, 191, 0.2);
+	color: #2dd4bf;
+	border: 1px solid rgba(45, 212, 191, 0.4);
+}
+
+.foliora-preset-hint {
+	font-size: 12px;
+	color: #94a3b8;
+}
+
+.foliora-preset-code-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	background: #0b0f19;
+	border-radius: 6px;
+	padding: 8px 12px;
+}
+
+.foliora-preset-code-row code {
+	background: transparent;
+	border: none;
+	padding: 0;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	color: #7dd3fc;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.foliora-copy-preset-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: #2563eb;
+	color: #ffffff;
+	border: none;
+	border-radius: 5px;
+	padding: 5px 10px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: background 0.15s ease;
+}
+
+.foliora-copy-preset-btn:hover {
+	background: #1d4ed8;
+}
+
+.foliora-copy-preset-btn .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+.foliora-preset-single {
+	background: #0f172a;
+	margin-top: 14px;
+	color: #fff;
+}
+
+/* 4. Deep Linking */
+.foliora-deeplink-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+@media (max-width: 782px) {
+	.foliora-deeplink-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.foliora-deeplink-box {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 16px 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.foliora-deeplink-code code {
+	background: #0f172a;
+	color: #e2e8f0;
+	padding: 6px 10px;
+	border-radius: 6px;
+	display: block;
+	font-size: 12px;
+	font-family: Consolas, Monaco, monospace;
+}
+
+.foliora-deeplink-code code strong {
+	color: #38bdf8;
+}
+
+.foliora-deeplink-box p {
+	margin: 0;
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: #475569;
+}
+
+/* 5. Builder Cards Grid */
+.foliora-builder-cards-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+
+@media (max-width: 782px) {
+	.foliora-builder-cards-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.foliora-builder-card {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 18px 20px;
+	transition: all 0.2s ease;
+}
+
+.foliora-builder-card:hover {
+	background: #ffffff;
+	border-color: #cbd5e1;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	transform: translateY(-2px);
+}
+
+.foliora-builder-card-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 8px;
+}
+
+.foliora-builder-icon {
+	width: 32px;
+	height: 32px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	flex-shrink: 0;
+}
+
+.foliora-builder-icon .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+.foliora-builder-icon.is-wp {
+	background: #2271b1;
+}
+
+.foliora-builder-icon.is-elementor {
+	background: #e60067;
+}
+
+.foliora-builder-icon.is-divi {
+	background: #7c3aed;
+}
+
+.foliora-builder-icon.is-i18n {
+	background: #0d9488;
+}
+
+.foliora-builder-card-head h4 {
+	margin: 0;
+	font-size: 14.5px;
+	font-weight: 700;
+	color: #0f172a;
 }
 
 .foliora-builder-card p {
 	margin: 0;
-	font-size: 12px;
+	font-size: 12.5px;
 	line-height: 1.5;
-	color: #50575e;
+	color: #64748b;
 }
 
+/* 6. FAQs Accordion */
 .foliora-faq-list {
 	display: flex;
 	flex-direction: column;
@@ -1540,22 +2100,62 @@ a.foliora-metric:focus {
 }
 
 .foliora-faq-item {
-	background: #f6f7f7;
-	border: 1px solid #dcdcde;
-	border-radius: 6px;
-	padding: 12px 16px;
-	cursor: pointer;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: all 0.15s ease;
+}
+
+.foliora-faq-item[open] {
+	background: #ffffff;
+	border-color: #cbd5e1;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .foliora-faq-item summary {
-	font-size: 13px;
-	color: #1d2327;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px 18px;
+	cursor: pointer;
 	list-style: none;
+	user-select: none;
 }
 
-.foliora-faq-item p {
-	margin: 10px 0 0;
-	font-size: 12px;
-	line-height: 1.5;
-	color: #50575e;
+.foliora-faq-item summary::-webkit-details-marker {
+	display: none;
+}
+
+.foliora-faq-q {
+	font-size: 13.5px;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+.foliora-faq-arrow {
+	color: #64748b;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	transition: transform 0.2s ease;
+}
+
+.foliora-faq-item[open] .foliora-faq-arrow {
+	transform: rotate(180deg);
+	color: #2563eb;
+}
+
+.foliora-faq-answer {
+	padding: 0 18px 16px;
+	border-top: 1px solid #f1f5f9;
+	padding-top: 12px;
+}
+
+.foliora-faq-answer p {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.6;
+	color: #475569;
 }

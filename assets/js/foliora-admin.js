@@ -525,13 +525,23 @@
 	}
 
 	function bindDocuments() {
-		$$( '.foliora-copy-btn' ).forEach( function ( button ) {
+		$( '.foliora-copy-btn, .foliora-copy-preset-btn, .foliora-copy-snippet-btn' ).forEach( function ( button ) {
 			button.addEventListener( 'click', function ( e ) {
 				e.preventDefault();
-				copyText( button.getAttribute( 'data-foliora-copy' ) || '', button, markCopiedStep );
+				var text = button.getAttribute( 'data-foliora-copy' ) || '';
+				copyText( text, button, markCopiedStep );
 			} );
 		} );
-		$$( '.foliora-docs-shortcode' ).forEach( function ( input ) {
+		$( '.foliora-code-chip-copy' ).forEach( function ( chip ) {
+			chip.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				var text = chip.getAttribute( 'data-foliora-copy' ) || '';
+				copyText( text, chip, function () {
+					toast( copiedLabel() );
+				} );
+			} );
+		} );
+		$( '.foliora-docs-shortcode' ).forEach( function ( input ) {
 			input.addEventListener( 'click', function () {
 				input.select();
 			} );

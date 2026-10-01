@@ -1274,246 +1274,553 @@ class Foliora_Admin {
 		<div class="foliora-guide-wrap">
 			<!-- Guide Hero -->
 			<div class="foliora-guide-hero">
-				<h2><?php esc_html_e( 'Foliora User Guide & Complete Reference', 'foliora' ); ?></h2>
-				<p><?php esc_html_e( 'Learn how to easily embed PDFs, customize 3D FlipBook view modes, use shortcodes, integrate with page builders, and optimize for SEO and speed.', 'foliora' ); ?></p>
+				<div class="foliora-guide-hero-content">
+					<div class="foliora-guide-hero-badge">
+						<span class="dashicons dashicons-book-alt" aria-hidden="true"></span>
+						<span><?php esc_html_e( 'Official Documentation & Reference', 'foliora' ); ?></span>
+					</div>
+					<h2><?php esc_html_e( 'Foliora User Guide & Complete Reference', 'foliora' ); ?></h2>
+					<p><?php esc_html_e( 'Learn how to easily embed PDFs, customize 3D FlipBook view modes, use shortcodes, integrate with page builders, and optimize for SEO and speed.', 'foliora' ); ?></p>
+				</div>
+				<div class="foliora-guide-nav-pills">
+					<a href="#guide-quickstart" class="foliora-nav-pill"><span class="dashicons dashicons-controls-play"></span> <?php esc_html_e( 'Quick Start', 'foliora' ); ?></a>
+					<a href="#guide-shortcodes" class="foliora-nav-pill"><span class="dashicons dashicons-editor-code"></span> <?php esc_html_e( '[foliora] API', 'foliora' ); ?></a>
+					<a href="#guide-library" class="foliora-nav-pill"><span class="dashicons dashicons-grid-view"></span> <?php esc_html_e( '[foliora_library]', 'foliora' ); ?></a>
+					<a href="#guide-deeplink" class="foliora-nav-pill"><span class="dashicons dashicons-admin-links"></span> <?php esc_html_e( 'Deep Linking', 'foliora' ); ?></a>
+					<a href="#guide-builders" class="foliora-nav-pill"><span class="dashicons dashicons-layout"></span> <?php esc_html_e( 'Page Builders', 'foliora' ); ?></a>
+					<a href="#guide-faq" class="foliora-nav-pill"><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'FAQs & Tips', 'foliora' ); ?></a>
+				</div>
 			</div>
 
 			<!-- 1. Quick Start -->
-			<section class="foliora-guide-section">
+			<section id="guide-quickstart" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-controls-play foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '1. Quick Start: 3 Easy Ways to Embed', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-controls-play foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '1. Quick Start: 3 Easy Ways to Embed', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Choose whichever workflow fits your editing style.', 'foliora' ); ?></p>
+					</div>
 				</div>
 				<div class="foliora-guide-cards-3">
 					<div class="foliora-guide-step-card">
-						<span class="foliora-step-num">A</span>
-						<h4><?php esc_html_e( 'Shortcode (Anywhere)', 'foliora' ); ?></h4>
-						<p><?php esc_html_e( 'Copy [foliora file="..."] from the Documents Library tab and paste it into any post, page, widget, or template.', 'foliora' ); ?></p>
-						<code>[foliora file="https://site.com/doc.pdf"]</code>
+						<div class="foliora-step-badge">A</div>
+						<div class="foliora-step-body">
+							<h4><?php esc_html_e( 'Shortcode (Anywhere)', 'foliora' ); ?></h4>
+							<p><?php esc_html_e( 'Copy [foliora file="..."] from the Documents Library tab and paste it into any post, page, widget, or template.', 'foliora' ); ?></p>
+							<div class="foliora-mini-code-box">
+								<code>[foliora file="https://site.com/doc.pdf"]</code>
+								<button type="button" class="foliora-copy-snippet-btn" data-foliora-copy='[foliora file="https://site.com/doc.pdf"]' title="<?php esc_attr_e( 'Copy shortcode', 'foliora' ); ?>">
+									<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+								</button>
+							</div>
+						</div>
 					</div>
 					<div class="foliora-guide-step-card">
-						<span class="foliora-step-num">B</span>
-						<h4><?php esc_html_e( 'Gutenberg Block', 'foliora' ); ?></h4>
-						<p><?php esc_html_e( 'In the Block Editor, add the "Foliora Viewer" block. Pick any PDF from your Media Library with a live canvas preview.', 'foliora' ); ?></p>
-						<span class="foliora-badge is-active"><?php esc_html_e( 'Visual Editor', 'foliora' ); ?></span>
+						<div class="foliora-step-badge">B</div>
+						<div class="foliora-step-body">
+							<h4><?php esc_html_e( 'Gutenberg Native Block', 'foliora' ); ?></h4>
+							<p><?php esc_html_e( 'In the Block Editor, insert the "Foliora Viewer" block. Pick any PDF from your Media Library with instant live rendering.', 'foliora' ); ?></p>
+							<div class="foliora-step-chip is-blue">
+								<span class="dashicons dashicons-block-default" aria-hidden="true"></span>
+								<span><?php esc_html_e( 'Visual Editor Block', 'foliora' ); ?></span>
+							</div>
+						</div>
 					</div>
 					<div class="foliora-guide-step-card">
-						<span class="foliora-step-num">C</span>
-						<h4><?php esc_html_e( 'Auto oEmbed (Paste URL)', 'foliora' ); ?></h4>
-						<p><?php esc_html_e( 'Simply paste a direct .pdf link on a new line in your editor. WordPress will automatically convert it into a Foliora reader.', 'foliora' ); ?></p>
-						<span class="foliora-badge is-active"><?php esc_html_e( 'Zero Shortcode', 'foliora' ); ?></span>
+						<div class="foliora-step-badge">C</div>
+						<div class="foliora-step-body">
+							<h4><?php esc_html_e( 'Auto oEmbed (Paste URL)', 'foliora' ); ?></h4>
+							<p><?php esc_html_e( 'Simply paste a direct .pdf link on a new line in your editor. WordPress automatically transforms it into an interactive reader.', 'foliora' ); ?></p>
+							<div class="foliora-step-chip is-green">
+								<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
+								<span><?php esc_html_e( 'Zero Shortcode Required', 'foliora' ); ?></span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
 
 			<!-- 2. [foliora] Shortcode Cheatsheet -->
-			<section class="foliora-guide-section">
+			<section id="guide-shortcodes" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-editor-code foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '2. [foliora] Shortcode Parameters & Attributes', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-editor-code foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '2. [foliora] Shortcode Parameters & Attributes', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Customize every aspect of your PDF viewer with these parameters:', 'foliora' ); ?></p>
+					</div>
 				</div>
-				<p class="foliora-guide-desc"><?php esc_html_e( 'Customize every aspect of your PDF viewer with these powerful shortcode attributes:', 'foliora' ); ?></p>
 
-				<table class="wp-list-table widefat striped foliora-guide-table">
-					<thead>
-						<tr>
-							<th scope="col" style="width: 130px;"><?php esc_html_e( 'Attribute', 'foliora' ); ?></th>
-							<th scope="col" style="width: 140px;"><?php esc_html_e( 'Values / Default', 'foliora' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Description & Purpose', 'foliora' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Example', 'foliora' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><code>file</code> <span class="foliora-req">*</span></td>
-							<td><em>URL string</em></td>
-							<td><?php esc_html_e( 'Direct URL to your PDF document (local Media Library or CORS-enabled remote host).', 'foliora' ); ?></td>
-							<td><code>file="https://example.com/doc.pdf"</code></td>
-						</tr>
-						<tr>
-							<td><code>view</code></td>
-							<td><code>page</code> | <code>scroll</code> | <code>spread</code> | <code>flip</code><br />(default: <code>page</code>)</td>
-							<td><strong><?php esc_html_e( 'Reading Layout:', 'foliora' ); ?></strong><br />
-								• <code>flip</code> = <?php esc_html_e( '3D realistic FlipBook with Web Audio page turn sound.', 'foliora' ); ?><br />
-								• <code>scroll</code> = <?php esc_html_e( 'Continuous vertical scrolling.', 'foliora' ); ?><br />
-								• <code>spread</code> = <?php esc_html_e( 'Two-page magazine spread.', 'foliora' ); ?><br />
-								• <code>page</code> = <?php esc_html_e( 'Standard single page reader.', 'foliora' ); ?>
-							</td>
-							<td><code>view="flip"</code></td>
-						</tr>
-						<tr>
-							<td><code>width</code></td>
-							<td><em>CSS width</em> (default: <code>100%</code>)</td>
-							<td><?php esc_html_e( 'Viewer container width. Supports percentage, pixels, or viewport width.', 'foliora' ); ?></td>
-							<td><code>width="800px"</code></td>
-						</tr>
-						<tr>
-							<td><code>height</code></td>
-							<td><em>CSS height</em> (default: <code>420px</code>)</td>
-							<td><?php esc_html_e( 'Viewer container height. Supports pixels, viewport height (vh), or em.', 'foliora' ); ?></td>
-							<td><code>height="650px"</code></td>
-						</tr>
-						<tr>
-							<td><code>page</code></td>
-							<td><em>number</em> (default: <code>1</code>)</td>
-							<td><?php esc_html_e( 'Initial starting page number when the document opens.', 'foliora' ); ?></td>
-							<td><code>page="5"</code></td>
-						</tr>
-						<tr>
-							<td><code>download</code></td>
-							<td><code>true</code> | <code>false</code> (default: <code>true</code>)</td>
-							<td><?php esc_html_e( 'Show or hide the direct PDF download button in the toolbar.', 'foliora' ); ?></td>
-							<td><code>download="false"</code></td>
-						</tr>
-						<tr>
-							<td><code>print</code></td>
-							<td><code>true</code> | <code>false</code> (default: <code>true</code>)</td>
-							<td><?php esc_html_e( 'Show or hide the print button in the toolbar.', 'foliora' ); ?></td>
-							<td><code>print="false"</code></td>
-						</tr>
-						<tr>
-							<td><code>search</code></td>
-							<td><code>true</code> | <code>false</code> (default: <code>true</code>)</td>
-							<td><?php esc_html_e( 'Enable or disable the in-document text search (Find) input box.', 'foliora' ); ?></td>
-							<td><code>search="false"</code></td>
-						</tr>
-						<tr>
-							<td><code>title</code></td>
-							<td><em>string</em></td>
-							<td><?php esc_html_e( 'Optional caption heading displayed above the viewer.', 'foliora' ); ?></td>
-							<td><code>title="Q4 Financial Report"</code></td>
-						</tr>
-						<tr>
-							<td><code>hide</code></td>
-							<td><em>comma-separated list</em></td>
-							<td><?php esc_html_e( 'Hide specific toolbar controls:', 'foliora' ); ?> <code>nav,zoom,fit,rotate,view,pan,download,print,search,theme,share,shortcuts,presentation,fullscreen</code></td>
-							<td><code>hide="download,print,share"</code></td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="foliora-api-table-card">
+					<table class="foliora-api-table">
+						<thead>
+							<tr>
+								<th scope="col" style="width: 15%;"><?php esc_html_e( 'Attribute', 'foliora' ); ?></th>
+								<th scope="col" style="width: 18%;"><?php esc_html_e( 'Type & Default', 'foliora' ); ?></th>
+								<th scope="col" style="width: 42%;"><?php esc_html_e( 'Description & Options', 'foliora' ); ?></th>
+								<th scope="col" style="width: 25%;"><?php esc_html_e( 'Example', 'foliora' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">file</code>
+										<span class="foliora-pill-req"><?php esc_html_e( 'Required', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">URL string</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Direct URL to your PDF document (local Media Library or CORS-enabled remote host).', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='file="https://example.com/doc.pdf"'>
+										<code>file="https://example.com/doc.pdf"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">view</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">Enum</span>
+									<span class="foliora-default-pill">default: "page"</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><strong><?php esc_html_e( 'Reading Layout Mode:', 'foliora' ); ?></strong></p>
+									<ul class="foliora-option-list">
+										<li><code class="foliora-val-code">flip</code> &mdash; <?php esc_html_e( '3D realistic FlipBook with Web Audio page turn sound.', 'foliora' ); ?></li>
+										<li><code class="foliora-val-code">scroll</code> &mdash; <?php esc_html_e( 'Continuous vertical scrolling feed.', 'foliora' ); ?></li>
+										<li><code class="foliora-val-code">spread</code> &mdash; <?php esc_html_e( 'Two-page magazine book spread.', 'foliora' ); ?></li>
+										<li><code class="foliora-val-code">page</code> &mdash; <?php esc_html_e( 'Standard single page reader.', 'foliora' ); ?></li>
+									</ul>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='view="flip"'>
+										<code>view="flip"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">width</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">CSS Unit</span>
+									<span class="foliora-default-pill">default: "100%"</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Viewer container width. Supports percentage (%), pixels (px), or viewport width (vw).', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='width="850px"'>
+										<code>width="850px"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">height</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">CSS Unit</span>
+									<span class="foliora-default-pill">default: "420px"</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Viewer container height. Supports pixels (px), viewport height (vh), or em/rem.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='height="650px"'>
+										<code>height="650px"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">page</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">Integer</span>
+									<span class="foliora-default-pill">default: 1</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Initial starting page number when the document opens.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='page="5"'>
+										<code>page="5"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">download</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">Boolean</span>
+									<span class="foliora-default-pill">default: true</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Show or hide the direct PDF download button in the toolbar.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='download="false"'>
+										<code>download="false"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">print</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">Boolean</span>
+									<span class="foliora-default-pill">default: true</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Show or hide the print button in the toolbar.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='print="false"'>
+										<code>print="false"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">search</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">Boolean</span>
+									<span class="foliora-default-pill">default: true</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Enable or disable the in-document text search (Find) toolbar tool.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='search="false"'>
+										<code>search="false"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">title</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">String</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Optional caption heading displayed directly above the viewer frame.', 'foliora' ); ?></p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='title="Annual Report 2026"'>
+										<code>title="Annual Report 2026"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="foliora-attr-cell">
+										<code class="foliora-param-code">hide</code>
+										<span class="foliora-pill-opt"><?php esc_html_e( 'Optional', 'foliora' ); ?></span>
+									</div>
+								</td>
+								<td>
+									<span class="foliora-type-pill">CSV List</span>
+								</td>
+								<td>
+									<p class="foliora-tbl-desc"><?php esc_html_e( 'Hide specific toolbar buttons (comma-separated):', 'foliora' ); ?></p>
+									<p class="foliora-csv-pills">
+										<span>nav</span> <span>zoom</span> <span>fit</span> <span>rotate</span> <span>view</span> <span>pan</span> <span>download</span> <span>print</span> <span>search</span> <span>theme</span> <span>share</span> <span>fullscreen</span>
+									</p>
+								</td>
+								<td>
+									<div class="foliora-code-chip-copy" data-foliora-copy='hide="download,print,share"'>
+										<code>hide="download,print,share"</code>
+										<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-				<!-- Copyable Examples Box -->
-				<div class="foliora-code-examples">
-					<h4><?php esc_html_e( '💡 Ready-to-Use Shortcode Examples (Click to Copy):', 'foliora' ); ?></h4>
-					<div class="foliora-example-row">
-						<strong><?php esc_html_e( '3D FlipBook Embed:', 'foliora' ); ?></strong>
-						<code>[foliora file="https://site.com/catalog.pdf" view="flip" height="600px"]</code>
+				<!-- Ready-to-Use Shortcode Presets -->
+				<div class="foliora-presets-shelf">
+					<div class="foliora-presets-head">
+						<span class="dashicons dashicons-superhero foliora-presets-icon" aria-hidden="true"></span>
+						<div>
+							<h4><?php esc_html_e( 'Ready-to-Use Copy Presets', 'foliora' ); ?></h4>
+							<p><?php esc_html_e( 'Click the copy button on any preset to copy the full shortcode:', 'foliora' ); ?></p>
+						</div>
 					</div>
-					<div class="foliora-example-row">
-						<strong><?php esc_html_e( 'Continuous Scroll Reading:', 'foliora' ); ?></strong>
-						<code>[foliora file="https://site.com/ebook.pdf" view="scroll" height="700px"]</code>
-					</div>
-					<div class="foliora-example-row">
-						<strong><?php esc_html_e( 'Clean Presentation Embed (No Download/Print):', 'foliora' ); ?></strong>
-						<code>[foliora file="https://site.com/slides.pdf" download="false" print="false" view="spread"]</code>
+					<div class="foliora-presets-grid">
+						<div class="foliora-preset-card">
+							<div class="foliora-preset-card-top">
+								<span class="foliora-preset-tag is-purple"><?php esc_html_e( '3D FlipBook Mode', 'foliora' ); ?></span>
+								<span class="foliora-preset-hint"><?php esc_html_e( 'Realistic Sound & Perspective', 'foliora' ); ?></span>
+							</div>
+							<div class="foliora-preset-code-row">
+								<code>[foliora file="https://site.com/catalog.pdf" view="flip" height="600px"]</code>
+								<button type="button" class="foliora-copy-preset-btn" data-foliora-copy='[foliora file="https://site.com/catalog.pdf" view="flip" height="600px"]'>
+									<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									<span><?php esc_html_e( 'Copy', 'foliora' ); ?></span>
+								</button>
+							</div>
+						</div>
+
+						<div class="foliora-preset-card">
+							<div class="foliora-preset-card-top">
+								<span class="foliora-preset-tag is-blue"><?php esc_html_e( 'Vertical Continuous Scroll', 'foliora' ); ?></span>
+								<span class="foliora-preset-hint"><?php esc_html_e( 'Ideal for Long Reports & Ebooks', 'foliora' ); ?></span>
+							</div>
+							<div class="foliora-preset-code-row">
+								<code>[foliora file="https://site.com/ebook.pdf" view="scroll" height="700px"]</code>
+								<button type="button" class="foliora-copy-preset-btn" data-foliora-copy='[foliora file="https://site.com/ebook.pdf" view="scroll" height="700px"]'>
+									<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									<span><?php esc_html_e( 'Copy', 'foliora' ); ?></span>
+								</button>
+							</div>
+						</div>
+
+						<div class="foliora-preset-card">
+							<div class="foliora-preset-card-top">
+								<span class="foliora-preset-tag is-slate"><?php esc_html_e( 'Locked Down Presentation', 'foliora' ); ?></span>
+								<span class="foliora-preset-hint"><?php esc_html_e( 'No Direct Download or Printing', 'foliora' ); ?></span>
+							</div>
+							<div class="foliora-preset-code-row">
+								<code>[foliora file="https://site.com/slides.pdf" download="false" print="false" view="spread"]</code>
+								<button type="button" class="foliora-copy-preset-btn" data-foliora-copy='[foliora file="https://site.com/slides.pdf" download="false" print="false" view="spread"]'>
+									<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+									<span><?php esc_html_e( 'Copy', 'foliora' ); ?></span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
 
 			<!-- 3. [foliora_library] Grid Gallery Reference -->
-			<section class="foliora-guide-section">
+			<section id="guide-library" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-grid-view foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '3. [foliora_library] Document Gallery Shortcode', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-grid-view foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '3. [foliora_library] Document Gallery Shortcode', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Display all your Media Library PDFs in a responsive, searchable grid gallery with lightbox reading modal:', 'foliora' ); ?></p>
+					</div>
 				</div>
-				<p class="foliora-guide-desc"><?php esc_html_e( 'Display all your Media Library PDFs in a responsive, searchable grid gallery where users can open documents in an interactive lightbox viewer:', 'foliora' ); ?></p>
 				
-				<table class="wp-list-table widefat striped foliora-guide-table">
-					<thead>
-						<tr>
-							<th scope="col" style="width: 130px;"><?php esc_html_e( 'Attribute', 'foliora' ); ?></th>
-							<th scope="col" style="width: 140px;"><?php esc_html_e( 'Values / Default', 'foliora' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Description', 'foliora' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><code>columns</code></td>
-							<td><code>2</code> | <code>3</code> | <code>4</code> (default: <code>3</code>)</td>
-							<td><?php esc_html_e( 'Number of columns in the grid on desktop screens.', 'foliora' ); ?></td>
-						</tr>
-						<tr>
-							<td><code>per_page</code></td>
-							<td><em>number</em> (default: <code>12</code>)</td>
-							<td><?php esc_html_e( 'How many documents to show per page before pagination.', 'foliora' ); ?></td>
-						</tr>
-						<tr>
-							<td><code>orderby</code></td>
-							<td><code>date</code> | <code>title</code> | <code>modified</code> (default: <code>date</code>)</td>
-							<td><?php esc_html_e( 'Sorting order for documents.', 'foliora' ); ?></td>
-						</tr>
-						<tr>
-							<td><code>search</code></td>
-							<td><code>true</code> | <code>false</code> (default: <code>true</code>)</td>
-							<td><?php esc_html_e( 'Show real-time instant search filter box above the gallery.', 'foliora' ); ?></td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="foliora-code-examples">
-					<div class="foliora-example-row">
-						<strong><?php esc_html_e( '4-Column Document Library Example:', 'foliora' ); ?></strong>
+				<div class="foliora-api-table-card">
+					<table class="foliora-api-table">
+						<thead>
+							<tr>
+								<th scope="col" style="width: 15%;"><?php esc_html_e( 'Attribute', 'foliora' ); ?></th>
+								<th scope="col" style="width: 20%;"><?php esc_html_e( 'Values / Default', 'foliora' ); ?></th>
+								<th scope="col" style="width: 65%;"><?php esc_html_e( 'Description & Behavior', 'foliora' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><code class="foliora-param-code">columns</code></td>
+								<td>
+									<span class="foliora-type-pill">2 | 3 | 4</span>
+									<span class="foliora-default-pill">default: 3</span>
+								</td>
+								<td><p class="foliora-tbl-desc"><?php esc_html_e( 'Number of document grid columns on desktop viewports (automatically reflows on mobile).', 'foliora' ); ?></p></td>
+							</tr>
+							<tr>
+								<td><code class="foliora-param-code">per_page</code></td>
+								<td>
+									<span class="foliora-type-pill">Integer</span>
+									<span class="foliora-default-pill">default: 12</span>
+								</td>
+								<td><p class="foliora-tbl-desc"><?php esc_html_e( 'How many PDF cards to display per page before showing pagination controls.', 'foliora' ); ?></p></td>
+							</tr>
+							<tr>
+								<td><code class="foliora-param-code">orderby</code></td>
+								<td>
+									<span class="foliora-type-pill">date | title | modified</span>
+									<span class="foliora-default-pill">default: "date"</span>
+								</td>
+								<td><p class="foliora-tbl-desc"><?php esc_html_e( 'Sorting order for the gallery catalog items.', 'foliora' ); ?></p></td>
+							</tr>
+							<tr>
+								<td><code class="foliora-param-code">search</code></td>
+								<td>
+									<span class="foliora-type-pill">Boolean</span>
+									<span class="foliora-default-pill">default: true</span>
+								</td>
+								<td><p class="foliora-tbl-desc"><?php esc_html_e( 'Show real-time instant search input box above the document gallery.', 'foliora' ); ?></p></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="foliora-preset-card foliora-preset-single">
+					<div class="foliora-preset-card-top">
+						<span class="foliora-preset-tag is-teal"><?php esc_html_e( 'Interactive Gallery Preset', 'foliora' ); ?></span>
+						<span class="foliora-preset-hint"><?php esc_html_e( 'Searchable 4-column document directory', 'foliora' ); ?></span>
+					</div>
+					<div class="foliora-preset-code-row">
 						<code>[foliora_library columns="4" per_page="16" orderby="title" search="true"]</code>
+						<button type="button" class="foliora-copy-preset-btn" data-foliora-copy='[foliora_library columns="4" per_page="16" orderby="title" search="true"]'>
+							<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
+							<span><?php esc_html_e( 'Copy', 'foliora' ); ?></span>
+						</button>
 					</div>
 				</div>
 			</section>
 
 			<!-- 4. Deep Linking & Page Anchors -->
-			<section class="foliora-guide-section">
+			<section id="guide-deeplink" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-admin-links foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '4. Deep Linking & URL Hashes (#page=X)', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-admin-links foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '4. Deep Linking & URL Hashes (#page=X)', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Send visitors directly to any specific page inside an embedded document by appending hash anchors:', 'foliora' ); ?></p>
+					</div>
 				</div>
-				<p><?php esc_html_e( 'You can send users directly to a specific page of an embedded PDF by appending the page hash to the page URL:', 'foliora' ); ?></p>
-				<div class="foliora-callout">
-					<p><code>https://yourdomain.com/handbook/#page=14</code> &nbsp;<em>&mdash; <?php esc_html_e( 'Opens the handbook page and jumps directly to page 14.', 'foliora' ); ?></em></p>
-					<p><code>https://yourdomain.com/handbook/#foliora-page=5</code> &nbsp;<em>&mdash; <?php esc_html_e( 'Alternative namespaced hash syntax.', 'foliora' ); ?></em></p>
+				<div class="foliora-deeplink-grid">
+					<div class="foliora-deeplink-box">
+						<div class="foliora-deeplink-code">
+							<code>https://yourdomain.com/handbook/<strong>#page=14</strong></code>
+						</div>
+						<p><?php esc_html_e( 'Loads the handbook page and automatically jumps directly to page 14 with smooth animation.', 'foliora' ); ?></p>
+					</div>
+					<div class="foliora-deeplink-box">
+						<div class="foliora-deeplink-code">
+							<code>https://yourdomain.com/handbook/<strong>#foliora-page=5</strong></code>
+						</div>
+						<p><?php esc_html_e( 'Alternative namespaced syntax to avoid conflicting with other on-page anchors or sliders.', 'foliora' ); ?></p>
+					</div>
 				</div>
 			</section>
 
 			<!-- 5. Page Builders Integration -->
-			<section class="foliora-guide-section">
+			<section id="guide-builders" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-admin-generic foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '5. Page Builders & Compatibility', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-layout foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '5. Page Builders & Compatibility', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Native visual blocks and widgets bundled for your favorite WordPress builders:', 'foliora' ); ?></p>
+					</div>
 				</div>
-				<div class="foliora-guide-grid-2">
+				<div class="foliora-builder-cards-grid">
 					<div class="foliora-builder-card">
-						<h4><span class="dashicons dashicons-block-default"></span> <?php esc_html_e( 'Gutenberg Block Editor', 'foliora' ); ?></h4>
+						<div class="foliora-builder-card-head">
+							<div class="foliora-builder-icon is-wp"><span class="dashicons dashicons-block-default"></span></div>
+							<h4><?php esc_html_e( 'Gutenberg Block Editor', 'foliora' ); ?></h4>
+						</div>
 						<p><?php esc_html_e( 'Search for "Foliora Viewer" or "Foliora Library" in the block inserter. Customize dimensions, starting page, view mode (including 3D FlipBook), and download toggles directly in the block sidebar.', 'foliora' ); ?></p>
 					</div>
 					<div class="foliora-builder-card">
-						<h4><span class="dashicons dashicons-art"></span> <?php esc_html_e( 'Elementor Page Builder', 'foliora' ); ?></h4>
+						<div class="foliora-builder-card-head">
+							<div class="foliora-builder-icon is-elementor"><span class="dashicons dashicons-art"></span></div>
+							<h4><?php esc_html_e( 'Elementor Page Builder', 'foliora' ); ?></h4>
+						</div>
 						<p><?php esc_html_e( 'Find "Foliora PDF Viewer" and "Foliora PDF Library" widgets in the Elementor panel. Full visual styling controls with zero extra setup.', 'foliora' ); ?></p>
 					</div>
 					<div class="foliora-builder-card">
-						<h4><span class="dashicons dashicons-welcome-widgets-menus"></span> <?php esc_html_e( 'Divi & Beaver Builder', 'foliora' ); ?></h4>
+						<div class="foliora-builder-card-head">
+							<div class="foliora-builder-icon is-divi"><span class="dashicons dashicons-welcome-widgets-menus"></span></div>
+							<h4><?php esc_html_e( 'Divi & Beaver Builder', 'foliora' ); ?></h4>
+						</div>
 						<p><?php esc_html_e( 'Native Divi modules and Beaver Builder modules are bundled right in Foliora. Select your PDF directly inside their builder interfaces.', 'foliora' ); ?></p>
 					</div>
 					<div class="foliora-builder-card">
-						<h4><span class="dashicons dashicons-translation"></span> <?php esc_html_e( 'WPML & Polylang Multi-Language', 'foliora' ); ?></h4>
+						<div class="foliora-builder-card-head">
+							<div class="foliora-builder-icon is-i18n"><span class="dashicons dashicons-translation"></span></div>
+							<h4><?php esc_html_e( 'WPML & Polylang Multi-Language', 'foliora' ); ?></h4>
+						</div>
 						<p><?php esc_html_e( 'When you translate Media Library PDFs, Foliora automatically swaps the document URL for the active visitor language on that page.', 'foliora' ); ?></p>
 					</div>
 				</div>
 			</section>
 
 			<!-- 6. Troubleshooting & FAQs -->
-			<section class="foliora-guide-section">
+			<section id="guide-faq" class="foliora-guide-section">
 				<div class="foliora-guide-section-head">
-					<span class="dashicons dashicons-sos foliora-guide-icon-sec"></span>
-					<h3><?php esc_html_e( '6. Troubleshooting & Best Practices', 'foliora' ); ?></h3>
+					<div class="foliora-guide-sec-icon-wrap">
+						<span class="dashicons dashicons-sos foliora-guide-icon-sec" aria-hidden="true"></span>
+					</div>
+					<div>
+						<h3><?php esc_html_e( '6. Troubleshooting & Best Practices', 'foliora' ); ?></h3>
+						<p class="foliora-guide-subtitle"><?php esc_html_e( 'Answers to frequent configuration questions and hosting best practices:', 'foliora' ); ?></p>
+					</div>
 				</div>
 				<div class="foliora-faq-list">
 					<details class="foliora-faq-item">
-						<summary><strong><?php esc_html_e( 'How do I resolve CORS (Cross-Origin) errors when loading remote PDFs?', 'foliora' ); ?></strong></summary>
-						<p><?php esc_html_e( 'Browsers block scripts from reading PDFs hosted on other domains unless that remote server allows CORS. The easiest fix is uploading the PDF directly to your WordPress Media Library. If you must use a remote host, configure the header Access-Control-Allow-Origin: * on that remote server.', 'foliora' ); ?></p>
+						<summary>
+							<span class="foliora-faq-q"><?php esc_html_e( 'How do I resolve CORS (Cross-Origin) errors when loading remote PDFs?', 'foliora' ); ?></span>
+							<span class="dashicons dashicons-arrow-down-alt2 foliora-faq-arrow" aria-hidden="true"></span>
+						</summary>
+						<div class="foliora-faq-answer">
+							<p><?php esc_html_e( 'Browsers block scripts from reading PDFs hosted on other domains unless that remote server allows CORS. The easiest fix is uploading the PDF directly to your WordPress Media Library. If you must use a remote host, configure the header Access-Control-Allow-Origin: * on that remote server.', 'foliora' ); ?></p>
+						</div>
 					</details>
 					<details class="foliora-faq-item">
-						<summary><strong><?php esc_html_e( 'Why are PDF.js scripts excluded from cache plugins?', 'foliora' ); ?></strong></summary>
-						<p><?php esc_html_e( 'PDF.js requires its worker script (pdf.worker.min.js) to load in an isolated worker thread. Combining, deferring, or minifying it with other theme JS breaks web worker loading. Foliora automatically sets data-no-optimize rules for WP Rocket, LiteSpeed Cache, Autoptimize, and W3 Total Cache.', 'foliora' ); ?></p>
+						<summary>
+							<span class="foliora-faq-q"><?php esc_html_e( 'Why are PDF.js scripts excluded from cache plugins?', 'foliora' ); ?></span>
+							<span class="dashicons dashicons-arrow-down-alt2 foliora-faq-arrow" aria-hidden="true"></span>
+						</summary>
+						<div class="foliora-faq-answer">
+							<p><?php esc_html_e( 'PDF.js requires its worker script (pdf.worker.min.js) to load in an isolated worker thread. Combining, deferring, or minifying it with other theme JS breaks web worker loading. Foliora automatically sets data-no-optimize rules for WP Rocket, LiteSpeed Cache, Autoptimize, and W3 Total Cache.', 'foliora' ); ?></p>
+						</div>
 					</details>
 					<details class="foliora-faq-item">
-						<summary><strong><?php esc_html_e( 'How do thumbnail generation and search indexing work?', 'foliora' ); ?></strong></summary>
-						<p><?php esc_html_e( 'The first time an admin visits the Documents Library tab, the browser renders page 1 of each PDF and saves a high-quality cover thumbnail in your Media Library, while simultaneously extracting text so visitors can search for PDF contents using WordPress site search.', 'foliora' ); ?></p>
+						<summary>
+							<span class="foliora-faq-q"><?php esc_html_e( 'How do thumbnail generation and search indexing work?', 'foliora' ); ?></span>
+							<span class="dashicons dashicons-arrow-down-alt2 foliora-faq-arrow" aria-hidden="true"></span>
+						</summary>
+						<div class="foliora-faq-answer">
+							<p><?php esc_html_e( 'The first time an admin visits the Documents Library tab, the browser renders page 1 of each PDF and saves a high-quality cover thumbnail in your Media Library, while simultaneously extracting text so visitors can search for PDF contents using WordPress site search.', 'foliora' ); ?></p>
+						</div>
 					</details>
 				</div>
 			</section>
