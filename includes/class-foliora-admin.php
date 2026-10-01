@@ -81,8 +81,8 @@ class Foliora_Admin {
 
 		add_submenu_page(
 			self::PAGE_SLUG,
-			__( 'Foliora Documents', 'foliora' ),
-			__( 'Documents', 'foliora' ),
+			__( 'Foliora Docs & Features', 'foliora' ),
+			__( 'Docs & Features', 'foliora' ),
 			'manage_options',
 			self::DOCS_SLUG,
 			array( $this, 'render_documents_page' )
@@ -956,11 +956,13 @@ class Foliora_Admin {
 			return;
 		}
 
-		$paged     = max( 1, absint( wp_unslash( $_GET['paged'] ?? 1 ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filter.
-		$search    = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list filter.
-		$settings  = get_option( self::OPTION_NAME, array() );
-		$index_on  = ! isset( $settings['index_pdf_text'] ) || ! empty( $settings['index_pdf_text'] );
-		$a11y_on   = Foliora_A11y::checking_enabled();
+		$current_tab = isset( $_GET['tab'] ) && 'features' === $_GET['tab'] ? 'features' : 'documents'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$paged       = max( 1, absint( wp_unslash( $_GET['paged'] ?? 1 ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$search      = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$settings    = get_option( self::OPTION_NAME, array() );
+		$index_on    = ! isset( $settings['index_pdf_text'] ) || ! empty( $settings['index_pdf_text'] );
+		$a11y_on     = Foliora_A11y::checking_enabled();
+		$is_pro      = Foliora_Loader::is_pro_active();
 
 		$query = new WP_Query(
 			array(
@@ -979,9 +981,24 @@ class Foliora_Admin {
 		$total = (int) $query->found_posts;
 		?>
 		<div class="wrap foliora-docs">
-			<h1 class="wp-heading-inline"><?php esc_html_e( 'Documents', 'foliora' ); ?></h1>
+			<h1 class="wp-heading-inline"><?php esc_html_e( 'Docs & Features', 'foliora' ); ?></h1>
+			<?php if ( 'documents' === $current_tab ) : ?>
 			<a href="<?php echo esc_url( admin_url( 'media-new.php' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Upload PDF', 'foliora' ); ?></a>
+			<?php endif; ?>
 			<hr class="wp-header-end" />
+
+			<nav class="nav-tab-wrapper foliora-docs-tabs">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::DOCS_SLUG ) ); ?>" class="nav-tab <?php echo 'documents' === $current_tab ? 'nav-tab-active' : ''; ?>">
+					<span class="dashicons dashicons-media-document" aria-hidden="true"></span> <?php esc_html_e( 'Documents', 'foliora' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::DOCS_SLUG . '&tab=features' ) ); ?>" class="nav-tab <?php echo 'features' === $current_tab ? 'nav-tab-active' : ''; ?>">
+					<span class="dashicons dashicons-star-filled" aria-hidden="true"></span> <?php esc_html_e( 'Features & Capabilities', 'foliora' ); ?>
+				</a>
+			</nav>
+
+			<?php if ( 'features' === $current_tab ) : ?>
+				<?php $this->render_features_tab( $is_pro ); ?>
+			<?php else : ?>
 
 			<p class="foliora-card-help">
 				<?php esc_html_e( 'PDFs already in the Media Library. Copy a shortcode to embed one with Foliora — files stay in Media, not in a separate library. Opening this screen generates first-page thumbnails, extracts PDF text for WordPress search, and checks whether each file is a tagged (accessible) PDF.', 'foliora' ); ?>
@@ -1177,11 +1194,130 @@ class Foliora_Admin {
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
+			<?php endif; ?>
+			<div class="foliora-toast" id="foliora-toast" hidden role="status"></div>
 		</div>
 		<?php
 		// Custom WP_Query does not change $wp_query, so wp_reset_postdata() is
 		// not needed here. Explicitly unset to release the object from memory.
 		unset( $query );
+	}
+
+	/**
+	 * Render the Features Showcase tab on the Docs & Features page.
+	 *
+	 * @param bool $is_pro
+	 */
+	public function render_features_tab( $is_pro ) {
+		?>
+		<div class="foliora-features-showcase">
+			<div class="foliora-features-hero">
+				<div class="foliora-features-hero-content">
+					<h2><?php esc_html_e( 'Everything Foliora Can Do', 'foliora' ); ?></h2>
+					<p><?php esc_html_e( 'Foliora gives you a fast, accessible, and locally-rendered PDF reading experience with zero external dependencies, complete with powerful builder widgets, SEO integration, and optional Pro superpowers.', 'foliora' ); ?></p>
+				</div>
+				<?php if ( ! $is_pro ) : ?>
+				<div class="foliora-features-hero-action">
+					<a class="button button-primary button-hero" href="<?php echo esc_url( Foliora_Loader::upgrade_url() ); ?>" target="_blank" rel="noopener noreferrer">
+						<?php esc_html_e( 'Get Foliora Pro', 'foliora' ); ?> &rarr;
+					</a>
+				</div>
+				<?php endif; ?>
+			</div>
+
+			<div class="foliora-features-grid">
+				<!-- Card 1: Reader & 3D FlipBook -->
+				<div class="foliora-feature-card">
+					<div class="foliora-feature-card-header">
+						<span class="dashicons dashicons-book-alt foliora-feature-icon"></span>
+						<h3><?php esc_html_e( 'Reading Modes & 3D FlipBook', 'foliora' ); ?></h3>
+						<span class="foliora-badge is-active"><?php esc_html_e( 'Included Free', 'foliora' ); ?></span>
+					</div>
+					<ul class="foliora-feature-list">
+						<li><strong><?php esc_html_e( '3D Realistic FlipBook:', 'foliora' ); ?></strong> <?php esc_html_e( 'Turn pages with realistic 3D perspective and Web Audio paper rustle sound.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Multiple Layouts:', 'foliora' ); ?></strong> <?php esc_html_e( 'Single Page, Continuous Vertical Scroll, and Two-Page Spread.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Zoom & Pan:', 'foliora' ); ?></strong> <?php esc_html_e( 'Hardware-accelerated pinch-to-zoom, Fit-to-Page, Fit-to-Width, and Hand pan tool.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Text & Links:', 'foliora' ); ?></strong> <?php esc_html_e( 'Selectable text layer, copy-paste, internal table of contents, and clickable annotations.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Deep Linking:', 'foliora' ); ?></strong> <?php esc_html_e( 'Direct link to any page via #page=X URL hash.', 'foliora' ); ?></li>
+					</ul>
+				</div>
+
+				<!-- Card 2: CMS & Page Builders -->
+				<div class="foliora-feature-card">
+					<div class="foliora-feature-card-header">
+						<span class="dashicons dashicons-layout foliora-feature-icon"></span>
+						<h3><?php esc_html_e( 'Page Builders & Embedding', 'foliora' ); ?></h3>
+						<span class="foliora-badge is-active"><?php esc_html_e( 'Included Free', 'foliora' ); ?></span>
+					</div>
+					<ul class="foliora-feature-list">
+						<li><strong><?php esc_html_e( 'Gutenberg Native Block:', 'foliora' ); ?></strong> <?php esc_html_e( 'Foliora Viewer block with Media picker & live first-page preview.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Auto oEmbed:', 'foliora' ); ?></strong> <?php esc_html_e( 'Simply paste any direct .pdf link on a new line to embed instantly.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Page Builders:', 'foliora' ); ?></strong> <?php esc_html_e( 'Native Elementor widget, Divi module, and Beaver Builder module.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Document Library Grid:', 'foliora' ); ?></strong> <?php esc_html_e( '[foliora_library] shortcode for searchable PDF galleries.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Attachment Pages:', 'foliora' ); ?></strong> <?php esc_html_e( 'Automatic interactive reader on standard WordPress attachment pages.', 'foliora' ); ?></li>
+					</ul>
+				</div>
+
+				<!-- Card 3: SEO, Social & A11y -->
+				<div class="foliora-feature-card">
+					<div class="foliora-feature-card-header">
+						<span class="dashicons dashicons-search foliora-feature-icon"></span>
+						<h3><?php esc_html_e( 'SEO, Search & Accessibility', 'foliora' ); ?></h3>
+						<span class="foliora-badge is-active"><?php esc_html_e( 'Included Free', 'foliora' ); ?></span>
+					</div>
+					<ul class="foliora-feature-list">
+						<li><strong><?php esc_html_e( 'Site Search Indexing:', 'foliora' ); ?></strong> <?php esc_html_e( 'Extracts PDF text so WordPress search finds content inside documents.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Schema.org JSON-LD:', 'foliora' ); ?></strong> <?php esc_html_e( 'Automatic DigitalDocument rich snippets for Google search results.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Social Card Previews:', 'foliora' ); ?></strong> <?php esc_html_e( 'Open Graph & Twitter Cards cover preview generated from the PDF.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Accessibility Diagnostics:', 'foliora' ); ?></strong> <?php esc_html_e( 'Detects untagged PDFs and provides WCAG / PDF-UA guidance.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Semantic Fallback:', 'foliora' ); ?></strong> <?php esc_html_e( 'Accessible <noscript> fallback links for search engines and screen readers.', 'foliora' ); ?></li>
+					</ul>
+				</div>
+
+				<!-- Card 4: Performance & Developer API -->
+				<div class="foliora-feature-card">
+					<div class="foliora-feature-card-header">
+						<span class="dashicons dashicons-performance foliora-feature-icon"></span>
+						<h3><?php esc_html_e( 'Performance & Developer API', 'foliora' ); ?></h3>
+						<span class="foliora-badge is-active"><?php esc_html_e( 'Included Free', 'foliora' ); ?></span>
+					</div>
+					<ul class="foliora-feature-list">
+						<li><strong><?php esc_html_e( 'Zero CDN Dependency:', 'foliora' ); ?></strong> <?php esc_html_e( 'Bundled locally hosted PDF.js, no third-party tracking or remote downtime.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'IntersectionObserver Lazy Load:', 'foliora' ); ?></strong> <?php esc_html_e( 'Offscreen viewers only load scripts when approaching viewport.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'iOS Memory Virtualization:', 'foliora' ); ?></strong> <?php esc_html_e( 'Releases distant canvas memory to prevent mobile Safari crashes.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'CORS Diagnostics:', 'foliora' ); ?></strong> <?php esc_html_e( 'Smart detection and fallback UI for cross-origin PDF assets.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'GA4 & Custom Events:', 'foliora' ); ?></strong> <?php esc_html_e( 'foliora:ready, foliora:pagechange, foliora:zoom, foliora:error DOM events.', 'foliora' ); ?></li>
+					</ul>
+				</div>
+
+				<!-- Card 5: Foliora Pro Superpowers -->
+				<div class="foliora-feature-card foliora-feature-card-pro">
+					<div class="foliora-feature-card-header">
+						<span class="dashicons dashicons-awards foliora-feature-icon-pro"></span>
+						<h3><?php esc_html_e( 'Foliora Pro Superpowers', 'foliora' ); ?></h3>
+						<span class="foliora-badge <?php echo $is_pro ? 'is-active' : 'is-pro'; ?>">
+							<?php echo $is_pro ? esc_html__( 'Unlocked', 'foliora' ) : esc_html__( 'Pro Upgrade', 'foliora' ); ?>
+						</span>
+					</div>
+					<ul class="foliora-feature-list">
+						<li><strong><?php esc_html_e( 'EPUB 3 Reader Mode:', 'foliora' ); ?></strong> <?php esc_html_e( 'Read digital EPUB ebooks directly inside WordPress with custom font controls.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Cloud Reading Progress & Bookmarks:', 'foliora' ); ?></strong> <?php esc_html_e( 'Sync last-read page and user bookmarks across devices for logged-in users.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'WooCommerce Paywall / Content Gating:', 'foliora' ); ?></strong> <?php esc_html_e( 'Lock PDF/EPUB chapters or entire files behind WooCommerce product purchases.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Expiring & Protected Share Links:', 'foliora' ); ?></strong> <?php esc_html_e( 'Create secure, time-limited, password-protected sharing links for clients.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'Reading Analytics Dashboard:', 'foliora' ); ?></strong> <?php esc_html_e( 'Track completion rates, time spent per page, and drop-off rates.', 'foliora' ); ?></li>
+						<li><strong><?php esc_html_e( 'White-Label Branding:', 'foliora' ); ?></strong> <?php esc_html_e( 'Remove the "Powered by Foliora" credit for total brand customization.', 'foliora' ); ?></li>
+					</ul>
+					<?php if ( ! $is_pro ) : ?>
+					<div class="foliora-feature-card-footer">
+						<a class="button button-primary" href="<?php echo esc_url( Foliora_Loader::upgrade_url() ); ?>" target="_blank" rel="noopener noreferrer">
+							<?php esc_html_e( 'Upgrade to Pro to Unlock', 'foliora' ); ?> &rarr;
+						</a>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+		<?php
 	}
 
 	public function ajax_mark_setup_copied() {
