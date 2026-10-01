@@ -251,19 +251,19 @@ class Foliora_Viewer {
 		$download_url = apply_filters( 'foliora/download_url', $file_url, $atts );
 		ob_start();
 		?>
-		<div class="foliora-toolbar" role="toolbar" data-target="<?php echo esc_attr( $instance_id ); ?>" aria-controls="<?php echo esc_attr( $instance_id ); ?>" aria-label="<?php esc_attr_e( 'PDF viewer', 'foliora' ); ?>" style="display:flex;flex-wrap:nowrap;align-items:center;">
+		<div class="foliora-toolbar" role="toolbar" data-target="<?php echo esc_attr( $instance_id ); ?>" aria-controls="<?php echo esc_attr( $instance_id ); ?>" aria-label="<?php esc_attr_e( 'PDF viewer', 'foliora' ); ?>">
 			<div class="foliora-tool-group foliora-panel-group" hidden>
 				<button type="button" class="foliora-btn foliora-toc" hidden aria-expanded="false" title="<?php esc_attr_e( 'Table of contents', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Table of contents', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'toc' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'toc' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<button type="button" class="foliora-btn foliora-thumbs" hidden aria-expanded="false" title="<?php esc_attr_e( 'Page thumbnails', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Page thumbnails', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'thumbs' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'thumbs' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 			</div>
 			<?php if ( $show_nav ) : ?>
-			<div class="foliora-tool-group">
+			<div class="foliora-tool-group foliora-nav-group">
 				<button type="button" class="foliora-btn foliora-prev" title="<?php esc_attr_e( 'Previous page (←)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Previous page', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'prev' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'prev' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<span class="foliora-page-indicator">
 					<input type="number" class="foliora-page-input" min="1" value="1" aria-label="<?php esc_attr_e( 'Page', 'foliora' ); ?>" />
@@ -271,95 +271,107 @@ class Foliora_Viewer {
 					<span class="foliora-page-count">1</span>
 				</span>
 				<button type="button" class="foliora-btn foliora-next" title="<?php esc_attr_e( 'Next page (→)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Next page', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'next' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'next' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 			</div>
 			<?php endif; ?>
-			<div class="foliora-tool-group">
+			<div class="foliora-tool-group foliora-zoom-group">
 				<?php if ( $show_zoom ) : ?>
 				<button type="button" class="foliora-btn foliora-zoom-out" title="<?php esc_attr_e( 'Zoom out (-)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Zoom out', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'minus' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'minus' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<span class="foliora-zoom-label" aria-live="polite">100%</span>
 				<button type="button" class="foliora-btn foliora-zoom-in" title="<?php esc_attr_e( 'Zoom in (+)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Zoom in', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'plus' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'plus' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<?php endif; ?>
 				<?php if ( $show_fit ) : ?>
 				<button type="button" class="foliora-btn foliora-fit" title="<?php esc_attr_e( 'Fit page (0)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Fit page', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'fit' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $show_rotate ) : ?>
-				<button type="button" class="foliora-btn foliora-rotate" title="<?php esc_attr_e( 'Rotate (R)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Rotate', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'rotate' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $show_view ) : ?>
-				<button type="button" class="foliora-btn foliora-view" title="<?php esc_attr_e( 'Single page / Scroll / Spread', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'View mode', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'view' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $show_pan ) : ?>
-				<button type="button" class="foliora-btn foliora-pan" aria-pressed="false" title="<?php esc_attr_e( 'Hand tool (H)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Hand tool', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'pan' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'fit' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<?php endif; ?>
 			</div>
 			<?php if ( $search ) : ?>
 			<div class="foliora-tool-group foliora-find-group">
 				<span class="foliora-find">
-					<?php echo $this->toolbar_icon( 'search' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'search' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<input type="search" class="foliora-find-input" placeholder="<?php esc_attr_e( 'Find', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Find in document', 'foliora' ); ?>" />
 				</span>
 				<span class="foliora-find-status" hidden aria-live="polite"></span>
 				<button type="button" class="foliora-btn foliora-find-prev" title="<?php esc_attr_e( 'Previous match', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Previous match', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'up' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'up' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<button type="button" class="foliora-btn foliora-find-next" title="<?php esc_attr_e( 'Next match', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Next match', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'down' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'down' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 			</div>
 			<?php endif; ?>
 			<div class="foliora-tool-group foliora-tool-group-end">
-				<?php if ( $theme_btn ) : ?>
-				<button type="button" class="foliora-btn foliora-theme-toggle" title="<?php esc_attr_e( 'Switch theme: Light / Dark / Sepia (D)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Switch theme', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'theme' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $share ) : ?>
-				<button type="button" class="foliora-btn foliora-share-btn" aria-expanded="false" title="<?php esc_attr_e( 'Share document', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Share document', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'share' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $shortcuts ) : ?>
-				<button type="button" class="foliora-btn foliora-shortcuts-btn" aria-expanded="false" title="<?php esc_attr_e( 'Keyboard shortcuts (?)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Keyboard shortcuts', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'shortcuts' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
 				<?php if ( $download ) : ?>
 				<a class="foliora-btn foliora-download" href="<?php echo esc_url( $download_url ); ?>" download title="<?php esc_attr_e( 'Download', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Download', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'download' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'download' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</a>
-				<?php endif; ?>
-				<?php if ( $print ) : ?>
-				<button type="button" class="foliora-btn foliora-print" title="<?php esc_attr_e( 'Print', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Print', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'print' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
-				<?php endif; ?>
-				<?php if ( $present ) : ?>
-				<button type="button" class="foliora-btn foliora-present" aria-pressed="false" title="<?php esc_attr_e( 'Presentation (P)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Presentation', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'present' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
 				<?php endif; ?>
 				<?php if ( $fullscreen ) : ?>
 				<button type="button" class="foliora-btn foliora-fs" title="<?php esc_attr_e( 'Full screen (F)', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'Full screen', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'fs' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<?php echo $this->toolbar_icon( 'fs' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<?php endif; ?>
-				<button type="button" class="foliora-btn foliora-more" aria-expanded="false" title="<?php esc_attr_e( 'More tools', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'More tools', 'foliora' ); ?>">
-					<?php echo $this->toolbar_icon( 'more' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
-				</button>
+				<div class="foliora-more-wrap">
+					<button type="button" class="foliora-btn foliora-more" aria-expanded="false" aria-haspopup="true" title="<?php esc_attr_e( 'More tools', 'foliora' ); ?>" aria-label="<?php esc_attr_e( 'More tools', 'foliora' ); ?>">
+						<?php echo $this->toolbar_icon( 'more' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					</button>
+					<div class="foliora-more-menu" hidden role="menu">
+						<?php if ( $show_rotate ) : ?>
+						<button type="button" class="foliora-more-item foliora-rotate" role="menuitem">
+							<?php echo $this->toolbar_icon( 'rotate' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Rotate', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $show_view ) : ?>
+						<button type="button" class="foliora-more-item foliora-view" role="menuitem">
+							<?php echo $this->toolbar_icon( 'view' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'View Mode', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $show_pan ) : ?>
+						<button type="button" class="foliora-more-item foliora-pan" role="menuitem" aria-pressed="false">
+							<?php echo $this->toolbar_icon( 'pan' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Hand Tool', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $theme_btn ) : ?>
+						<button type="button" class="foliora-more-item foliora-theme-toggle" role="menuitem">
+							<?php echo $this->toolbar_icon( 'theme' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Switch Theme', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $share ) : ?>
+						<button type="button" class="foliora-more-item foliora-share-btn" role="menuitem" aria-expanded="false">
+							<?php echo $this->toolbar_icon( 'share' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Share Document', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $shortcuts ) : ?>
+						<button type="button" class="foliora-more-item foliora-shortcuts-btn" role="menuitem" aria-expanded="false">
+							<?php echo $this->toolbar_icon( 'shortcuts' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Shortcuts Guide', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $print ) : ?>
+						<button type="button" class="foliora-more-item foliora-print" role="menuitem">
+							<?php echo $this->toolbar_icon( 'print' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Print Document', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+						<?php if ( $present ) : ?>
+						<button type="button" class="foliora-more-item foliora-present" role="menuitem" aria-pressed="false">
+							<?php echo $this->toolbar_icon( 'present' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<span><?php esc_html_e( 'Presentation Mode', 'foliora' ); ?></span>
+						</button>
+						<?php endif; ?>
+					</div>
+				</div>
 			</div>
 			<span class="foliora-sr-only foliora-page-live" aria-live="polite"></span>
 			<span class="foliora-sr-only"><?php esc_html_e( 'Keyboard: arrows or Page Up and Page Down change page, plus and minus zoom, R rotates, Home and End jump to first or last page, Ctrl or Command F finds text, D toggles reading theme, ? opens shortcuts guide.', 'foliora' ); ?></span>

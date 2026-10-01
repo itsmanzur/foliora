@@ -1834,10 +1834,28 @@
 		if ( fsBtn ) {
 			fsBtn.addEventListener( 'click', toggleFullscreen );
 		}
-		if ( moreBtn && toolbar ) {
-			moreBtn.addEventListener( 'click', function () {
-				toolbar.classList.toggle( 'is-more-open' );
-				moreBtn.setAttribute( 'aria-expanded', toolbar.classList.contains( 'is-more-open' ) ? 'true' : 'false' );
+		var moreMenu = toolbar ? $( '.foliora-more-menu', toolbar ) : null;
+		if ( moreBtn && moreMenu ) {
+			moreBtn.addEventListener( 'click', function ( e ) {
+				e.stopPropagation();
+				var isOpen = ! moreMenu.hidden;
+				moreMenu.hidden = isOpen;
+				moreBtn.setAttribute( 'aria-expanded', isOpen ? 'false' : 'true' );
+				moreBtn.classList.toggle( 'is-active', ! isOpen );
+			} );
+			document.addEventListener( 'click', function ( e ) {
+				if ( ! moreMenu.hidden && ! e.target.closest( '.foliora-more-wrap' ) ) {
+					moreMenu.hidden = true;
+					moreBtn.setAttribute( 'aria-expanded', 'false' );
+					moreBtn.classList.remove( 'is-active' );
+				}
+			} );
+			$( '.foliora-more-item', moreMenu ).forEach( function ( item ) {
+				item.addEventListener( 'click', function () {
+					moreMenu.hidden = true;
+					moreBtn.setAttribute( 'aria-expanded', 'false' );
+					moreBtn.classList.remove( 'is-active' );
+				} );
 			} );
 		}
 		var presentTap = null;
