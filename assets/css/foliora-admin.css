@@ -1193,3 +1193,261 @@ a.foliora-metric:focus {
 	width: 16px;
 	height: 16px;
 }
+
+/* ==========================================================================
+   User Guide & Documentation Tab Styles
+   ========================================================================== */
+.foliora-guide-wrap {
+	max-width: 1100px;
+	margin-top: 16px;
+}
+
+.foliora-guide-hero {
+	background: linear-gradient(135deg, #1d2327 0%, #2c3338 100%);
+	color: #fff;
+	border-radius: 10px;
+	padding: 24px 28px;
+	margin-bottom: 24px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.foliora-guide-hero h2 {
+	margin: 0 0 6px;
+	color: #fff;
+	font-size: 20px;
+}
+
+.foliora-guide-hero p {
+	margin: 0;
+	color: #c3c4c7;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.foliora-guide-section {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 10px;
+	padding: 22px 24px;
+	margin-bottom: 24px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.foliora-guide-section-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.foliora-guide-icon-sec {
+	color: #2271b1;
+	font-size: 22px;
+	width: 22px;
+	height: 22px;
+}
+
+.foliora-guide-section-head h3 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.foliora-guide-desc {
+	margin: 0 0 14px;
+	color: #50575e;
+	font-size: 13px;
+}
+
+.foliora-guide-cards-3 {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 16px;
+	margin-top: 14px;
+}
+
+.foliora-guide-step-card {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	position: relative;
+}
+
+.foliora-step-num {
+	width: 26px;
+	height: 26px;
+	background: #2271b1;
+	color: #fff;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 12px;
+}
+
+.foliora-guide-step-card h4 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.foliora-guide-step-card p {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.45;
+	color: #646970;
+	flex: 1 1 auto;
+}
+
+.foliora-guide-step-card code {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 4px 8px;
+	font-size: 11px;
+	word-break: break-all;
+}
+
+.foliora-guide-table {
+	margin-top: 12px;
+	border: 1px solid #dcdcde;
+}
+
+.foliora-guide-table th {
+	font-weight: 600;
+	background: #f6f7f7;
+}
+
+.foliora-guide-table td {
+	vertical-align: top;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.foliora-req {
+	color: #d63638;
+	font-weight: bold;
+}
+
+.foliora-code-examples {
+	margin-top: 16px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 14px 18px;
+}
+
+.foliora-code-examples h4 {
+	margin: 0 0 10px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.foliora-example-row {
+	margin-bottom: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 12px;
+}
+
+.foliora-example-row:last-child {
+	margin-bottom: 0;
+}
+
+.foliora-example-row code {
+	background: #1d2327;
+	color: #72aee6;
+	padding: 6px 10px;
+	border-radius: 4px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	display: block;
+}
+
+.foliora-callout {
+	background: #f0f6fc;
+	border-left: 4px solid #72aee6;
+	padding: 12px 16px;
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.foliora-callout p {
+	margin: 0 0 6px;
+}
+
+.foliora-callout p:last-child {
+	margin: 0;
+}
+
+.foliora-guide-grid-2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 16px;
+}
+
+.foliora-builder-card {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px 18px;
+}
+
+.foliora-builder-card h4 {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.foliora-builder-card h4 .dashicons {
+	color: #2271b1;
+}
+
+.foliora-builder-card p {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #50575e;
+}
+
+.foliora-faq-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.foliora-faq-item {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	padding: 12px 16px;
+	cursor: pointer;
+}
+
+.foliora-faq-item summary {
+	font-size: 13px;
+	color: #1d2327;
+	list-style: none;
+}
+
+.foliora-faq-item p {
+	margin: 10px 0 0;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #50575e;
+}
