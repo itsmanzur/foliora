@@ -137,6 +137,7 @@
 								{ label: __( 'Single page', 'foliora' ), value: 'page' },
 								{ label: __( 'Continuous scroll', 'foliora' ), value: 'scroll' },
 								{ label: __( 'Two-page spread', 'foliora' ), value: 'spread' },
+								{ label: __( '3D FlipBook', 'foliora' ), value: 'flip' },
 							],
 							onChange: function ( value ) {
 								setAttributes( { view: value } );

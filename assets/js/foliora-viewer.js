@@ -14,7 +14,7 @@
 
 	var config = window.FolioraConfig || {};
 	window.pdfjsLib.GlobalWorkerOptions.workerSrc = config.workerSrc;
-	var VIEW_MODES = [ 'page', 'scroll', 'spread' ];
+	var VIEW_MODES = [ 'page', 'scroll', 'spread', 'flip' ];
 
 	function $( sel, root ) {
 		return ( root || document ).querySelector( sel );
@@ -112,6 +112,50 @@
 		} );
 	}
 
+	
+	var flipAudioCtx = null;
+	function playPageTurnSound() {
+		try {
+			var AC = window.AudioContext || window.webkitAudioContext;
+			if ( ! AC ) {
+				return;
+			}
+			if ( ! flipAudioCtx ) {
+				flipAudioCtx = new AC();
+			}
+			if ( flipAudioCtx.state === 'suspended' ) {
+				flipAudioCtx.resume();
+			}
+			var bufferSize = Math.floor( flipAudioCtx.sampleRate * 0.15 );
+			var buffer = flipAudioCtx.createBuffer( 1, bufferSize, flipAudioCtx.sampleRate );
+			var data = buffer.getChannelData( 0 );
+			for ( var i = 0; i < bufferSize; i++ ) {
+				data[ i ] = ( Math.random() * 2 - 1 ) * Math.exp( -i / ( bufferSize * 0.4 ) );
+			}
+			var noise = flipAudioCtx.createBufferSource();
+			noise.buffer = buffer;
+
+			var filter = flipAudioCtx.createBiquadFilter();
+			filter.type = 'bandpass';
+			filter.frequency.setValueAtTime( 1200, flipAudioCtx.currentTime );
+			filter.frequency.exponentialRampToValueAtTime( 3200, flipAudioCtx.currentTime + 0.12 );
+			filter.Q.value = 2.2;
+
+			var gain = flipAudioCtx.createGain();
+			gain.gain.setValueAtTime( 0.09, flipAudioCtx.currentTime );
+			gain.gain.exponentialRampToValueAtTime( 0.001, flipAudioCtx.currentTime + 0.15 );
+
+			noise.connect( filter );
+			filter.connect( gain );
+			gain.connect( flipAudioCtx.destination );
+
+			noise.start();
+			noise.stop( flipAudioCtx.currentTime + 0.15 );
+		} catch ( e ) {
+			// AudioContext fallback
+		}
+	}
+
 	function bindViewer( container, toolbar ) {
 		if ( container.getAttribute( 'data-foliora-bound' ) === '1' ) {
 			return;
@@ -138,6 +182,30 @@
 
 		var pagesEl = document.createElement( 'div' );
 		pagesEl.className = 'foliora-pages is-page';
+
+		pagesEl.addEventListener( 'click', function ( e ) {
+			if ( viewMode() !== 'flip' || isNarrow() ) {
+				return;
+			}
+			if ( e.target && e.target.closest && ( e.target.closest( 'a' ) || e.target.closest( 'button' ) || e.target.closest( '.foliora-text-layer' ) ) ) {
+				var sel = window.getSelection();
+				if ( sel && sel.toString && sel.toString().trim().length > 0 ) {
+					return;
+				}
+			}
+			var rect = pagesEl.getBoundingClientRect();
+			var clickX = e.clientX - rect.left;
+			if ( clickX > rect.width * 0.55 ) {
+				if ( state.page < state.numPages ) {
+					nextPage();
+				}
+			} else if ( clickX < rect.width * 0.45 ) {
+				if ( state.page > 1 ) {
+					prevPage();
+				}
+			}
+		} );
+
 		container.appendChild( pagesEl );
 
 		var side = document.createElement( 'aside' );
@@ -473,8 +541,11 @@
 			if ( mode === 'scroll' ) {
 				return i18n.viewScroll || 'Continuous scroll';
 			}
-			if ( mode === 'spread' ) {
+			if ( mode === 'spread' || mode === 'flip' ) {
 				return i18n.viewSpread || 'Two-page spread';
+			}
+			if ( mode === 'flip' ) {
+				return i18n.viewFlip || '3D FlipBook';
 			}
 			return i18n.viewPage || 'Single page';
 		}
@@ -612,7 +683,8 @@
 			var baseH = ( pagesEl && pagesEl.clientHeight ) ? pagesEl.clientHeight : container.clientHeight;
 			var w = Math.max( 40, baseW - padX );
 			var h = Math.max( 40, baseH - padY );
-			if ( viewMode() === 'spread' ) {
+			var currentMode = viewMode();
+			if ( ( currentMode === 'spread' || currentMode === 'flip' ) && ! isNarrow() ) {
 				w = Math.max( 40, ( w - 16 ) / 2 );
 			}
 			return { width: w, height: h };
@@ -925,6 +997,7 @@
 			pagesEl.classList.toggle( 'is-scroll', mode === 'scroll' );
 			pagesEl.classList.toggle( 'is-spread', mode === 'spread' );
 			pagesEl.classList.toggle( 'is-page', mode === 'page' );
+			pagesEl.classList.toggle( 'is-flip', mode === 'flip' );
 			visibleNums().forEach( function ( n ) {
 				var slot = makeSlot( n );
 				slots.push( slot );
@@ -1078,6 +1151,9 @@
 					}
 				}
 				if ( changed && ! silent ) {
+					if ( mode === 'flip' ) {
+						playPageTurnSound();
+					}
 					dispatchPage();
 				}
 			};

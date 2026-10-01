@@ -1384,3 +1384,63 @@
 	height: 15px;
 	flex-shrink: 0;
 }
+
+/* ==========================================================================
+   3D FlipBook Styles
+   ========================================================================== */
+.foliora-pages.is-flip {
+	perspective: 2400px;
+	perspective-origin: 50% 50%;
+	transform-style: preserve-3d;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 0;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.foliora-pages.is-flip .foliora-page-wrap {
+	position: relative;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+	transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+	transform-origin: center center;
+}
+
+/* Left page in spread has right-edge spine gradient */
+.foliora-pages.is-flip .foliora-page-wrap:first-child:not(:only-child) {
+	border-radius: 4px 0 0 4px;
+	box-shadow: -8px 10px 24px rgba(0, 0, 0, 0.35), inset -12px 0 16px -8px rgba(0, 0, 0, 0.25);
+	transform-origin: right center;
+}
+
+/* Right page in spread has left-edge spine gradient */
+.foliora-pages.is-flip .foliora-page-wrap:last-child:not(:only-child) {
+	border-radius: 0 4px 4px 0;
+	box-shadow: 8px 10px 24px rgba(0, 0, 0, 0.35), inset 12px 0 16px -8px rgba(0, 0, 0, 0.25);
+	transform-origin: left center;
+}
+
+/* Hover tilt effect for realistic book depth */
+.foliora-pages.is-flip:hover .foliora-page-wrap:first-child:not(:only-child) {
+	transform: perspective(2000px) rotateY(1.5deg);
+}
+
+.foliora-pages.is-flip:hover .foliora-page-wrap:last-child:not(:only-child) {
+	transform: perspective(2000px) rotateY(-1.5deg);
+}
+
+/* Book spine dividing line */
+.foliora-pages.is-flip .foliora-page-wrap:first-child:not(:only-child)::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 2px;
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05));
+	pointer-events: none;
+	z-index: 5;
+}

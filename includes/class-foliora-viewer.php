@@ -548,6 +548,7 @@ class Foliora_Viewer {
 			'viewPage'       => __( 'Single page', 'foliora' ),
 			'viewScroll'     => __( 'Continuous scroll', 'foliora' ),
 			'viewSpread'     => __( 'Two-page spread', 'foliora' ),
+			'viewFlip'       => __( '3D FlipBook', 'foliora' ),
 			'pan'            => __( 'Hand tool', 'foliora' ),
 			'select'         => __( 'Text select', 'foliora' ),
 			'more'           => __( 'More tools', 'foliora' ),
