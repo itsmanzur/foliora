@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * hard-coding paths/URLs, so the free/pro split and any future folder
  * reshuffle stay painless.
  */
-define( 'FOLIORA_VERSION', '1.0.0' );
+define( 'FOLIORA_VERSION', '1.0.4' );
 define( 'FOLIORA_FILE', __FILE__ );
 define( 'FOLIORA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FOLIORA_URL', plugin_dir_url( __FILE__ ) );
@@ -89,6 +89,7 @@ require_once FOLIORA_DIR . 'includes/class-foliora-compat.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-builders.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-library.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-block.php';
+require_once FOLIORA_DIR . 'includes/class-foliora-embeds.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-admin.php';
 require_once FOLIORA_DIR . 'includes/class-foliora.php';
 

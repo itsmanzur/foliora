@@ -184,7 +184,7 @@
 		pagesEl.className = 'foliora-pages is-page';
 
 		pagesEl.addEventListener( 'click', function ( e ) {
-			if ( viewMode() !== 'flip' || isNarrow() ) {
+			if ( viewMode() !== 'flip' || isNarrow() || flipBusy ) {
 				return;
 			}
 			if ( e.target && e.target.closest && ( e.target.closest( 'a' ) || e.target.closest( 'button' ) || e.target.closest( '.foliora-text-layer' ) ) ) {
@@ -268,6 +268,9 @@
 		};
 
 		var slots = [];
+		var flipBusy = false;
+		var flipStage = null;
+		var flipRaf = 0;
 		var pageObserver = null;
 		var thumbObserver = null;
 		var persistTimer = null;
@@ -452,7 +455,7 @@
 		}
 
 		function preferredView() {
-			return state.viewMode === 'scroll' || state.viewMode === 'spread' ? state.viewMode : 'page';
+			return state.viewMode === 'scroll' || state.viewMode === 'spread' || state.viewMode === 'flip' ? state.viewMode : 'page';
 		}
 
 		function isNarrow() {
@@ -461,7 +464,7 @@
 
 		function viewMode() {
 			var mode = preferredView();
-			if ( mode === 'spread' && isNarrow() ) {
+			if ( ( mode === 'spread' || mode === 'flip' ) && isNarrow() ) {
 				return 'page';
 			}
 			return mode;
@@ -541,7 +544,7 @@
 			if ( mode === 'scroll' ) {
 				return i18n.viewScroll || 'Continuous scroll';
 			}
-			if ( mode === 'spread' || mode === 'flip' ) {
+			if ( mode === 'spread' ) {
 				return i18n.viewSpread || 'Two-page spread';
 			}
 			if ( mode === 'flip' ) {
@@ -864,7 +867,7 @@
 				}
 				return nums;
 			}
-			if ( mode === 'spread' ) {
+			if ( mode === 'spread' || mode === 'flip' ) {
 				return spreadPages( state.page );
 			}
 			return [ state.page ];
@@ -986,6 +989,273 @@
 			clearChildren( slot.annotLayer );
 		}
 
+		function reducedMotion() {
+			return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+		}
+
+		function slotRoles( list ) {
+			var out = { left: null, right: null };
+			if ( list.length >= 2 ) {
+				out.left = list[ 0 ];
+				out.right = list[ 1 ];
+			} else if ( list.length === 1 ) {
+				if ( list[ 0 ].pageNum === 1 ) {
+					out.right = list[ 0 ];
+				} else {
+					out.left = list[ 0 ];
+				}
+			}
+			return out;
+		}
+
+		// Cover (page 1) sits on the right half and a lone last page on the
+		// left half, like a real closed/ending book.
+		function applyFlipOffsets() {
+			slots.forEach( function ( s ) {
+				s.wrap.style.marginLeft = '';
+				s.wrap.style.marginRight = '';
+			} );
+			if ( viewMode() !== 'flip' || slots.length !== 1 || ! state.slotSize ) {
+				return;
+			}
+			if ( slots[ 0 ].pageNum === 1 ) {
+				slots[ 0 ].wrap.style.marginLeft = state.slotSize.w + 'px';
+			} else {
+				slots[ 0 ].wrap.style.marginRight = state.slotSize.w + 'px';
+			}
+		}
+
+		function snapCanvas( src ) {
+			var c = document.createElement( 'canvas' );
+			c.width = src.width;
+			c.height = src.height;
+			c.style.width = '100%';
+			c.style.height = '100%';
+			c.style.display = 'block';
+			var ctx = c.getContext( '2d' );
+			if ( ctx && src.width > 1 ) {
+				ctx.drawImage( src, 0, 0 );
+			}
+			return c;
+		}
+
+		function canvasUrl( src ) {
+			try {
+				return src && src.width > 1 ? src.toDataURL( 'image/jpeg', 0.9 ) : '';
+			} catch ( err ) {
+				return '';
+			}
+		}
+
+		function endFlip() {
+			if ( flipRaf ) {
+				window.cancelAnimationFrame( flipRaf );
+				flipRaf = 0;
+			}
+			if ( flipStage && flipStage.parentNode ) {
+				flipStage.parentNode.removeChild( flipStage );
+			}
+			flipStage = null;
+			flipBusy = false;
+			pagesEl.classList.remove( 'is-flip-busy' );
+			slots.forEach( function ( s ) {
+				s.wrap.classList.remove( 'is-flip-hidden' );
+			} );
+		}
+
+		function beginFlip( dir ) {
+			endFlip();
+			if ( ! slots.length || ! state.slotSize ) {
+				return null;
+			}
+			var roles = slotRoles( slots );
+			var leafSlot = dir > 0 ? roles.right : roles.left;
+			var coverSlot = dir > 0 ? roles.left : roles.right;
+			if ( ! leafSlot || ! leafSlot.rendered ) {
+				return null;
+			}
+			var frontUrl = canvasUrl( leafSlot.canvas );
+			if ( ! frontUrl ) {
+				return null;
+			}
+			if ( window.getComputedStyle( pagesEl ).position === 'static' ) {
+				pagesEl.style.position = 'relative';
+			}
+			var w = state.slotSize.w;
+			var h = state.slotSize.h;
+			var top = leafSlot.wrap.offsetTop;
+			var spine = dir > 0 ? leafSlot.wrap.offsetLeft : leafSlot.wrap.offsetLeft + w;
+			var N = 16; // 16 polygonal sub-strips for silky smooth 3D bending
+			var sw = w / N;
+
+			var stage = document.createElement( 'div' );
+			stage.className = 'foliora-flip-stage';
+			stage.style.perspective = Math.round( w * 7.5 ) + 'px';
+			stage.style.perspectiveOrigin = spine + 'px ' + ( top + h / 2 ) + 'px';
+
+			var landLeft = dir > 0 ? spine - w : spine;
+			var cast = document.createElement( 'div' );
+			cast.className = 'foliora-flip-cast';
+			cast.style.left = landLeft + 'px';
+			cast.style.top = top + 'px';
+			cast.style.width = w + 'px';
+			cast.style.height = h + 'px';
+			cast.style.background = 'linear-gradient(to ' + ( dir > 0 ? 'left' : 'right' ) + ', rgba(0,0,0,0.55), rgba(0,0,0,0.02) 80%, rgba(0,0,0,0) 100%)';
+			stage.appendChild( cast );
+
+			var cover = null;
+			if ( coverSlot && coverSlot.rendered ) {
+				cover = document.createElement( 'div' );
+				cover.className = 'foliora-flip-cover';
+				cover.style.left = coverSlot.wrap.offsetLeft + 'px';
+				cover.style.top = coverSlot.wrap.offsetTop + 'px';
+				cover.style.width = w + 'px';
+				cover.style.height = h + 'px';
+				cover.appendChild( snapCanvas( coverSlot.canvas ) );
+				stage.appendChild( cover );
+			}
+
+			var strips = [];
+			var parent = null;
+			var i;
+			for ( i = 0; i < N; i++ ) {
+				var el = document.createElement( 'div' );
+				el.className = 'foliora-flip-strip';
+				el.style.width = sw + 'px';
+				el.style.height = h + 'px';
+				el.style.transformOrigin = dir > 0 ? 'left center' : 'right center';
+
+				var front = document.createElement( 'div' );
+				front.className = 'foliora-flip-face';
+				var back = document.createElement( 'div' );
+				back.className = 'foliora-flip-face is-back';
+
+				var fShade = document.createElement( 'div' );
+				fShade.className = 'foliora-flip-shade';
+				var bShade = document.createElement( 'div' );
+				bShade.className = 'foliora-flip-shade';
+
+				var fHighlight = document.createElement( 'div' );
+				fHighlight.className = 'foliora-flip-highlight';
+				var bHighlight = document.createElement( 'div' );
+				bHighlight.className = 'foliora-flip-highlight';
+
+				front.style.backgroundSize = w + 'px ' + h + 'px';
+				back.style.backgroundSize = w + 'px ' + h + 'px';
+				var sliceF = dir > 0 ? i : N - 1 - i;
+				var sliceB = dir > 0 ? N - 1 - i : i;
+				front.style.backgroundImage = 'url(' + frontUrl + ')';
+				front.style.backgroundPosition = ( -sliceF * sw ) + 'px 0';
+				back.style.backgroundPosition = ( -sliceB * sw ) + 'px 0';
+
+				front.appendChild( fShade );
+				front.appendChild( fHighlight );
+				back.appendChild( bShade );
+				back.appendChild( bHighlight );
+
+				el.appendChild( front );
+				el.appendChild( back );
+
+				if ( parent ) {
+					el.style.left = dir > 0 ? sw + 'px' : '';
+					el.style.right = dir > 0 ? '' : sw + 'px';
+					el.style.top = '0';
+					parent.appendChild( el );
+				} else {
+					el.style.top = top + 'px';
+					el.style.left = ( dir > 0 ? spine : spine - sw ) + 'px';
+					stage.appendChild( el );
+				}
+				strips.push( { el: el, back: back, fShade: fShade, bShade: bShade, fHighlight: fHighlight, bHighlight: bHighlight } );
+				parent = el;
+			}
+
+			pagesEl.appendChild( stage );
+			pagesEl.classList.add( 'is-flip-busy' );
+			flipStage = stage;
+			flipBusy = true;
+			var ctx = { dir: dir, stage: stage, strips: strips, cover: cover, cast: cast, N: N, land: null, swapped: false };
+			applyLeaf( ctx, 0 );
+			return ctx;
+		}
+
+		function applyLeaf( ctx, e ) {
+			var sgn = ctx.dir > 0 ? -1 : 1;
+			var ang = 180 * e;
+			// Natural paper bend curve: dynamic arch reaching apex mid-flip
+			var bendStrength = 42 * Math.sin( Math.PI * e );
+			var bend = bendStrength / ctx.N;
+			var cum = 0;
+
+			ctx.strips.forEach( function ( s, i ) {
+				// Progressive peeling angle per strip segment
+				var weight = Math.sin( ( ( i + 1 ) / ctx.N ) * Math.PI * 0.5 );
+				var rel = i === 0 ? sgn * ( ang - bendStrength * 0.35 ) : -sgn * ( bend * ( 1 + weight * 0.5 ) );
+				cum += rel;
+				s.el.style.transform = 'rotateY(' + rel.toFixed( 3 ) + 'deg)';
+
+				// Realistic dynamic shadow & lighting reflection
+				var sinVal = Math.sin( ( cum * Math.PI ) / 180 );
+				var shade = Math.max( 0, ( 0.45 * Math.abs( sinVal ) ) ).toFixed( 3 );
+				var highlight = Math.max( 0, ( 0.38 * ( 1 - Math.abs( sinVal ) ) * Math.sin( Math.PI * e ) ) ).toFixed( 3 );
+
+				s.fShade.style.opacity = shade;
+				s.bShade.style.opacity = shade;
+				s.fHighlight.style.opacity = highlight;
+				s.bHighlight.style.opacity = highlight;
+			} );
+			ctx.cast.style.opacity = ( 0.65 * Math.sin( Math.PI * e ) ).toFixed( 3 );
+		}
+
+		function runFlip( ctx ) {
+			if ( ! flipBusy || flipStage !== ctx.stage ) {
+				return;
+			}
+			var nr = slotRoles( slots );
+			var landSlot = ctx.dir > 0 ? nr.left : nr.right;
+			var backUrl = landSlot && landSlot.rendered ? canvasUrl( landSlot.canvas ) : '';
+			ctx.strips.forEach( function ( s ) {
+				if ( backUrl ) {
+					s.back.style.backgroundImage = 'url(' + backUrl + ')';
+				}
+			} );
+			ctx.land = landSlot;
+			if ( landSlot ) {
+				landSlot.wrap.classList.add( 'is-flip-hidden' );
+			}
+			pagesEl.classList.remove( 'is-flip-busy' );
+			var duration = 920; // Silky responsive 920ms flip
+			var start = null;
+			function step( now ) {
+				if ( ! flipBusy || flipStage !== ctx.stage ) {
+					return;
+				}
+				if ( start === null ) {
+					start = now;
+				}
+				var t = Math.min( 1, ( now - start ) / duration );
+				// Quintic easing for realistic paper inertia and smooth landing
+				var e = t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow( -2 * t + 2, 5 ) / 2;
+				applyLeaf( ctx, e );
+				if ( ! ctx.swapped && e >= 0.5 ) {
+					ctx.swapped = true;
+					if ( ctx.cover && ctx.cover.parentNode ) {
+						ctx.cover.parentNode.removeChild( ctx.cover );
+					}
+					if ( ctx.land ) {
+						ctx.land.wrap.classList.remove( 'is-flip-hidden' );
+					}
+				}
+				if ( t >= 1 ) {
+					flipRaf = 0;
+					endFlip();
+					return;
+				}
+				flipRaf = window.requestAnimationFrame( step );
+			}
+			flipRaf = window.requestAnimationFrame( step );
+		}
+
 		function rebuildSlots() {
 			disconnectPageObserver();
 			slots.forEach( function ( slot ) {
@@ -993,6 +1263,9 @@
 			} );
 			slots = [];
 			clearChildren( pagesEl );
+			if ( flipStage ) {
+				pagesEl.appendChild( flipStage );
+			}
 			var mode = viewMode();
 			pagesEl.classList.toggle( 'is-scroll', mode === 'scroll' );
 			pagesEl.classList.toggle( 'is-spread', mode === 'spread' );
@@ -1003,6 +1276,7 @@
 				slots.push( slot );
 				pagesEl.appendChild( slot.wrap );
 			} );
+			applyFlipOffsets();
 			if ( mode === 'scroll' && typeof window.IntersectionObserver === 'function' ) {
 				pageObserver = new window.IntersectionObserver(
 					function ( entries ) {
@@ -1132,6 +1406,7 @@
 				} );
 			} );
 			return all.then( function () {
+				applyFlipOffsets();
 				updateToolbar();
 			} ).catch( showRenderError );
 		}
@@ -1140,8 +1415,13 @@
 			var silent = opts && opts.silent;
 			page = clamp( parseInt( page, 10 ) || 1, 1, state.numPages );
 			var changed = page !== state.page;
+			var prevPage = state.page;
 			state.page = page;
 			var mode = viewMode();
+			var flipCtx = null;
+			if ( mode === 'flip' && changed && ! silent && state.fitMode !== 'none' && ! reducedMotion() && ! slotsMatch( visibleNums() ) ) {
+				flipCtx = beginFlip( page > prevPage ? 1 : -1 );
+			}
 			var after = function () {
 				persistLocation();
 				if ( changed ) {
@@ -1167,11 +1447,16 @@
 					after();
 				} ).catch( showRenderError );
 			}
-			return renderCurrent().then( after );
+			return renderCurrent().then( function () {
+				if ( flipCtx ) {
+					runFlip( flipCtx );
+				}
+				after();
+			} );
 		}
 
 		function nextPage() {
-			if ( viewMode() === 'spread' ) {
+			if ( viewMode() === 'spread' || viewMode() === 'flip' ) {
 				if ( state.page <= 1 ) {
 					return goTo( 2 );
 				}
@@ -1182,7 +1467,7 @@
 		}
 
 		function prevPage() {
-			if ( viewMode() === 'spread' ) {
+			if ( viewMode() === 'spread' || viewMode() === 'flip' ) {
 				if ( state.page <= 2 ) {
 					return goTo( 1 );
 				}
@@ -1231,6 +1516,7 @@
 		}
 
 		function cycleView() {
+			endFlip();
 			var i = VIEW_MODES.indexOf( preferredView() );
 			var next = VIEW_MODES[ ( i + 1 ) % VIEW_MODES.length ];
 			state.viewMode = next;
@@ -1322,7 +1608,7 @@
 		 */
 		function printPageNums() {
 			var mode = viewMode();
-			if ( mode === 'spread' ) {
+			if ( mode === 'spread' || mode === 'flip' ) {
 				return spreadPages( state.page );
 			}
 			if ( mode === 'scroll' ) {
@@ -2075,7 +2361,10 @@
 				var endY = ( e.changedTouches[ 0 ] && e.changedTouches[ 0 ].clientY ) || swipeStart.y;
 				var dx = endX - swipeStart.x;
 				var dy = endY - swipeStart.y;
-				if ( Math.abs( dx ) >= 50 && Math.abs( dy ) < 40 ) {
+								// Natural horizontal dominant swipe detection (responsive on mobile & tablet)
+				var absX = Math.abs( dx );
+				var absY = Math.abs( dy );
+				if ( absX >= 35 && absX > absY * 1.15 ) {
 					if ( dx < 0 ) {
 						nextPage();
 					} else {
@@ -2219,7 +2508,7 @@
 			new window.ResizeObserver( function () {
 				window.clearTimeout( resizeTimer );
 				resizeTimer = window.setTimeout( function () {
-					if ( state.pdf ) {
+					if ( state.pdf && ! flipBusy ) {
 						renderCurrent();
 					}
 				}, 120 );
@@ -2369,6 +2658,27 @@
 		} else {
 			startLoadingDocument();
 		}
+
+		container._folioraInstance = {
+			setViewMode: function ( nextMode ) {
+				if ( VIEW_MODES.indexOf( nextMode ) !== -1 ) {
+					state.viewMode = nextMode;
+					container.setAttribute( 'data-view', nextMode );
+					slots = [];
+					updateViewButton();
+					renderCurrent();
+				}
+			},
+			goTo: goTo,
+			destroy: function () {
+				disconnectPageObserver();
+				slots.forEach( releaseSlotCanvas );
+				slots = [];
+				clearChildren( container );
+				container.removeAttribute( 'data-foliora-bound' );
+				delete container._folioraInstance;
+			}
+		};
 	}
 
 	var viewerObserver = null;
@@ -2429,6 +2739,25 @@
 				: null;
 			bindViewer( container, toolbar );
 		},
+		setViewMode: function ( container, mode ) {
+			if ( container && container._folioraInstance && container._folioraInstance.setViewMode ) {
+				container._folioraInstance.setViewMode( mode );
+			} else if ( container ) {
+				container.setAttribute( 'data-view', mode );
+				this.rebind( container );
+			}
+		},
+		rebind: function ( container ) {
+			if ( container ) {
+				if ( container._folioraInstance && container._folioraInstance.destroy ) {
+					container._folioraInstance.destroy();
+				} else {
+					container.removeAttribute( 'data-foliora-bound' );
+					clearChildren( container );
+				}
+				this.bind( container );
+			}
+		}
 	};
 
 	if ( document.readyState === 'loading' ) {

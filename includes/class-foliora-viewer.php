@@ -39,8 +39,21 @@ class Foliora_Viewer {
 	public function render_shortcode( $atts ) {
 		$settings = get_option( 'foliora_settings', array() );
 
+		$raw_atts = is_array( $atts ) ? $atts : array();
+		if ( ! empty( $raw_atts['id'] ) ) {
+			$embed_id     = absint( $raw_atts['id'] );
+			$saved_config = Foliora_Embeds::get( $embed_id );
+			if ( ! empty( $saved_config ) && is_array( $saved_config ) ) {
+				// Saved config supplies defaults; explicit shortcode attributes take precedence.
+				$atts = array_merge( $saved_config, $raw_atts );
+			} else {
+				return $this->admin_notice( sprintf( __( 'Foliora: Embed ID #%d not found.', 'foliora' ), $embed_id ) );
+			}
+		}
+
 		$atts = shortcode_atts(
 			array(
+				'id'        => '',
 				'file'      => '',
 				'width'     => $settings['default_width'] ?? '100%',
 				'height'    => $settings['default_height'] ?? '600px',
@@ -54,6 +67,8 @@ class Foliora_Viewer {
 				'theme_btn' => '',
 				'share'     => '',
 				'shortcuts' => '',
+				'presentation' => '',
+				'fullscreen' => '',
 				'loading'   => ! empty( $settings['lazy_loading'] ) ? 'lazy' : 'eager',
 				'hide'      => '',
 				'hash'      => 'true',
@@ -133,7 +148,7 @@ class Foliora_Viewer {
 		$sync_hash  = $this->att_flag( $atts['hash'] ?? 'true', true );
 		$resume     = $this->att_flag( $atts['resume'] ?? 'true', true );
 		$view       = strtolower( (string) ( $atts['view'] ?? 'page' ) );
-		if ( ! in_array( $view, array( 'page', 'scroll', 'spread' ), true ) ) {
+		if ( ! in_array( $view, array( 'page', 'scroll', 'spread', 'flip' ), true ) ) {
 			$view = 'page';
 		}
 
@@ -245,8 +260,14 @@ class Foliora_Viewer {
 			$atts['shortcuts'] ?? '',
 			! isset( $settings['allow_shortcuts'] ) || ! empty( $settings['allow_shortcuts'] )
 		);
-		$present  = ! in_array( 'presentation', $hide_list, true ) && ( ! isset( $settings['allow_presentation'] ) || ! empty( $settings['allow_presentation'] ) );
-		$fullscreen = ! in_array( 'fullscreen', $hide_list, true ) && ( ! isset( $settings['allow_fullscreen'] ) || ! empty( $settings['allow_fullscreen'] ) );
+		$present  = ! in_array( 'presentation', $hide_list, true ) && $this->att_flag(
+			$atts['presentation'] ?? '',
+			! isset( $settings['allow_presentation'] ) || ! empty( $settings['allow_presentation'] )
+		);
+		$fullscreen = ! in_array( 'fullscreen', $hide_list, true ) && $this->att_flag(
+			$atts['fullscreen'] ?? '',
+			! isset( $settings['allow_fullscreen'] ) || ! empty( $settings['allow_fullscreen'] )
+		);
 
 		$download_url = apply_filters( 'foliora/download_url', $file_url, $atts );
 		ob_start();

@@ -1389,9 +1389,7 @@
    3D FlipBook Styles
    ========================================================================== */
 .foliora-pages.is-flip {
-	perspective: 2400px;
-	perspective-origin: 50% 50%;
-	transform-style: preserve-3d;
+	position: relative;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -1405,33 +1403,71 @@
 .foliora-pages.is-flip .foliora-page-wrap {
 	position: relative;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-	transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
-	transform-origin: center center;
 }
 
 /* Left page in spread has right-edge spine gradient */
-.foliora-pages.is-flip .foliora-page-wrap:first-child:not(:only-child) {
+.foliora-pages.is-flip .foliora-page-wrap:first-of-type:not(:only-of-type) {
 	border-radius: 4px 0 0 4px;
-	box-shadow: -8px 10px 24px rgba(0, 0, 0, 0.35), inset -12px 0 16px -8px rgba(0, 0, 0, 0.25);
-	transform-origin: right center;
 }
 
-/* Right page in spread has left-edge spine gradient */
-.foliora-pages.is-flip .foliora-page-wrap:last-child:not(:only-child) {
-	border-radius: 0 4px 4px 0;
-	box-shadow: 8px 10px 24px rgba(0, 0, 0, 0.35), inset 12px 0 16px -8px rgba(0, 0, 0, 0.25);
-	transform-origin: left center;
+.foliora-pages.is-flip.is-flip-busy .foliora-page-wrap,
+.foliora-pages.is-flip .foliora-page-wrap.is-flip-hidden {
+	visibility: hidden;
 }
 
-/* Hover tilt effect for realistic book depth */
-.foliora-pages.is-flip:hover .foliora-page-wrap:first-child:not(:only-child) {
-	transform: perspective(2000px) rotateY(1.5deg);
+/* Real 3D page-turn stage */
+.foliora-flip-stage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 30;
+	pointer-events: none;
 }
 
-.foliora-pages.is-flip:hover .foliora-page-wrap:last-child:not(:only-child) {
-	transform: perspective(2000px) rotateY(-1.5deg);
+.foliora-flip-cover,
+.foliora-flip-cast {
+	position: absolute;
+	background: #fff;
 }
 
+.foliora-flip-cast {
+	background: transparent;
+	opacity: 0;
+}
+
+.foliora-flip-strip {
+	position: absolute;
+	transform-style: preserve-3d;
+	will-change: transform;
+}
+
+.foliora-flip-face {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: calc(100% + 1px);
+	height: 100%;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.foliora-flip-face.is-back {
+	transform: rotateY(180deg);
+}
+
+.foliora-flip-shade {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: #000;
+	opacity: 0;
+}
 /* Book spine dividing line */
 .foliora-pages.is-flip .foliora-page-wrap:first-child:not(:only-child)::after {
 	content: "";
