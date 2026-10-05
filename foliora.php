@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Foliora
+ * Plugin Name:       Foliora – PDF Viewer, 3D Flipbook & Document Library
  * Plugin URI:         https://thereadscope.com/foliora
- * Description:        A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.
+ * Description:        Fast, accessible PDF viewer with 3D flipbook, document library and PDF text search. Gutenberg, Elementor, Divi & Beaver Builder ready. Clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.
  * Version:            1.0.0
  * Requires at least:  6.0
  * Requires PHP:       7.4
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * hard-coding paths/URLs, so the free/pro split and any future folder
  * reshuffle stay painless.
  */
-define( 'FOLIORA_VERSION', '1.0.4' );
+define( 'FOLIORA_VERSION', '1.0.0' );
 define( 'FOLIORA_FILE', __FILE__ );
 define( 'FOLIORA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FOLIORA_URL', plugin_dir_url( __FILE__ ) );
@@ -90,6 +90,7 @@ require_once FOLIORA_DIR . 'includes/class-foliora-builders.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-library.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-block.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-embeds.php';
+require_once FOLIORA_DIR . 'includes/class-foliora-autoembed.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-admin.php';
 require_once FOLIORA_DIR . 'includes/class-foliora.php';
 
@@ -106,8 +107,10 @@ function foliora_activate() {
 		add_option(
 			'foliora_settings',
 			array(
-				'default_width'  => '100%',
-				'default_height' => '600px',
+				'default_width'          => '100%',
+				'default_height'         => '600px',
+				'autoembed_url'          => true,
+				'embed_attachment_pages' => true,
 			)
 		);
 	}
@@ -149,18 +152,14 @@ register_deactivation_hook( FOLIORA_FILE, 'foliora_deactivate' );
 
 /**
  * Point just-in-time translation loading at bundled /languages files
- * without calling load_plugin_textdomain() (discouraged since WP 4.6).
- * WordPress.org language packs in WP_LANG_DIR still take precedence.
+ * when running on WP 6.7+. For WP 4.6+, translations are automatically
+ * loaded by WordPress core from the 'Domain Path: /languages' header.
  */
 function foliora_register_textdomain_path() {
 	if ( isset( $GLOBALS['wp_textdomain_registry'] ) && is_object( $GLOBALS['wp_textdomain_registry'] )
 		&& method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
-		// WP 6.7+: JIT loader reads bundled languages before WP_LANG_DIR.
 		$GLOBALS['wp_textdomain_registry']->set_custom_path( 'foliora', FOLIORA_DIR . 'languages' );
-		return;
 	}
-	// WP 6.0–6.6: fall back to the classic loader so bundled .mo files are found.
-	load_plugin_textdomain( 'foliora', false, dirname( FOLIORA_BASENAME ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'foliora_register_textdomain_path', 1 );
 

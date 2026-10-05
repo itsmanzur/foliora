@@ -11,6 +11,7 @@
 	var useEffect = element.useEffect;
 	var useRef = element.useRef;
 	var __ = i18n.__;
+	var sprintf = i18n.sprintf || function ( fmt, arg ) { return fmt.replace( '%d', arg ); };
 	var registerBlockType = blocks.registerBlockType;
 	var InspectorControls = blockEditor.InspectorControls;
 	var MediaUpload = blockEditor.MediaUpload;
@@ -85,6 +86,7 @@
 			var attributes = props.attributes;
 			var setAttributes = props.setAttributes;
 			var heightPx = heightToPx( attributes.height );
+			var embedId = parseInt( attributes.id, 10 ) || 0;
 
 			return el(
 				element.Fragment,
@@ -95,6 +97,9 @@
 					el(
 						PanelBody,
 						{ title: __( 'Viewer Settings', 'foliora' ), initialOpen: true },
+						embedId > 0
+							? el( 'p', { style: { fontStyle: 'italic', marginBottom: '12px' } }, sprintf( __( 'Using saved embed #%d. Attributes below override saved defaults.', 'foliora' ), embedId ) )
+							: null,
 						el( TextControl, {
 							label: __( 'Width', 'foliora' ),
 							help: __( 'CSS width, for example 100% or 720px.', 'foliora' ),
@@ -166,55 +171,100 @@
 						} )
 					)
 				),
-				el(
-					'div',
-					{
-						className: 'foliora-block-editor-preview' + ( attributes.file ? ' is-selected-file' : '' ),
-					},
-					el(
-						MediaUploadCheck,
-						null,
-						el( MediaUpload, {
-							onSelect: function ( media ) {
-								if ( media && media.url ) {
-									setAttributes( { file: media.url } );
-								}
+				embedId > 0 && ! attributes.file
+					? el(
+							'div',
+							{
+								className: 'foliora-block-editor-preview is-saved-embed',
+								style: {
+									textAlign: 'center',
+									padding: '36px 20px',
+									background: '#f6f7f7',
+									border: '1px dashed #c3c4c7',
+									borderRadius: '4px',
+								},
 							},
-							allowedTypes: [ 'application/pdf' ],
-							value: attributes.file,
-							render: function ( obj ) {
-								return el(
-									'div',
-									{ className: 'foliora-block-editor-bar' },
-									el(
-										Button,
-										{
-											onClick: obj.open,
-											variant: 'secondary',
-										},
-										attributes.file
-											? __( 'Replace PDF', 'foliora' )
-											: __( 'Select PDF', 'foliora' )
-									),
-									attributes.file
-										? el(
-												'p',
-												{ className: 'foliora-block-editor-filename' },
-												attributes.file
-										  )
-										: null
-								);
-							},
-						} )
-					),
-					attributes.file
-						? el( PdfFirstPage, { file: attributes.file } )
-						: el(
+							el( 'span', {
+								className: 'dashicons dashicons-media-document',
+								style: {
+									fontSize: '36px',
+									width: '36px',
+									height: '36px',
+									color: '#2271b1',
+									margin: '0 auto 8px',
+									display: 'block',
+								},
+							} ),
+							el(
 								'p',
-								{ className: 'foliora-block-editor-placeholder' },
-								__( 'Select a PDF to preview the first page here. Visitors will see the full Foliora viewer.', 'foliora' )
-						  )
-				)
+								{
+									style: {
+										fontWeight: '600',
+										margin: '0 0 6px',
+										fontSize: '14px',
+										color: '#1d2327',
+									},
+								},
+								sprintf( __( 'Saved embed #%d', 'foliora' ), embedId )
+							),
+							el(
+								'p',
+								{
+									className: 'description',
+									style: { margin: 0, color: '#646970' },
+								},
+								__( 'Configured in Foliora → Embed Builder. The front end will display the full interactive viewer.', 'foliora' )
+							)
+					  )
+					: el(
+							'div',
+							{
+								className: 'foliora-block-editor-preview' + ( attributes.file ? ' is-selected-file' : '' ),
+							},
+							el(
+								MediaUploadCheck,
+								null,
+								el( MediaUpload, {
+									onSelect: function ( media ) {
+										if ( media && media.url ) {
+											setAttributes( { file: media.url } );
+										}
+									},
+									allowedTypes: [ 'application/pdf' ],
+									value: attributes.file,
+									render: function ( obj ) {
+										return el(
+											'div',
+											{ className: 'foliora-block-editor-bar' },
+											el(
+												Button,
+												{
+													onClick: obj.open,
+													variant: 'secondary',
+												},
+												attributes.file
+													? __( 'Replace PDF', 'foliora' )
+													: __( 'Select PDF', 'foliora' )
+											),
+											attributes.file
+												? el(
+														'p',
+														{ className: 'foliora-block-editor-filename' },
+														attributes.file
+												  )
+												: null
+										);
+									},
+								} )
+							),
+							attributes.file
+								? el( PdfFirstPage, { file: attributes.file } )
+								: el(
+										'p',
+										{ className: 'foliora-block-editor-placeholder' },
+										__( 'Select a PDF to preview the first page here. Visitors will see the full Foliora viewer.', 'foliora' )
+								  )
+					  )
 			);
 		},
 

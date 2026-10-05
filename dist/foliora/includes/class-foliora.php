@@ -57,9 +57,19 @@ class Foliora {
 	public $library;
 
 	/**
+	 * @var Foliora_Embeds
+	 */
+	public $embeds;
+
+	/**
 	 * @var Foliora_Block
 	 */
 	public $block;
+
+	/**
+	 * @var Foliora_Autoembed
+	 */
+	public $autoembed;
 
 	/**
 	 * @var Foliora_Admin
@@ -81,7 +91,9 @@ class Foliora {
 		$this->compat     = new Foliora_Compat();
 		$this->builders   = new Foliora_Builders();
 		$this->library    = new Foliora_Library();
+		$this->embeds     = new Foliora_Embeds();
 		$this->block      = new Foliora_Block();
+		$this->autoembed  = new Foliora_Autoembed();
 		$this->admin      = new Foliora_Admin();
 	}
 
@@ -92,6 +104,7 @@ class Foliora {
 	 * reliable everywhere below.
 	 */
 	public function run() {
+		$this->embeds->init();
 		$this->viewer->init();
 		$this->thumbnails->init();
 		$this->seo->init();
@@ -100,6 +113,7 @@ class Foliora {
 		$this->builders->init();
 		$this->library->init();
 		$this->block->init();
+		$this->autoembed->init();
 
 		if ( is_admin() ) {
 			$this->admin->init();

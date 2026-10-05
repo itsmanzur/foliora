@@ -4,6 +4,7 @@
 	"description": "Dev tooling for Foliora. Not shipped in the WP.org zip.",
 	"scripts": {
 		"wp-env": "wp-env",
+		"build:zip": "node bin/build-zip.js",
 		"test:php": "phpunit",
 		"test:e2e": "playwright test",
 		"phpcs": "phpcs -n"

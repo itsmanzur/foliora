@@ -1,5 +1,11 @@
 .foliora-library {
 	margin: 1.5em 0;
+	transition: opacity 0.15s ease;
+}
+
+.foliora-library.is-loading {
+	opacity: 0.55;
+	pointer-events: none;
 }
 
 .foliora-library-search {

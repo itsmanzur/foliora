@@ -67,6 +67,11 @@ class Foliora {
 	public $block;
 
 	/**
+	 * @var Foliora_Autoembed
+	 */
+	public $autoembed;
+
+	/**
 	 * @var Foliora_Admin
 	 */
 	public $admin;
@@ -88,6 +93,7 @@ class Foliora {
 		$this->library    = new Foliora_Library();
 		$this->embeds     = new Foliora_Embeds();
 		$this->block      = new Foliora_Block();
+		$this->autoembed  = new Foliora_Autoembed();
 		$this->admin      = new Foliora_Admin();
 	}
 
@@ -107,6 +113,7 @@ class Foliora {
 		$this->builders->init();
 		$this->library->init();
 		$this->block->init();
+		$this->autoembed->init();
 
 		if ( is_admin() ) {
 			$this->admin->init();

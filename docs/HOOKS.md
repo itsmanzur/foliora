@@ -90,7 +90,7 @@ Per-feature license gate. If Pro is not active, this filter never runs — the m
 | Name | Type | Meaning |
 |------|------|---------|
 | `$enabled` | `bool` | Default `true` when Pro is active |
-| `$feature_key` | `string` | One of: `epub_reader`, `flipbook_3d`, `bookmarks`, `reader_themes`, `protected_links`, `woocommerce_gate`, `analytics`, `remove_branding` |
+| `$feature_key` | `string` | One of: `epub_reader`, `bookmarks`, `reader_themes`, `protected_links`, `woocommerce_gate`, `analytics`, `remove_branding` |
 
 ```php
 add_filter( 'foliora/feature_enabled', function ( $enabled, $feature_key ) {

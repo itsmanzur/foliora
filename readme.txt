@@ -1,6 +1,6 @@
-=== Foliora ===
+=== Foliora – PDF Viewer, 3D Flipbook & Document Library ===
 Contributors: itsmanzur
-Tags: pdf, pdf viewer, ebook, document viewer, gutenberg
+Tags: pdf, pdf viewer, pdf embed, flipbook, document library
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A fast, accessible PDF viewer for WordPress. Bundled PDF.js, shortcode + block, no CDN.
+Fast, accessible PDF viewer with 3D flipbook, document library and PDF text search. Gutenberg, Elementor, Divi & Beaver Builder ready.
 
 == Description ==
 
@@ -19,6 +19,7 @@ Foliora embeds PDF documents in posts and pages using a bundled, locally hosted 
 * Shortcode: `[foliora file="https://example.com/document.pdf"]`
 * Gutenberg “Foliora Viewer” block with a Media Library picker and first-page preview
 * Page-by-page, continuous scroll, two-page spread, or realistic 3D FlipBook mode (with zero-asset Web Audio paper turn sound); zoom, fit page / fit width, rotate, find (N of M), print, download, fullscreen, and presentation mode
+* Light, sepia, and dark reader theme modes for comfortable reading
 * Automatic oEmbed / direct PDF URL auto-embed: paste any .pdf URL to embed instantly
 * WordPress standard attachment page auto-embed (configurable under Settings)
 * Smart CORS error diagnostics and user-friendly fallback card with direct download link for cross-origin PDFs
@@ -44,7 +45,7 @@ Foliora embeds PDF documents in posts and pages using a bundled, locally hosted 
 
 * EPUB reader mode
 * Bookmarks and reading-progress sync for logged-in users
-* Light / sepia / dark reader themes
+* Reader font, typography & custom color themes
 * Password-protected and expiring share links
 * WooCommerce paid-content gating
 * Reading analytics

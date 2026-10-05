@@ -6,9 +6,13 @@
 	"category": "media",
 	"icon": "media-document",
 	"description": "Embed a PDF document with the Foliora viewer.",
-	"keywords": [ "pdf", "document", "viewer", "ebook" ],
+	"keywords": [ "pdf", "document", "viewer", "flipbook" ],
 	"textdomain": "foliora",
 	"attributes": {
+		"id": {
+			"type": "number",
+			"default": 0
+		},
 		"file": {
 			"type": "string",
 			"default": ""

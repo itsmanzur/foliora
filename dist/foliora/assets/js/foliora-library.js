@@ -62,10 +62,75 @@
 		}
 	}
 
-	function init() {
-		Array.prototype.forEach.call( document.querySelectorAll( '.foliora-library-card' ), function ( card ) {
+	function fetchLibrary( library, targetUrl ) {
+		library.classList.add( 'is-loading' );
+		window
+			.fetch( targetUrl, {
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
+			} )
+			.then( function ( res ) {
+				return res.text();
+			} )
+			.then( function ( html ) {
+				var parser = new window.DOMParser();
+				var doc = parser.parseFromString( html, 'text/html' );
+				var id = library.id;
+				var newLibrary = id ? doc.getElementById( id ) : doc.querySelector( '.foliora-library' );
+				if ( newLibrary ) {
+					library.innerHTML = newLibrary.innerHTML;
+					bindLibrary( library );
+					if ( window.history && window.history.pushState ) {
+						window.history.pushState( null, '', targetUrl );
+					}
+				} else {
+					window.location.href = targetUrl;
+				}
+			} )
+			.catch( function () {
+				window.location.href = targetUrl;
+			} )
+			.finally( function () {
+				library.classList.remove( 'is-loading' );
+			} );
+	}
+
+	function bindLibrary( library ) {
+		if ( ! library ) {
+			return;
+		}
+
+		Array.prototype.forEach.call( library.querySelectorAll( '.foliora-library-card' ), function ( card ) {
+			card.removeEventListener( 'click', onCardClick );
 			card.addEventListener( 'click', onCardClick );
 		} );
+
+		Array.prototype.forEach.call( library.querySelectorAll( '.foliora-library-pager a' ), function ( link ) {
+			link.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				fetchLibrary( library, link.href );
+			} );
+		} );
+
+		var searchForm = library.querySelector( '.foliora-library-search' );
+		if ( searchForm ) {
+			searchForm.addEventListener( 'submit', function ( e ) {
+				e.preventDefault();
+				var formData = new window.FormData( searchForm );
+				var url = new URL( window.location.href );
+				formData.forEach( function ( val, key ) {
+					if ( val ) {
+						url.searchParams.set( key, val );
+					} else {
+						url.searchParams.delete( key );
+					}
+				} );
+				fetchLibrary( library, url.toString() );
+			} );
+		}
+	}
+
+	function init() {
+		Array.prototype.forEach.call( document.querySelectorAll( '.foliora-library' ), bindLibrary );
 	}
 
 	if ( document.readyState === 'loading' ) {

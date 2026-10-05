@@ -94,9 +94,8 @@ class Foliora_Loader {
 	public static function pro_features() {
 		return array(
 			'epub_reader'       => __( 'EPUB reader mode', 'foliora' ),
-			'flipbook_3d'       => __( '3D WebGL flip effect', 'foliora' ),
 			'bookmarks'         => __( 'Bookmarks & reading progress', 'foliora' ),
-			'reader_themes'     => __( 'Font & theme customization', 'foliora' ),
+			'reader_themes'     => __( 'Reader font & custom color themes', 'foliora' ),
 			'protected_links'   => __( 'Password-protected / expiring links', 'foliora' ),
 			'woocommerce_gate'  => __( 'WooCommerce paid-content gating', 'foliora' ),
 			'analytics'         => __( 'Reading analytics', 'foliora' ),

@@ -16,13 +16,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: foliora.php
-#: includes/builders/class-foliora-beaver-library.php:19
-#: includes/builders/class-foliora-beaver-viewer.php:19
-#: includes/class-foliora-admin.php:47
-#: includes/class-foliora-admin.php:48
-#: includes/class-foliora-admin.php:441
-#: includes/class-foliora-builders.php:36
-msgid "Foliora"
+msgid "Foliora – PDF Viewer, 3D Flipbook & Document Library"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -32,7 +26,7 @@ msgstr ""
 
 #. Description of the plugin
 #: foliora.php
-msgid "A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links."
+msgid "Fast, accessible PDF viewer with 3D flipbook, document library and PDF text search. Gutenberg, Elementor, Divi & Beaver Builder ready. Clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links."
 msgstr ""
 
 #. Author of the plugin
@@ -816,15 +810,11 @@ msgid "EPUB reader mode"
 msgstr ""
 
 #: includes/class-foliora-loader.php:81
-msgid "3D WebGL flip effect"
-msgstr ""
-
-#: includes/class-foliora-loader.php:82
 msgid "Bookmarks & reading progress"
 msgstr ""
 
-#: includes/class-foliora-loader.php:83
-msgid "Font & theme customization"
+#: includes/class-foliora-loader.php:82
+msgid "Reader font & custom color themes"
 msgstr ""
 
 #: includes/class-foliora-loader.php:84

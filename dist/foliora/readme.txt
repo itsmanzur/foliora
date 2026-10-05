@@ -1,6 +1,6 @@
-=== Foliora ===
+=== Foliora – PDF Viewer, 3D Flipbook & Document Library ===
 Contributors: itsmanzur
-Tags: pdf, pdf viewer, ebook, document viewer, gutenberg
+Tags: pdf, pdf viewer, pdf embed, flipbook, document library
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A fast, accessible PDF viewer for WordPress. Bundled PDF.js, shortcode + block, no CDN.
+Fast, accessible PDF viewer with 3D flipbook, document library and PDF text search. Gutenberg, Elementor, Divi & Beaver Builder ready.
 
 == Description ==
 
@@ -18,13 +18,17 @@ Foliora embeds PDF documents in posts and pages using a bundled, locally hosted 
 
 * Shortcode: `[foliora file="https://example.com/document.pdf"]`
 * Gutenberg “Foliora Viewer” block with a Media Library picker and first-page preview
-* Page-by-page, continuous scroll, or two-page spread; zoom, fit page / fit width, rotate, find (N of M), print, download, fullscreen, and presentation mode
+* Page-by-page, continuous scroll, two-page spread, or realistic 3D FlipBook mode (with zero-asset Web Audio paper turn sound); zoom, fit page / fit width, rotate, find (N of M), print, download, fullscreen, and presentation mode
+* Light, sepia, and dark reader theme modes for comfortable reading
+* Automatic oEmbed / direct PDF URL auto-embed: paste any .pdf URL to embed instantly
+* WordPress standard attachment page auto-embed (configurable under Settings)
+* Smart CORS error diagnostics and user-friendly fallback card with direct download link for cross-origin PDFs
 * Optional title caption, start page, guest last-page resume, and `#page=4` deep links
 * Hide download or print per embed, or site-wide under Foliora → Settings
 * Text layer and annotation links so visitors can select text and follow PDF links
 * Keyboard shortcuts (arrows, Page Up/Down, plus/minus, R to rotate, Home/End, Ctrl/Cmd+F, Escape)
 * Password-protected PDFs, document outline, page thumbnails, pinch/swipe, and a hand/pan tool
-* Compact mobile toolbar with a More button so chrome does not overflow
+* Streamlined, edge-to-edge responsive toolbar with a sleek More Tools (⋮) popup menu
 * Dashboard with setup checklist and shortcode builder
 * Documents library of PDFs already in the Media Library
 * `[foliora_library]` shortcode and “Foliora Library” block: a grid of site PDFs with first-page thumbnails and search
@@ -40,9 +44,8 @@ Foliora embeds PDF documents in posts and pages using a bundled, locally hosted 
 **Foliora Pro** (separate add-on) unlocks:
 
 * EPUB reader mode
-* 3D flip page-turn effect
 * Bookmarks and reading-progress sync for logged-in users
-* Light / sepia / dark reader themes
+* Reader font, typography & custom color themes
 * Password-protected and expiring share links
 * WooCommerce paid-content gating
 * Reading analytics
@@ -60,6 +63,10 @@ Foliora embeds PDF documents in posts and pages using a bundled, locally hosted 
 = Does this send my documents to a third-party server? =
 
 No. Rendering happens in the visitor’s browser with the PDF.js library bundled in this plugin.
+
+= How do I enable 3D FlipBook mode? =
+
+Use `[foliora file="https://example.com/document.pdf" view="flip"]` in shortcodes, choose "3D FlipBook" from the View dropdown in the Gutenberg block settings, or click "View Mode" inside the toolbar More Tools (⋮) menu.
 
 = Does it support EPUB? =
 
@@ -142,7 +149,10 @@ Foliora Pro (and any third-party add-on) extends the viewer through public WordP
 
 = 1.0.0 =
 * Initial release: PDF viewer with bundled PDF.js, shortcode, and Gutenberg block.
-* Page, continuous scroll, and two-page spread; zoom, rotate, find, print, download, fullscreen, and presentation mode.
+* Page, continuous scroll, two-page spread, and 3D FlipBook mode with realistic paper turn sound effect.
+* Direct PDF URL oEmbed auto-embed handler and attachment page auto-embed.
+* Smart CORS error diagnostics and fallback card.
+* Streamlined toolbar with More Tools (⋮) popup menu.
 * Compact mobile toolbar, guest last-page resume, `#page=` deep links, and password-protected PDFs.
 * Documents library, `[foliora_library]` grid, first-page thumbnails, and site search inside PDFs.
 * Elementor, Divi, and Beaver Builder widgets; WPML / Polylang PDF swapping; Bengali (bn_BD) translation.

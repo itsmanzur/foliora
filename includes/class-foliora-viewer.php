@@ -47,6 +47,7 @@ class Foliora_Viewer {
 				// Saved config supplies defaults; explicit shortcode attributes take precedence.
 				$atts = array_merge( $saved_config, $raw_atts );
 			} else {
+				// translators: %d: embed ID number.
 				return $this->admin_notice( sprintf( __( 'Foliora: Embed ID #%d not found.', 'foliora' ), $embed_id ) );
 			}
 		}

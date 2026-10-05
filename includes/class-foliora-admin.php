@@ -379,6 +379,14 @@ class Foliora_Admin {
 		);
 
 		add_settings_field(
+			'autoembed_url',
+			__( 'Direct PDF auto-embed', 'foliora' ),
+			array( $this, 'field_autoembed_url' ),
+			self::PAGE_SLUG,
+			'foliora_discover'
+		);
+
+		add_settings_field(
 			'embed_attachment_pages',
 			__( 'Attachment pages', 'foliora' ),
 			array( $this, 'field_embed_attachment_pages' ),
@@ -429,6 +437,7 @@ class Foliora_Admin {
 			'index_pdf_text'         => $form ? ! empty( $input['index_pdf_text'] ) : ( $existing['index_pdf_text'] ?? true ),
 			'social_preview'         => $form ? ! empty( $input['social_preview'] ) : ( $existing['social_preview'] ?? true ),
 			'check_pdf_a11y'         => $form ? ! empty( $input['check_pdf_a11y'] ) : ( $existing['check_pdf_a11y'] ?? true ),
+			'autoembed_url'          => $form ? ! empty( $input['autoembed_url'] ) : ( $existing['autoembed_url'] ?? true ),
 			'embed_attachment_pages' => $form ? ! empty( $input['embed_attachment_pages'] ) : ( $existing['embed_attachment_pages'] ?? true ),
 			'setup_copied_shortcode' => $copied,
 		);
@@ -624,6 +633,17 @@ class Foliora_Admin {
 			esc_attr( self::OPTION_NAME ),
 			checked( $checked, true, false ),
 			esc_html__( 'Warn on Foliora → Documents when a PDF is not tagged. Tagged PDFs include structure (headings, reading order) that screen readers can follow.', 'foliora' )
+		);
+	}
+
+	public function field_autoembed_url() {
+		$settings = get_option( self::OPTION_NAME, array() );
+		$checked  = ! isset( $settings['autoembed_url'] ) || ! empty( $settings['autoembed_url'] );
+		printf(
+			'<label><input type="checkbox" name="%1$s[autoembed_url]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( $checked, true, false ),
+			esc_html__( 'Automatically convert standalone .pdf URLs pasted on their own line into an interactive Foliora viewer.', 'foliora' )
 		);
 	}
 
@@ -969,7 +989,7 @@ class Foliora_Admin {
 			return;
 		}
 
-		$editing_id    = isset( $_GET['embed_id'] ) ? absint( $_GET['embed_id'] ) : 0;
+		$editing_id    = isset( $_GET['embed_id'] ) ? absint( wp_unslash( $_GET['embed_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$editing_embed = $editing_id ? Foliora_Embeds::get( $editing_id ) : null;
 		$saved_embeds  = Foliora_Embeds::get_all();
 
@@ -2749,7 +2769,6 @@ class Foliora_Admin {
 	private function pro_feature_icon( $key ) {
 		$icons = array(
 			'epub_reader'      => 'dashicons-book',
-			'flipbook_3d'      => 'dashicons-images-alt2',
 			'bookmarks'        => 'dashicons-flag',
 			'reader_themes'    => 'dashicons-art',
 			'protected_links'  => 'dashicons-lock',
@@ -2771,9 +2790,8 @@ class Foliora_Admin {
 	private function pro_feature_blurb( $key ) {
 		$blurbs = array(
 			'epub_reader'      => __( 'Open EPUB files in the same embed, not just PDF.', 'foliora' ),
-			'flipbook_3d'      => __( 'Page-turn animation for a magazine-style read.', 'foliora' ),
 			'bookmarks'        => __( 'Logged-in readers can resume where they left off.', 'foliora' ),
-			'reader_themes'    => __( 'Light, sepia, and dark themes for long reading.', 'foliora' ),
+			'reader_themes'    => __( 'Reader font family, size, line height controls, and custom color themes.', 'foliora' ),
 			'protected_links'  => __( 'Password, expiry, and view-capped share URLs.', 'foliora' ),
 			'woocommerce_gate' => __( 'Limit documents to paying WooCommerce customers.', 'foliora' ),
 			'analytics'        => __( 'See which documents get opened and how far.', 'foliora' ),

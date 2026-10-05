@@ -59,6 +59,22 @@ class Foliora_Loader {
 	}
 
 	/**
+	 * Reset the cached Pro-active result.
+	 *
+	 * Intended for unit-test isolation and for any scenario where Pro is
+	 * activated or deactivated at run-time after the initial detection has
+	 * already been cached (e.g. plugin-in-plugin activation tests).
+	 *
+	 * Production code should not need to call this directly; the cache is
+	 * intentionally persistent for the lifetime of a single request.
+	 *
+	 * @return void
+	 */
+	public static function reset() {
+		self::$is_pro_active = null;
+	}
+
+	/**
 	 * Convenience helper for admin/UI code: returns the URL to send
 	 * people to when they click an "Upgrade to Pro" lock.
 	 *
@@ -78,9 +94,8 @@ class Foliora_Loader {
 	public static function pro_features() {
 		return array(
 			'epub_reader'       => __( 'EPUB reader mode', 'foliora' ),
-			'flipbook_3d'       => __( '3D WebGL flip effect', 'foliora' ),
 			'bookmarks'         => __( 'Bookmarks & reading progress', 'foliora' ),
-			'reader_themes'     => __( 'Font & theme customization', 'foliora' ),
+			'reader_themes'     => __( 'Reader font & custom color themes', 'foliora' ),
 			'protected_links'   => __( 'Password-protected / expiring links', 'foliora' ),
 			'woocommerce_gate'  => __( 'WooCommerce paid-content gating', 'foliora' ),
 			'analytics'         => __( 'Reading analytics', 'foliora' ),

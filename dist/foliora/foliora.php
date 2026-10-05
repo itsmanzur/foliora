@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Foliora
+ * Plugin Name:       Foliora – PDF Viewer, 3D Flipbook & Document Library
  * Plugin URI:         https://thereadscope.com/foliora
- * Description:        A fast, accessible PDF viewer for WordPress. Bundled PDF.js rendering, shortcode + block embed, and a clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.
+ * Description:        Fast, accessible PDF viewer with 3D flipbook, document library and PDF text search. Gutenberg, Elementor, Divi & Beaver Builder ready. Clean upgrade path to Foliora Pro for EPUB, bookmarks, reading progress, and protected links.
  * Version:            1.0.0
  * Requires at least:  6.0
  * Requires PHP:       7.4
@@ -79,6 +79,7 @@ define( 'FOLIORA_BASENAME', plugin_basename( __FILE__ ) );
  * Dependencies
  * ---------------------------------------------------------------------
  */
+require_once FOLIORA_DIR . 'includes/trait-foliora-att-flag.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-loader.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-viewer.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-thumbnails.php';
@@ -88,8 +89,14 @@ require_once FOLIORA_DIR . 'includes/class-foliora-compat.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-builders.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-library.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-block.php';
+require_once FOLIORA_DIR . 'includes/class-foliora-embeds.php';
+require_once FOLIORA_DIR . 'includes/class-foliora-autoembed.php';
 require_once FOLIORA_DIR . 'includes/class-foliora-admin.php';
 require_once FOLIORA_DIR . 'includes/class-foliora.php';
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once FOLIORA_DIR . 'includes/class-foliora-cli.php';
+}
 
 /**
  * Activation hook: create default options, flush rewrite rules if we ever
@@ -100,8 +107,10 @@ function foliora_activate() {
 		add_option(
 			'foliora_settings',
 			array(
-				'default_width'  => '100%',
-				'default_height' => '600px',
+				'default_width'          => '100%',
+				'default_height'         => '600px',
+				'autoembed_url'          => true,
+				'embed_attachment_pages' => true,
 			)
 		);
 	}
@@ -143,14 +152,12 @@ register_deactivation_hook( FOLIORA_FILE, 'foliora_deactivate' );
 
 /**
  * Point just-in-time translation loading at bundled /languages files
- * without calling load_plugin_textdomain() (discouraged since WP 4.6).
- * WordPress.org language packs in WP_LANG_DIR still take precedence.
+ * when running on WP 6.7+. For WP 4.6+, translations are automatically
+ * loaded by WordPress core from the 'Domain Path: /languages' header.
  */
 function foliora_register_textdomain_path() {
-	if ( ! isset( $GLOBALS['wp_textdomain_registry'] ) || ! is_object( $GLOBALS['wp_textdomain_registry'] ) ) {
-		return;
-	}
-	if ( method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
+	if ( isset( $GLOBALS['wp_textdomain_registry'] ) && is_object( $GLOBALS['wp_textdomain_registry'] )
+		&& method_exists( $GLOBALS['wp_textdomain_registry'], 'set_custom_path' ) ) {
 		$GLOBALS['wp_textdomain_registry']->set_custom_path( 'foliora', FOLIORA_DIR . 'languages' );
 	}
 }

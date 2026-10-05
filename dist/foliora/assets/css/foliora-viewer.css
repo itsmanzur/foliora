@@ -38,7 +38,9 @@
 	color: #dcdcde;
 	border: 0;
 	border-bottom: 1px solid #0a0a0a;
-	overflow: hidden;
+	overflow: visible !important;
+	position: relative;
+	z-index: 5;
 }
 
 .foliora-wrap .foliora-chrome .foliora-pro-toolbar {
@@ -98,15 +100,15 @@
 	flex-direction: row !important;
 	flex-wrap: nowrap !important;
 	align-items: center !important;
-	gap: 4px;
+	gap: 6px;
 	margin: 0 !important;
-	padding: 4px 6px 4px 4px;
+	padding: 4px 8px;
 	background: transparent !important;
 	border: 0 !important;
 	font-size: 12px;
 	flex: 1 1 auto;
 	min-width: 0;
-	width: auto !important;
+	width: 100% !important;
 	max-width: none !important;
 	color: inherit;
 }
@@ -137,7 +139,10 @@
 }
 
 .foliora-wrap .foliora-tool-group-end {
-	margin-left: 4px;
+	margin-left: auto !important;
+	display: flex !important;
+	align-items: center;
+	gap: 4px;
 	flex: 0 0 auto;
 }
 
@@ -271,6 +276,8 @@
 
 .foliora-viewer {
 	position: relative;
+	display: flex;
+	flex-direction: row;
 	flex: 1 1 auto;
 	min-height: 220px;
 	overflow: hidden;
@@ -335,7 +342,10 @@
 	box-sizing: border-box;
 	min-height: 100%;
 	height: 100%;
+	flex: 1 1 auto;
+	min-width: 0;
 	overflow: auto;
+	touch-action: pan-x pan-y;
 }
 
 .foliora-page-wrap {
@@ -357,6 +367,9 @@
 	line-height: 1;
 	opacity: 1;
 	pointer-events: auto;
+	user-select: text;
+	-webkit-user-select: text;
+	z-index: 1;
 }
 
 .foliora-text-layer span {
@@ -367,13 +380,14 @@
 	transform-origin: 0% 0%;
 }
 
-.foliora-text-layer span.foliora-hl {
-	background: rgba(255, 213, 0, 0.45);
+.foliora-text-layer span::selection {
+	background: rgba(0, 102, 204, 0.35);
 	color: transparent;
 }
 
-.foliora-text-layer {
-	z-index: 1;
+.foliora-text-layer span.foliora-hl {
+	background: rgba(255, 213, 0, 0.45);
+	color: transparent;
 }
 
 .foliora-annotation-layer {
@@ -509,19 +523,35 @@
 }
 
 .foliora-side {
-	position: absolute;
+	position: relative;
 	top: 0;
 	left: 0;
 	bottom: 0;
-	z-index: 2;
+	z-index: 3;
 	display: flex;
 	flex-direction: column;
+	flex: 0 0 220px;
 	width: 220px;
 	max-width: 80%;
+	height: 100%;
 	background: #1d2327;
 	color: #dcdcde;
 	border-right: 1px solid #0a0a0a;
-	box-shadow: 8px 0 24px rgba(0, 0, 0, 0.25);
+	box-shadow: 4px 0 16px rgba(0, 0, 0, 0.25);
+	order: -1;
+}
+
+@media (max-width: 580px) {
+	.foliora-side {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		z-index: 10;
+		width: 240px;
+		max-width: 85%;
+		box-shadow: 8px 0 24px rgba(0, 0, 0, 0.5);
+	}
 }
 
 .foliora-side[hidden] {
@@ -761,9 +791,7 @@
 	}
 }
 
-.foliora-wrap .foliora-more {
-	display: none;
-}
+.foliora-wrap .foliora-more { display: inline-flex !important; }
 
 .foliora-wrap .foliora-find-status {
 	min-width: 3.2em;
@@ -849,4 +877,606 @@
 .foliora-shell.is-present .foliora-viewer {
 	flex: 1 1 auto;
 	min-height: 0;
+}
+
+/* ===================================================================
+   Themes: Dark & Sepia
+   ========================================================================== */
+.foliora-shell.foliora-theme-dark {
+	background: #14171a;
+	border-color: #2c3136;
+}
+
+.foliora-shell.foliora-theme-dark .foliora-chrome {
+	background: #0d0f11;
+	border-bottom-color: #1e2226;
+	color: #e2e8f0;
+}
+
+.foliora-shell.foliora-theme-dark .foliora-page-wrap canvas {
+	filter: invert(0.92) hue-rotate(180deg) brightness(0.95);
+}
+
+.foliora-shell.foliora-theme-dark .foliora-text-layer {
+	mix-blend-mode: difference;
+}
+
+.foliora-shell.foliora-theme-dark .foliora-panel {
+	background: #181b1e;
+	border-right-color: #2c3136;
+}
+
+.foliora-shell.foliora-theme-sepia {
+	background: #f4ecd8;
+	border-color: #dfd5be;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-chrome {
+	background: #3c3124;
+	border-bottom-color: #2c2419;
+	color: #f7eed7;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-btn {
+	color: #f7eed7;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-btn:hover,
+.foliora-shell.foliora-theme-sepia .foliora-btn:focus {
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-page-wrap canvas {
+	filter: sepia(0.36) contrast(0.96) brightness(0.98);
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-panel {
+	background: #eee3c8;
+	border-right-color: #dfd5be;
+	color: #4a3d2e;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-toc-item {
+	color: #4a3d2e;
+}
+
+.foliora-shell.foliora-theme-sepia .foliora-toc-item:hover,
+.foliora-shell.foliora-theme-sepia .foliora-toc-item:focus {
+	background: rgba(0, 0, 0, 0.08);
+	color: #2c2419;
+}
+
+/* ==========================================================================
+   Modals (Shortcuts & Share)
+   ========================================================================== */
+.foliora-shell {
+	position: relative;
+}
+
+.foliora-modal[hidden] {
+	display: none !important;
+}
+
+.foliora-modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+}
+
+.foliora-modal-backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.65);
+	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
+}
+
+.foliora-modal-card {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	max-width: 440px;
+	max-height: 90%;
+	background: #1e2327;
+	color: #f0f0f1;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 8px;
+	box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	animation: folioraModalFadeIn 0.15s ease-out;
+}
+
+@keyframes folioraModalFadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.foliora-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.foliora-modal-title {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.foliora-modal-close {
+	appearance: none;
+	background: transparent;
+	border: 0;
+	color: #a7aaad;
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 4px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.foliora-modal-close:hover,
+.foliora-modal-close:focus {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+}
+
+.foliora-modal-body {
+	padding: 16px;
+	overflow-y: auto;
+}
+
+/* Shortcuts Grid */
+.foliora-shortcuts-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.foliora-shortcut-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 12.5px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.foliora-shortcut-row:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+.foliora-shortcut-desc {
+	color: #c3c4c7;
+}
+
+.foliora-shortcut-keys {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.foliora-shortcut-keys kbd {
+	display: inline-block;
+	padding: 2px 6px;
+	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+	font-size: 11px;
+	line-height: 1.3;
+	color: #f0f0f1;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Share Modal Elements */
+.foliora-share-link-group {
+	display: flex;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.foliora-share-input {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 6px 10px;
+	font-size: 12px;
+	color: #f0f0f1;
+	background: rgba(0, 0, 0, 0.25);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 4px;
+	outline: none;
+}
+
+.foliora-share-input:focus {
+	border-color: #72aee6;
+}
+
+.foliora-share-copy {
+	flex: 0 0 auto;
+	padding: 0 14px;
+	font-size: 12px;
+	font-weight: 500;
+	background: #2271b1 !important;
+	color: #fff !important;
+	border-radius: 4px !important;
+	border: 0 !important;
+	cursor: pointer;
+	height: 32px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.12s ease;
+}
+
+.foliora-share-copy:hover,
+.foliora-share-copy:focus {
+	background: #135e96 !important;
+}
+
+.foliora-share-page-option {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #c3c4c7;
+	margin-bottom: 16px;
+	cursor: pointer;
+}
+
+.foliora-share-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.foliora-share-item {
+	flex: 1 1 calc(50% - 4px);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 500;
+	color: #f0f0f1 !important;
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	text-decoration: none !important;
+	transition: background-color 0.12s ease, transform 0.1s ease;
+}
+
+.foliora-share-item:hover,
+.foliora-share-item:focus {
+	background: rgba(255, 255, 255, 0.16);
+	transform: translateY(-1px);
+}
+
+.foliora-share-item.foliora-share-x:hover {
+	background: #000;
+}
+
+.foliora-share-item.foliora-share-fb:hover {
+	background: #1877f2;
+}
+
+.foliora-share-item.foliora-share-linkedin:hover {
+	background: #0a66c2;
+}
+
+.foliora-share-item.foliora-share-wa:hover {
+	background: #25d366;
+	color: #fff !important;
+}
+
+.foliora-share-item.foliora-share-email:hover {
+	background: #ea4335;
+}
+
+/* ==========================================================================
+   Lazy Loading Placeholder
+   ========================================================================== */
+.foliora-lazy-placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	width: 100%;
+	height: 100%;
+	color: #dcdcde;
+	cursor: pointer;
+	padding: 24px;
+	text-align: center;
+}
+
+.foliora-lazy-btn {
+	appearance: none;
+	background: #2271b1;
+	color: #fff;
+	border: 0;
+	border-radius: 6px;
+	padding: 10px 18px;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	transition: background-color 0.12s ease, transform 0.1s ease;
+}
+
+.foliora-lazy-btn:hover,
+.foliora-lazy-btn:focus {
+	background: #135e96;
+	transform: translateY(-1px);
+}
+
+.foliora-noscript {
+	padding: 24px;
+	text-align: center;
+	background: #2c3338;
+	color: #fff;
+	border-radius: 4px;
+}
+
+.foliora-noscript a {
+	color: #72aee6;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   CORS & Error Diagnostics
+   ========================================================================== */
+.foliora-cors-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 32px 20px;
+	text-align: center;
+	max-width: 520px;
+	margin: 0 auto;
+	color: #f0f0f1;
+}
+
+.foliora-cors-icon {
+	color: #f0b849;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.foliora-cors-title {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.foliora-cors-desc {
+	margin: 0 0 16px;
+	font-size: 13px;
+	line-height: 1.5;
+	color: #c3c4c7;
+}
+
+.foliora-cors-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 9px 18px;
+	background: #2271b1;
+	color: #fff !important;
+	text-decoration: none !important;
+	font-weight: 500;
+	font-size: 13px;
+	border-radius: 6px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.12s ease, transform 0.1s ease;
+}
+
+.foliora-cors-btn:hover,
+.foliora-cors-btn:focus {
+	background: #135e96;
+	color: #fff !important;
+	transform: translateY(-1px);
+}
+
+.foliora-cors-admin-hint {
+	margin-top: 18px;
+	padding: 10px 14px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 6px;
+	font-size: 11px;
+	line-height: 1.4;
+	color: #a7aaad;
+	text-align: left;
+}
+
+/* ==========================================================================
+   More Tools Dropdown Menu
+   ========================================================================== */
+.foliora-more-wrap {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+.foliora-more-menu {
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	z-index: 1000;
+	min-width: 190px;
+	padding: 6px;
+	background: #1d2327;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 8px;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.foliora-more-menu[hidden] {
+	display: none !important;
+}
+
+.foliora-more-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 7px 10px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: #dcdcde;
+	font-size: 12px;
+	line-height: 1.4;
+	text-align: left;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.foliora-more-item:hover,
+.foliora-more-item:focus {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+}
+
+.foliora-more-item svg {
+	width: 15px;
+	height: 15px;
+	flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3D FlipBook Styles
+   ========================================================================== */
+.foliora-pages.is-flip {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 0;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.foliora-pages.is-flip .foliora-page-wrap {
+	position: relative;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Left page in spread has right-edge spine gradient */
+.foliora-pages.is-flip .foliora-page-wrap:first-of-type:not(:only-of-type) {
+	border-radius: 4px 0 0 4px;
+}
+
+.foliora-pages.is-flip.is-flip-busy .foliora-page-wrap,
+.foliora-pages.is-flip .foliora-page-wrap.is-flip-hidden {
+	visibility: hidden;
+}
+
+/* Real 3D page-turn stage */
+.foliora-flip-stage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 30;
+	pointer-events: none;
+}
+
+.foliora-flip-cover,
+.foliora-flip-cast {
+	position: absolute;
+	background: #fff;
+}
+
+.foliora-flip-cast {
+	background: transparent;
+	opacity: 0;
+}
+
+.foliora-flip-strip {
+	position: absolute;
+	transform-style: preserve-3d;
+	will-change: transform;
+}
+
+.foliora-flip-face {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: calc(100% + 1px);
+	height: 100%;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.foliora-flip-face.is-back {
+	transform: rotateY(180deg);
+}
+
+.foliora-flip-shade {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: #000;
+	opacity: 0;
+}
+/* Book spine dividing line */
+.foliora-pages.is-flip .foliora-page-wrap:first-child:not(:only-child)::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 2px;
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05));
+	pointer-events: none;
+	z-index: 5;
 }
